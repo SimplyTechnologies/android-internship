@@ -1,4 +1,4 @@
-package com.simply.birthdayapp.ui.theme
+package com.simply.birthdayapp.presentation.ui.theme
 
 import android.app.Activity
 import androidx.compose.foundation.isSystemInDarkTheme
