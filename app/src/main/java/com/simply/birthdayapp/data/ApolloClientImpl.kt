@@ -2,16 +2,15 @@ package com.simply.birthdayapp.data
 
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.network.okHttpClient
+import com.simply.birthdayapp.BuildConfig
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Response
 
 
-private const val BASE_URL = "https://simply-mobile.amiryan.online/graphql"
-
 fun createApolloClient(): ApolloClient {
     return ApolloClient.Builder()
-        .serverUrl(BASE_URL)
+        .serverUrl(BuildConfig.SERVER_URL)
         .okHttpClient(
             OkHttpClient.Builder()
                 .addInterceptor(AuthorizationInterceptor())
