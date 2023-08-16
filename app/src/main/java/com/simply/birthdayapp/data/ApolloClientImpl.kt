@@ -5,11 +5,11 @@ import com.apollographql.apollo3.network.okHttpClient
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Response
-object ApolloClientImpl {
+
 
     private const val BASE_URL = "https://simply-mobile.amiryan.online/graphql"
 
-    fun create(): ApolloClient {
+    fun creatApolloClient(): ApolloClient {
         return ApolloClient.Builder()
             .serverUrl(BASE_URL)
             .okHttpClient(
@@ -19,7 +19,7 @@ object ApolloClientImpl {
             )
             .build()
     }
-}
+
 
 private class AuthorizationInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
