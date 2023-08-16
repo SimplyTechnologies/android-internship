@@ -7,18 +7,18 @@ import okhttp3.OkHttpClient
 import okhttp3.Response
 
 
-    private const val BASE_URL = "https://simply-mobile.amiryan.online/graphql"
+private const val BASE_URL = "https://simply-mobile.amiryan.online/graphql"
 
-    fun creatApolloClient(): ApolloClient {
-        return ApolloClient.Builder()
-            .serverUrl(BASE_URL)
-            .okHttpClient(
-                OkHttpClient.Builder()
-                    .addInterceptor(AuthorizationInterceptor())
-                    .build()
-            )
-            .build()
-    }
+fun createApolloClient(): ApolloClient {
+    return ApolloClient.Builder()
+        .serverUrl(BASE_URL)
+        .okHttpClient(
+            OkHttpClient.Builder()
+                .addInterceptor(AuthorizationInterceptor())
+                .build()
+        )
+        .build()
+}
 
 
 private class AuthorizationInterceptor : Interceptor {
