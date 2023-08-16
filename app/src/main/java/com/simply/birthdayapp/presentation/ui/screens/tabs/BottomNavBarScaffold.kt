@@ -15,7 +15,7 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import com.simply.birthdayapp.R
 import com.simply.birthdayapp.presentation.navigation.NavBar
 import com.simply.birthdayapp.presentation.navigation.NavBarItem
-import com.simply.birthdayapp.presentation.navigation.TabsDestination
+import com.simply.birthdayapp.presentation.navigation.BottomDestination
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -29,17 +29,17 @@ fun BottomNavBarScaffold(
                 items = listOf(
                     NavBarItem(
                         name = stringResource(R.string.navbar_item_home),
-                        route = TabsDestination.Home.route,
+                        route = BottomDestination.Home.route,
                         icon = painterResource(id = R.drawable.ic_home),
                     ),
                     NavBarItem(
                         name = stringResource(R.string.navbar_item_shops),
-                        route = TabsDestination.Shops.route,
+                        route = BottomDestination.Shops.route,
                         icon = painterResource(id = R.drawable.ic_shops),
                     ),
                     NavBarItem(
                         name = stringResource(R.string.navbar_item_profile),
-                        route = TabsDestination.Profile.route,
+                        route = BottomDestination.Profile.route,
                         icon = painterResource(id = R.drawable.ic_profile),
                     ),
                 ),

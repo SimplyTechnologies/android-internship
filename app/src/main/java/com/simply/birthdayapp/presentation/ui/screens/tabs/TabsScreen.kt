@@ -2,13 +2,13 @@ package com.simply.birthdayapp.presentation.ui.screens.tabs
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.rememberNavController
-import com.simply.birthdayapp.presentation.navigation.TabsNavigation
+import com.simply.birthdayapp.presentation.navigation.BottomNavigation
 
 @Composable
 fun TabsScreen() {
     val navController = rememberNavController()
 
     BottomNavBarScaffold(navController) {
-        TabsNavigation(navController)
+        BottomNavigation(navController)
     }
 }
