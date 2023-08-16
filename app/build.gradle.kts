@@ -75,4 +75,8 @@ dependencies {
     implementation("com.apollographql.apollo3:apollo-runtime:3.8.2")
     // koin
     implementation("io.insert-koin:koin-android:3.4.3")
+    // navigation
+    implementation("androidx.navigation:navigation-compose:2.7.0")
+
+
 }
