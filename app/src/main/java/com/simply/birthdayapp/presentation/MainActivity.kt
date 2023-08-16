@@ -3,7 +3,7 @@ package com.simply.birthdayapp.presentation
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import com.simply.birthdayapp.presentation.navigation.TopLevelNavigation
+import com.simply.birthdayapp.presentation.navigation.RootNavigation
 import com.simply.birthdayapp.presentation.ui.theme.BirthdayAppTheme
 
 class MainActivity : ComponentActivity() {
@@ -11,7 +11,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             BirthdayAppTheme {
-                TopLevelNavigation()
+                RootNavigation()
             }
         }
     }

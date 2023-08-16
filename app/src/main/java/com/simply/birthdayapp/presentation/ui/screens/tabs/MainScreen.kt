@@ -5,7 +5,7 @@ import androidx.navigation.compose.rememberNavController
 import com.simply.birthdayapp.presentation.navigation.BottomNavigation
 
 @Composable
-fun TabsScreen() {
+fun MainScreen() {
     val navController = rememberNavController()
 
     BottomNavBarScaffold(navController) {

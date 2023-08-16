@@ -11,18 +11,18 @@ fun BottomNavigation(
 ) {
     NavHost(
         navController = navController,
-        startDestination = BottomDestination.Home.route,
+        startDestination = BottomDestination.HomeMainScreen.route,
     ) {
-        composable(BottomDestination.Home.route) { }
+        composable(BottomDestination.HomeMainScreen.route) { }
 
-        composable(BottomDestination.Shops.route) { }
+        composable(BottomDestination.ShopsMainScreen.route) { }
 
-        composable(BottomDestination.Profile.route) { }
+        composable(BottomDestination.ProfileMainScreen.route) { }
     }
 }
 
 sealed class BottomDestination(val route: String) {
-    object Home : BottomDestination("home")
-    object Shops : BottomDestination("shops")
-    object Profile : BottomDestination("profile")
+    object HomeMainScreen : BottomDestination("home-main-screen")
+    object ShopsMainScreen : BottomDestination("shops-main-screen")
+    object ProfileMainScreen : BottomDestination("profile-main-screen")
 }

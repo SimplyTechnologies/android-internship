@@ -5,7 +5,6 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 
@@ -13,7 +12,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 fun NavBar(
     items: List<NavBarItem>,
     navController: NavController,
-    onItemClick: (NavBarItem) -> Unit,
+    onItemClick: (NavBarItem) -> Unit = {},
 ) {
     val backStackEntry = navController.currentBackStackEntryAsState()
 
@@ -34,9 +33,3 @@ fun NavBar(
         }
     }
 }
-
-data class NavBarItem(
-    val name: String,
-    val route: String,
-    val icon: Painter,
-)
