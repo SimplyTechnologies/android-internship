@@ -1,0 +1,158 @@
+input LoginInput {
+  email: String!
+  password: String!
+}
+
+type AccessToken {
+  access_token: String!
+}
+
+input SignUpInput {
+  email: String!
+  firstName: String!
+  lastName: String!
+  password: String!
+}
+
+input ResetPasswordInput {
+  hash: String!
+  password: String!
+  email: String!
+}
+
+type Mutation {
+  login(loginInput: LoginInput!): AccessToken
+  signUp(signUpInput: SignUpInput!): User
+  resetPasswordEmail(email: String!): User
+  resetPassword(resetPasswordInput: ResetPasswordInput!): User
+  createBirthday(createBirthdayInput: CreateBirthdayInput!): Birthday
+  updateBirthday(id: Int!, updateBirthdayInput: UpdateBirthdayInput!): Birthday
+  deleteBirthday(id: Int!): Birthday
+  addShopToFavorite(shopId: Int!): UserFavoriteShop
+  removeShopFromFavorite(shopId: Int!): UserFavoriteShop
+  updateProfile(updateProfileInput: UpdateProfileInput): User
+  changePassword(oldPassword: String!, newPassword: String!): User
+}
+
+scalar Date
+
+type Birthday {
+  id: Int!
+  userId: Int!
+  name: String!
+  image: String
+  relation: String!
+  message: String
+  date: Date
+  upcomingBirthday: Date
+  upcomingAge: Int
+  createdAt: Date
+  updatedAt: Date
+}
+
+input CreateBirthdayInput {
+  name: String!
+  image: String
+  relation: String!
+  message: String
+  date: Date!
+}
+
+input UpdateBirthdayInput {
+  name: String
+  image: String
+  relation: String
+  message: String
+  date: Date
+}
+
+type Query {
+  birthdays: [Birthday!]!
+  shops(filter: ShopFilter!): [Shop!]!
+  users: [User!]!
+  profile: User
+}
+
+scalar Object
+
+type Shop {
+  id: Int!
+  name: String!
+  image: String!
+  phone: String
+  address: String!
+  url: String
+  rate: Float
+  avgPrice: Int
+  createdAt: Date
+  updatedAt: Date
+  isFavorite: Boolean
+}
+
+type UserFavoriteShop {
+  id: Int!
+  userId: Int!
+  shopId: Int!
+  createdAt: Date
+}
+
+input RateFilter {
+  lte: Int
+  gte: Int
+}
+
+input AvgPriceFilter {
+  lte: Int
+  gte: Int
+}
+
+input ShopFilter {
+  rate: RateFilter
+  avgPrice: AvgPriceFilter
+}
+
+type User {
+  id: ID!
+  email: String!
+  firstName: String!
+  lastName: String!
+  image: String
+  password: String
+  hash: String
+  createdAt: Date
+  updatedAt: Date
+}
+
+enum Status {
+  ACTIVE
+  INACTIVE
+  DELETED
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  DELETED
+  PENDING
+  DRAFT
+}
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
+input CreateUserInput {
+  email: String!
+  firstName: String!
+  lastName: String!
+  role: UserRole!
+  password: String
+  image: String
+}
+
+input UpdateProfileInput {
+  firstName: String
+  lastName: String
+  image: String
+}
