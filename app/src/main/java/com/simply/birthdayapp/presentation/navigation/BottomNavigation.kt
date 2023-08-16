@@ -22,7 +22,7 @@ fun BottomNavigation(
 }
 
 sealed class BottomDestination(val route: String) {
-    object HomeMainScreen : BottomDestination("home-main-screen")
-    object ShopsMainScreen : BottomDestination("shops-main-screen")
-    object ProfileMainScreen : BottomDestination("profile-main-screen")
+    data object HomeMainScreen : BottomDestination("home-main-screen")
+    data object ShopsMainScreen : BottomDestination("shops-main-screen")
+    data object ProfileMainScreen : BottomDestination("profile-main-screen")
 }
