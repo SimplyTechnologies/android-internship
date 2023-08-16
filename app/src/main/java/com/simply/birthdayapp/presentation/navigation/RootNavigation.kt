@@ -21,5 +21,5 @@ fun RootNavigation() {
 }
 
 sealed class RootDestination(val route: String) {
-    object MainScreen : RootDestination("main-screen")
+    data object MainScreen : RootDestination("main-screen")
 }
