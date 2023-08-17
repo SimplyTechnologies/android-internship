@@ -21,7 +21,7 @@ fun SignInScreen() {
             .background(color = BackgroundColor),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
+    ) {
         Text(stringResource(R.string.sign_in))
     }
 }

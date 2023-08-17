@@ -35,7 +35,7 @@ fun LandingScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Image(
-            painterResource(R.drawable.logo),
+            painter = painterResource(R.drawable.logo),
             contentDescription = "Logo",
             modifier = Modifier.size(200.dp)
         )

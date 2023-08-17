@@ -25,7 +25,8 @@ fun AuthNavigation() {
         composable(AuthScreen.LandingScreen.route) {
             LandingScreen(
                 onSignInClick = { nestedNavController.navigate(AuthScreen.SignInScreen.route) },
-                onRegisterClick = { nestedNavController.navigate(AuthScreen.RegisterScreen.route) })
+                onRegisterClick = { nestedNavController.navigate(AuthScreen.RegisterScreen.route) }
+            )
         }
         composable(AuthScreen.RegisterScreen.route) { RegisterScreen() }
         composable(AuthScreen.SignInScreen.route) { SignInScreen() }
