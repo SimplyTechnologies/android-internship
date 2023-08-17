@@ -1,4 +1,4 @@
-package com.simply.birthdayapp.presentation.ui.screens.auth.Components
+package com.simply.birthdayapp.presentation.ui.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height

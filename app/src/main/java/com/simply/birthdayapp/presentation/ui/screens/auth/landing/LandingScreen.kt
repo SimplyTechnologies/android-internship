@@ -16,7 +16,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.simply.birthdayapp.R
-import com.simply.birthdayapp.presentation.ui.screens.auth.Components.LandingButton
+import com.simply.birthdayapp.presentation.ui.components.LandingButton
 import com.simply.birthdayapp.presentation.ui.theme.BackgroundColor
 import com.simply.birthdayapp.presentation.ui.theme.Primary1
 import com.simply.birthdayapp.presentation.ui.theme.Primary2
@@ -41,9 +41,10 @@ fun LandingScreen(
         )
         LandingButton(
             shape = RoundedCornerShape(
-            topStart = 42.dp,
-            topEnd = 26.dp,
-            bottomEnd = 26.dp),
+                topStart = 42.dp,
+                topEnd = 26.dp,
+                bottomEnd = 26.dp
+            ),
             buttonTitle = stringResource(id = R.string.sign_in),
             backgroundColor = Primary1,
             textColor = Primary2,
@@ -51,17 +52,19 @@ fun LandingScreen(
 
         LandingButton(
             shape = RoundedCornerShape(
-            bottomEnd = 42.dp,
-            topStart = 26.dp,
-            bottomStart = 26.dp),
+                bottomEnd = 42.dp,
+                topStart = 26.dp,
+                bottomStart = 26.dp
+            ),
             buttonTitle = stringResource(id = R.string.register),
             backgroundColor = Primary2,
             textColor = Primary1,
             onClick = { onRegisterClick() })
     }
 }
+
 @Preview(showBackground = true)
 @Composable
-fun LandingScreenPreview() {
+private fun LandingScreenPreview() {
     LandingScreen()
 }

@@ -30,6 +30,6 @@ fun RegisterScreen() {
 
 @Preview(showBackground = false)
 @Composable
-fun RegisterScreenPreview() {
+private fun RegisterScreenPreview() {
     RegisterScreen()
 }

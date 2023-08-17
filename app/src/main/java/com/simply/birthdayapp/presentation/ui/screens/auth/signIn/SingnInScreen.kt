@@ -28,9 +28,6 @@ fun SignInScreen() {
 
 @Preview(showBackground = true)
 @Composable
-fun RegisterScreenPreview() {
+private fun RegisterScreenPreview() {
     SignInScreen()
 }
-
-
-
