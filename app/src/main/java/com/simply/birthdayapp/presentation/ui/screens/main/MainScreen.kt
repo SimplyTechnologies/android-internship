@@ -6,9 +6,9 @@ import com.simply.birthdayapp.presentation.navigation.BottomNavigation
 
 @Composable
 fun MainScreen() {
-    val navController = rememberNavController()
-
-    BottomNavBarScaffold(navController) {
-        BottomNavigation(navController)
+    val mainNavController = rememberNavController()
+    
+    BottomNavBarScaffold(navController = mainNavController) {
+        BottomNavigation(navController = mainNavController)
     }
 }
