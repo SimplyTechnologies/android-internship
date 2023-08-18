@@ -75,6 +75,8 @@ dependencies {
     implementation("com.apollographql.apollo3:apollo-runtime:3.8.2")
     // coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1")
+    // coil
+    implementation("io.coil-kt:coil-compose:2.4.0")
     // koin
     implementation("io.insert-koin:koin-android:3.4.3")
     // navigation
