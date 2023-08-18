@@ -4,6 +4,5 @@ data class Shop(
     val id: Int,
     val name: String,
     val image: String,
-    val avgPrice: Int?,
-    val isFavorite: Boolean?
+    val isFavorite: Boolean?,
 )

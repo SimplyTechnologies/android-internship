@@ -68,7 +68,6 @@ private fun ShopCardPreview() {
         id = 0,
         name = "Kitten",
         image = "",
-        avgPrice = null,
         isFavorite = false,
     )
     ShopCard(shop)

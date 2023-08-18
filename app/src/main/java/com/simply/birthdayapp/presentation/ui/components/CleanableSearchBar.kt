@@ -3,7 +3,6 @@ package com.simply.birthdayapp.presentation.ui.components
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Clear
@@ -20,7 +19,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -30,7 +28,6 @@ import com.simply.birthdayapp.R
 fun CleanableSearchBar(
     query: String = "",
     onQueryChange: (String) -> Unit = {},
-    onSearch: () -> Unit = {},
 ) {
     TextField(
         modifier = Modifier
@@ -53,7 +50,7 @@ fun CleanableSearchBar(
                     )
                 }
             } else {
-                IconButton(onClick = { onSearch() }) {
+                IconButton(onClick = {}) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_search),
                         contentDescription = stringResource(R.string.search),
@@ -61,13 +58,7 @@ fun CleanableSearchBar(
                 }
             }
         },
-        keyboardOptions = KeyboardOptions(
-            keyboardType = KeyboardType.Number,
-            imeAction = ImeAction.Search,
-        ),
-        keyboardActions = KeyboardActions(
-            onSearch = { onSearch() }
-        ),
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
         singleLine = true,
         shape = CircleShape,
         colors = TextFieldDefaults.colors(
@@ -75,6 +66,7 @@ fun CleanableSearchBar(
             unfocusedContainerColor = MaterialTheme.colorScheme.tertiaryContainer,
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
+            cursorColor = MaterialTheme.colorScheme.tertiary,
         ),
     )
 }

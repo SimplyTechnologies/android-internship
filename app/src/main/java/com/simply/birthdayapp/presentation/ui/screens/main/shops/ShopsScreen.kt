@@ -27,15 +27,15 @@ import com.simply.birthdayapp.R
 import com.simply.birthdayapp.presentation.ui.components.CleanableSearchBar
 import com.simply.birthdayapp.presentation.ui.components.LogoTopBar
 import com.simply.birthdayapp.presentation.ui.components.ShopCard
-import com.simply.birthdayapp.presentation.viewmodels.ShopsScreenViewModel
+import com.simply.birthdayapp.presentation.viewmodels.ShopsViewModel
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun ShopsScreen(
-    shopsScreenViewModel: ShopsScreenViewModel = koinViewModel(),
+    shopsViewModel: ShopsViewModel = koinViewModel(),
 ) {
-    val uiState by shopsScreenViewModel.uiState.collectAsStateWithLifecycle()
-    var searchBarQuery by rememberSaveable { mutableStateOf("") }
+    val shopsScreenUiState by shopsViewModel.shopsScreenUiState.collectAsStateWithLifecycle()
+    var shopNameSearchQuery by rememberSaveable { mutableStateOf("") }
 
     Column(
         modifier = Modifier
@@ -44,12 +44,11 @@ fun ShopsScreen(
     ) {
         LogoTopBar()
         CleanableSearchBar(
-            query = searchBarQuery,
+            query = shopNameSearchQuery,
             onQueryChange = {
-                searchBarQuery = it
-                shopsScreenViewModel.onSearch(searchBarQuery)
+                shopNameSearchQuery = it
+                shopsViewModel.onSearchShopsByName(shopNameSearchQuery)
             },
-            onSearch = { shopsScreenViewModel.onSearch(searchBarQuery) },
         )
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
@@ -61,13 +60,13 @@ fun ShopsScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             when {
-                uiState.loading -> {
+                shopsScreenUiState.loadingShops -> {
                     item {
                         CircularProgressIndicator(color = MaterialTheme.colorScheme.tertiary)
                     }
                 }
 
-                uiState.shops.isEmpty() -> {
+                shopsScreenUiState.filteredShops.isEmpty() -> {
                     item {
                         Text(
                             text = stringResource(R.string.no_search_results_found),
@@ -78,7 +77,7 @@ fun ShopsScreen(
                 }
 
                 else -> {
-                    items(uiState.shops) { shop ->
+                    items(shopsScreenUiState.filteredShops) { shop ->
                         ShopCard(shop = shop)
                     }
                 }

@@ -1,32 +1,22 @@
 package com.simply.birthdayapp.data.repositories
 
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.api.Optional
 import com.simply.birthdayapp.ShopsQuery
 import com.simply.birthdayapp.presentation.ui.models.Shop
-import com.simply.birthdayapp.type.AvgPriceFilter
 import com.simply.birthdayapp.type.ShopFilter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 interface ShopsRepository {
-    suspend fun getShops(maxPrice: Int): List<Shop>
+    suspend fun getShops(): List<Shop>
 }
 
 class ShopsRepositoryImpl(
     private val apolloClient: ApolloClient,
 ) : ShopsRepository {
-    override suspend fun getShops(maxPrice: Int): List<Shop> = withContext(Dispatchers.IO) {
-        val filter = ShopFilter(
-            avgPrice = Optional.present(
-                AvgPriceFilter(
-                    lte = Optional.present(maxPrice),
-                    gte = Optional.present(0),
-                )
-            )
-        )
+    override suspend fun getShops(): List<Shop> = withContext(Dispatchers.IO) {
         apolloClient
-            .query(ShopsQuery(filter))
+            .query(ShopsQuery(ShopFilter()))
             .execute()
             .data
             ?.shops
@@ -39,6 +29,5 @@ private fun ShopsQuery.Shop.toShop(): Shop = Shop(
     id = id,
     name = name,
     image = image,
-    avgPrice = avgPrice,
     isFavorite = isFavorite,
 )
