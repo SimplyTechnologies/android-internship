@@ -16,17 +16,17 @@ sealed class AuthScreen(val route: String) {
 
 @Composable
 fun AuthMainScreen() {
-    val authMainNavController = rememberNavController()
+    val authNavController = rememberNavController()
 
     NavHost(
-        navController = authMainNavController,
+        navController = authNavController,
         startDestination = AuthScreen.LandingScreen.route,
         route = "root",
     ) {
         composable(AuthScreen.LandingScreen.route) {
             LandingScreen(
-                onSignInClick = { authMainNavController.navigate(AuthScreen.SignInScreen.route) },
-                onRegisterClick = { authMainNavController.navigate(AuthScreen.RegisterScreen.route) },
+                onSignInClick = { authNavController.navigate(AuthScreen.SignInScreen.route) },
+                onRegisterClick = { authNavController.navigate(AuthScreen.RegisterScreen.route) },
             )
         }
         composable(AuthScreen.RegisterScreen.route) { RegisterScreen() }
