@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.simply.birthdayapp.presentation.ui.screens.main.shops.ShopsMainScreen
 
 @Composable
 fun BottomNavigation(
@@ -15,7 +16,7 @@ fun BottomNavigation(
     ) {
         composable(BottomDestination.HomeMainScreen.route) { }
 
-        composable(BottomDestination.ShopsMainScreen.route) { }
+        composable(BottomDestination.ShopsMainScreen.route) { ShopsMainScreen() }
 
         composable(BottomDestination.ProfileMainScreen.route) { }
     }
