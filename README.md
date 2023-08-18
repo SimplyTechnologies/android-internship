@@ -48,8 +48,8 @@ Examples:<br/>
 
 ### PR descriptions
 
-If a PR is associated with a ticket in our tracker, add a comment to the PR when creating it, that includes the title of a ticket and a link to it.
+If a PR is associated with a ticket in our board, add a comment to the PR when creating it, that includes the title of a ticket and a link to it.
 
 Example:<br/>
 `[Users with outdated app are allowed to login via Biometrics](https://trello.com/c/2VXuWcUh/4-as-a-user-i-should-be-able-to-see-the-landing-screen)`<br/>
-Adding a comment in this format will be rendered in markdown as a clickable text link to pivotal tracker
+Adding a comment in this format will be rendered in markdown as a clickable text link to trello board
