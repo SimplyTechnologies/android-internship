@@ -3,7 +3,6 @@ query ShopsQuery($filter: ShopFilter!) {
         id
         name
         image
-        avgPrice
         isFavorite
     }
 }
