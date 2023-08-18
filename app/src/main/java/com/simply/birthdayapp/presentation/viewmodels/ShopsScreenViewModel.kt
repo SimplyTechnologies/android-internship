@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.simply.birthdayapp.data.repositories.ShopsRepository
 import com.simply.birthdayapp.presentation.ui.models.Shop
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
@@ -25,7 +24,6 @@ import kotlinx.coroutines.launch
 @OptIn(FlowPreview::class)
 class ShopsScreenViewModel(
     private val shopsRepository: ShopsRepository,
-    private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : ViewModel() {
     private val _query: MutableStateFlow<String> = MutableStateFlow("")
     private val _shops: MutableStateFlow<List<Shop>> = MutableStateFlow(emptyList())
@@ -49,7 +47,7 @@ class ShopsScreenViewModel(
             .debounce(300)
             .filter { query -> query.isNotBlank() }
             .distinctUntilChanged()
-            .flowOn(dispatcher)
+            .flowOn(Dispatchers.IO)
             .onEach { query ->
                 try {
                     getShops(query.toInt())
@@ -71,7 +69,7 @@ class ShopsScreenViewModel(
     }
 
     private fun getShops(maxPrice: Int) {
-        viewModelScope.launch(dispatcher + coroutineExceptionHandler) {
+        viewModelScope.launch(Dispatchers.IO + coroutineExceptionHandler) {
             _loading.update { true }
             try {
                 val shops = shopsRepository.getShops(maxPrice)

@@ -6,7 +6,6 @@ import com.simply.birthdayapp.ShopsQuery
 import com.simply.birthdayapp.presentation.ui.models.Shop
 import com.simply.birthdayapp.type.AvgPriceFilter
 import com.simply.birthdayapp.type.ShopFilter
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -16,9 +15,8 @@ interface ShopsRepository {
 
 class ShopsRepositoryImpl(
     private val apolloClient: ApolloClient,
-    private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : ShopsRepository {
-    override suspend fun getShops(maxPrice: Int): List<Shop> = withContext(dispatcher) {
+    override suspend fun getShops(maxPrice: Int): List<Shop> = withContext(Dispatchers.IO) {
         val filter = ShopFilter(
             avgPrice = Optional.present(
                 AvgPriceFilter(
