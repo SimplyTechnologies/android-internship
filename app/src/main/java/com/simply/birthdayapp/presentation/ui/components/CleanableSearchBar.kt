@@ -1,40 +1,60 @@
 package com.simply.birthdayapp.presentation.ui.components
 
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Clear
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SearchBar
+import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.simply.birthdayapp.R
 
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
-fun CleanableSearchBar(
-    query: String = "",
-    onQueryChange: (String) -> Unit = {},
+inline fun CleanableSearchBar(
+    query: String,
+    crossinline onQueryChange: (String) -> Unit = {},
+    active: Boolean,
+    crossinline onActiveChange: (Boolean) -> Unit = {},
+    crossinline content: @Composable (() -> Unit) = {},
 ) {
-    TextField(
+    val keyboardVisible = WindowInsets.isImeVisible
+    val focusManager = LocalFocusManager.current
+
+    LaunchedEffect(WindowInsets.isImeVisible) {
+        if (keyboardVisible.not()) focusManager.clearFocus()
+    }
+
+    SearchBar(
         modifier = Modifier
-            .padding(horizontal = 20.dp, vertical = 10.dp)
+            .padding(horizontal = 20.dp)
             .fillMaxWidth(),
-        value = query,
-        onValueChange = { onQueryChange(it) },
+        query = query,
+        onQueryChange = { onQueryChange(it) },
+        onSearch = { focusManager.clearFocus() },
+        active = active,
+        onActiveChange = {
+            onActiveChange(it)
+            if (it.not()) onQueryChange("")
+        },
         placeholder = {
             Text(
                 text = stringResource(R.string.search),
@@ -42,37 +62,43 @@ fun CleanableSearchBar(
             )
         },
         trailingIcon = {
-            if (query.isNotBlank()) {
-                IconButton(onClick = { onQueryChange("") }) {
+            if (active) {
+                IconButton(
+                    onClick = {
+                        if (query.isNotEmpty()) onQueryChange("")
+                        else onActiveChange(false)
+                    }
+                ) {
                     Icon(
                         imageVector = Icons.Outlined.Clear,
                         contentDescription = stringResource(R.string.clear),
                     )
                 }
             } else {
-                IconButton(onClick = {}) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_search),
-                        contentDescription = stringResource(R.string.search),
-                    )
-                }
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_search),
+                    contentDescription = stringResource(R.string.search),
+                )
             }
         },
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-        singleLine = true,
-        shape = CircleShape,
-        colors = TextFieldDefaults.colors(
-            focusedContainerColor = MaterialTheme.colorScheme.tertiaryContainer,
-            unfocusedContainerColor = MaterialTheme.colorScheme.tertiaryContainer,
-            focusedIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent,
-            cursorColor = MaterialTheme.colorScheme.tertiary,
+        colors = SearchBarDefaults.colors(
+            containerColor = MaterialTheme.colorScheme.background,
+            dividerColor = MaterialTheme.colorScheme.tertiary,
+            inputFieldColors = SearchBarDefaults.inputFieldColors(
+                cursorColor = MaterialTheme.colorScheme.tertiary,
+            )
         ),
-    )
+        interactionSource = MutableInteractionSource()
+    ) {
+        content()
+    }
 }
 
 @Preview
 @Composable
 private fun CleanableSearchBarPreview() {
-    CleanableSearchBar()
+    CleanableSearchBar(
+        query = "",
+        active = false,
+    )
 }

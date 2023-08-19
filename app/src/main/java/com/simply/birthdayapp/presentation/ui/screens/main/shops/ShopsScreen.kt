@@ -7,14 +7,12 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -34,8 +32,13 @@ import org.koin.androidx.compose.getViewModel
 fun ShopsScreen(
     shopsViewModel: ShopsViewModel,
 ) {
-    val shopsScreenUiState by shopsViewModel.shopsScreenUiState.collectAsStateWithLifecycle()
-    var shopNameSearchQuery by rememberSaveable { mutableStateOf("") }
+    val loadingAllShops by shopsViewModel.loadingAllShops.collectAsStateWithLifecycle()
+    val allShops by shopsViewModel.allShops.collectAsStateWithLifecycle()
+    val filteredShops by shopsViewModel.filteredShops.collectAsStateWithLifecycle()
+    val searchBarQuery by shopsViewModel.searchBarQuery.collectAsStateWithLifecycle()
+    val searchBarActive by shopsViewModel.searchBarActive.collectAsStateWithLifecycle()
+
+    val allShopsLazyListState = rememberLazyListState()
 
     Column(
         modifier = Modifier
@@ -44,41 +47,71 @@ fun ShopsScreen(
     ) {
         LogoTopBar()
         CleanableSearchBar(
-            query = shopNameSearchQuery,
-            onQueryChange = {
-                shopNameSearchQuery = it
-                shopsViewModel.onSearchShopsByName(shopNameSearchQuery)
-            },
-        )
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(
-                horizontal = 20.dp,
-                vertical = 15.dp,
-            ),
-            verticalArrangement = Arrangement.spacedBy(15.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
+            query = searchBarQuery,
+            onQueryChange = { shopsViewModel.onSearchBarQueryChange(it) },
+            active = searchBarActive,
+            onActiveChange = { shopsViewModel.onSearchBarActiveChange(it) },
         ) {
-            when {
-                shopsScreenUiState.loadingShops -> {
-                    item {
-                        CircularProgressIndicator(color = MaterialTheme.colorScheme.tertiary)
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(
+                    horizontal = 20.dp,
+                    vertical = 15.dp,
+                ),
+                verticalArrangement = Arrangement.spacedBy(15.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                when {
+                    filteredShops.isEmpty() -> {
+                        item {
+                            Text(
+                                text = stringResource(R.string.no_search_results_found),
+                                fontFamily = FontFamily(Font(R.font.karma_light)),
+                                color = MaterialTheme.colorScheme.tertiary,
+                            )
+                        }
+                    }
+
+                    else -> {
+                        items(filteredShops) { shop ->
+                            ShopCard(shop = shop)
+                        }
                     }
                 }
-
-                shopsScreenUiState.filteredShops.isEmpty() -> {
-                    item {
-                        Text(
-                            text = stringResource(R.string.no_search_results_found),
-                            fontFamily = FontFamily(Font(R.font.karma_light)),
-                            color = MaterialTheme.colorScheme.tertiary,
-                        )
+            }
+        }
+        if (searchBarActive.not()) {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                state = allShopsLazyListState,
+                contentPadding = PaddingValues(
+                    horizontal = 20.dp,
+                    vertical = 15.dp,
+                ),
+                verticalArrangement = Arrangement.spacedBy(15.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                when {
+                    loadingAllShops -> {
+                        item {
+                            CircularProgressIndicator(color = MaterialTheme.colorScheme.tertiary)
+                        }
                     }
-                }
 
-                else -> {
-                    items(shopsScreenUiState.filteredShops) { shop ->
-                        ShopCard(shop = shop)
+                    allShops.isEmpty() -> {
+                        item {
+                            Text(
+                                text = stringResource(R.string.no_shops_to_show),
+                                fontFamily = FontFamily(Font(R.font.karma_light)),
+                                color = MaterialTheme.colorScheme.tertiary,
+                            )
+                        }
+                    }
+
+                    else -> {
+                        items(allShops) { shop ->
+                            ShopCard(shop = shop)
+                        }
                     }
                 }
             }
