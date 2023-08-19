@@ -67,7 +67,7 @@ private fun ShopCardPreview() {
     val shop = Shop(
         id = 0,
         name = "Kitten",
-        image = "",
+        image = byteArrayOf(),
         isFavorite = false,
     )
     ShopCard(shop)

@@ -1,5 +1,6 @@
 package com.simply.birthdayapp.data.repositories
 
+import android.util.Base64
 import com.apollographql.apollo3.ApolloClient
 import com.simply.birthdayapp.ShopsQuery
 import com.simply.birthdayapp.presentation.ui.models.Shop
@@ -25,9 +26,17 @@ class ShopsRepositoryImpl(
     }
 }
 
-private fun ShopsQuery.Shop.toShop(): Shop = Shop(
-    id = id,
-    name = name,
-    image = image,
-    isFavorite = isFavorite,
-)
+private fun ShopsQuery.Shop.toShop(): Shop {
+    var imageData = byteArrayOf()
+    try {
+        imageData = Base64.decode(image.substringAfter("base64,"), Base64.DEFAULT)
+    } catch (cause: IllegalArgumentException) {
+        cause.printStackTrace()
+    }
+    return Shop(
+        id = id,
+        name = name,
+        image = imageData,
+        isFavorite = isFavorite,
+    )
+}
