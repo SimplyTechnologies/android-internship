@@ -5,10 +5,13 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.simply.birthdayapp.presentation.ui.screens.main.shops.ShopsMainScreen
+import com.simply.birthdayapp.presentation.viewmodels.ShopsViewModel
+import org.koin.androidx.compose.getViewModel
 
 @Composable
 fun BottomNavigation(
     navController: NavHostController,
+    shopsViewModel: ShopsViewModel = getViewModel(),
 ) {
     NavHost(
         navController = navController,
@@ -16,7 +19,9 @@ fun BottomNavigation(
     ) {
         composable(BottomDestination.HomeMainScreen.route) { }
 
-        composable(BottomDestination.ShopsMainScreen.route) { ShopsMainScreen() }
+        composable(BottomDestination.ShopsMainScreen.route) {
+            ShopsMainScreen(shopsViewModel = shopsViewModel)
+        }
 
         composable(BottomDestination.ProfileMainScreen.route) { }
     }

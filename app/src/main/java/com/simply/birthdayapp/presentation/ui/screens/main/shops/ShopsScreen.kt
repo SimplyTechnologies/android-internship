@@ -28,11 +28,11 @@ import com.simply.birthdayapp.presentation.ui.components.CleanableSearchBar
 import com.simply.birthdayapp.presentation.ui.components.LogoTopBar
 import com.simply.birthdayapp.presentation.ui.components.ShopCard
 import com.simply.birthdayapp.presentation.viewmodels.ShopsViewModel
-import org.koin.androidx.compose.koinViewModel
+import org.koin.androidx.compose.getViewModel
 
 @Composable
 fun ShopsScreen(
-    shopsViewModel: ShopsViewModel = koinViewModel(),
+    shopsViewModel: ShopsViewModel,
 ) {
     val shopsScreenUiState by shopsViewModel.shopsScreenUiState.collectAsStateWithLifecycle()
     var shopNameSearchQuery by rememberSaveable { mutableStateOf("") }
@@ -89,5 +89,5 @@ fun ShopsScreen(
 @Preview
 @Composable
 private fun ShopsScreenPreview() {
-    ShopsScreen()
+    ShopsScreen(shopsViewModel = getViewModel())
 }
