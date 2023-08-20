@@ -1,6 +1,5 @@
 package com.simply.birthdayapp.presentation.ui.screens.auth.register
 
-import android.util.Patterns
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
