@@ -24,6 +24,7 @@ fun AuthButton(
     buttonTitle: String,
     backgroundColor: Color,
     textColor: Color,
+    enabled: Boolean = true,
     onClick: () -> Unit = {}
 ) {
     Button(
@@ -32,6 +33,7 @@ fun AuthButton(
             .height(51.dp)
             .fillMaxWidth(),
         shape = shape,
+        enabled = enabled,
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(containerColor = backgroundColor),
     ) {

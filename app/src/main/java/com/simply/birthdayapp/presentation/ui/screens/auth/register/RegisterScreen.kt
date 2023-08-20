@@ -14,10 +14,8 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -35,19 +33,19 @@ import com.simply.birthdayapp.presentation.ui.components.AppBaseTopBar
 import com.simply.birthdayapp.presentation.ui.components.AuthButton
 import com.simply.birthdayapp.presentation.ui.components.BaseTextField
 import com.simply.birthdayapp.presentation.ui.components.PasswordTextFiled
-import com.simply.birthdayapp.presentation.ui.extenstions.isValidEmail
 import com.simply.birthdayapp.presentation.ui.theme.BackgroundColor
 import com.simply.birthdayapp.presentation.ui.theme.Primary1
 import com.simply.birthdayapp.presentation.ui.theme.Primary2
+import org.koin.androidx.compose.get
 
 @Composable
-fun RegisterScreen(onRegisterBackClick: () -> Unit = {}) {
-    var name by remember { mutableStateOf("") }
-    var surname by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var repeatpassword by remember { mutableStateOf("") }
-    var hasEmailError by remember { mutableStateOf(false) }
+fun RegisterScreen(registerViewModel: RegisterViewModel, onRegisterBackClick: () -> Unit = {}) {
+    val name by registerViewModel.name.collectAsState()
+    val surName by registerViewModel.surName.collectAsState()
+    val email by registerViewModel.email.collectAsState()
+    val password by registerViewModel.password.collectAsState()
+    val repeatPassword by registerViewModel.repeatPassword.collectAsState()
+    val hasEmailError by registerViewModel.hasEmailError.collectAsState()
 
 
     Scaffold(
@@ -75,7 +73,7 @@ fun RegisterScreen(onRegisterBackClick: () -> Unit = {}) {
                 ) {
                     Text(
                         modifier = Modifier.padding(top = 16.dp),
-                        text = stringResource(R.string.register),
+                        text = stringResource(id = R.string.register),
                         fontSize = 20.sp,
                         color = Primary2,
                         fontWeight = FontWeight(700),
@@ -84,24 +82,23 @@ fun RegisterScreen(onRegisterBackClick: () -> Unit = {}) {
                     )
                     BaseTextField(
                         textState = name,
-                        label = stringResource(R.string.name),
+                        label = stringResource(id = R.string.name),
                         onValueChange = { input ->
-                            name = input
+                            registerViewModel.setName(input)
                         }
                     )
                     BaseTextField(
-                        textState = surname,
-                        label = stringResource(R.string.surname),
-                        onValueChange = { input ->
-                            surname = input
+                        textState = surName,
+                        label = stringResource(id = R.string.surname),
+                        onValueChange = { surName ->
+                            registerViewModel.setSurName(surName)
                         }
                     )
                     BaseTextField(
                         textState = email,
-                        label = "Email",
-                        onValueChange = { input ->
-                            email = input
-                            hasEmailError = !input.isValidEmail()
+                        label = stringResource(id = R.string.email),
+                        onValueChange = { email ->
+                            registerViewModel.setEmail(email)
                         },
                         keyboardType = KeyboardType.Email,
                     )
@@ -115,32 +112,36 @@ fun RegisterScreen(onRegisterBackClick: () -> Unit = {}) {
                             Text(
                                 modifier = Modifier.padding(start = 4.dp),
                                 textAlign = TextAlign.Start,
-                                text = stringResource(R.string.register_email_error),
+                                text = stringResource(id = R.string.register_email_error),
                                 color = Color.Red,
-                                fontFamily = FontFamily(Font(R.font.karm_light)),
+                                fontFamily = FontFamily(Font(resId = R.font.karm_light)),
                                 fontSize = 16.sp,
                             )
                         }
                     }
                     PasswordTextFiled(
                         textState = password,
-                        label = stringResource(R.string.password),
-                        onValueChange = { input ->
-                            password = input
+                        label = stringResource(id = R.string.password),
+                        onValueChange = { password ->
+                            registerViewModel.setPassword(password = password)
                         }
                     )
-                    BaseTextField(
-                        textState = repeatpassword,
-                        label = stringResource(R.string.repeat_password),
-                        onValueChange = { input ->
-                            repeatpassword = input
+                    PasswordTextFiled(
+                        textState = repeatPassword,
+                        label = stringResource(id = R.string.repeat_password),
+                        onValueChange = { repeatPassword ->
+                            registerViewModel.setRepeatPassword(repeatPassword = repeatPassword)
                         }
                     )
                     AuthButton(
                         shape = RoundedCornerShape(24.dp),
-                        buttonTitle = stringResource(R.string.register),
+                        buttonTitle = stringResource(id = R.string.register),
                         backgroundColor = Primary1,
                         textColor = Primary2,
+                        enabled = !hasEmailError,
+                        onClick = {
+                            registerViewModel.registerAccount()
+                        }
                     )
                 }
             }
@@ -151,5 +152,5 @@ fun RegisterScreen(onRegisterBackClick: () -> Unit = {}) {
 @Preview(showBackground = false)
 @Composable
 private fun RegisterScreenPreview() {
-    RegisterScreen()
+    RegisterScreen(registerViewModel = get())
 }

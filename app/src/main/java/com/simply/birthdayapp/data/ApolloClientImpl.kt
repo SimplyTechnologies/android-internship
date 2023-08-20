@@ -25,7 +25,7 @@ private class AuthorizationInterceptor : Interceptor {
         val request = chain.request().newBuilder()
             .apply {
                 //Todo: change access_token_value to real token
-                addHeader("Authorization", "access_token_value")
+                addHeader("Authorization", "Bearer access_token_value")
             }
             .build()
         return chain.proceed(request)
