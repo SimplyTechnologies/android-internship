@@ -32,7 +32,7 @@ class ShopsViewModel(
 
     private val _cachedShops: MutableList<Shop> = mutableListOf()
 
-    private val _loadingAllShops: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    private val _loadingAllShops: MutableStateFlow<Boolean> = MutableStateFlow(true)
     private val _allShops: MutableStateFlow<List<Shop>> = MutableStateFlow(emptyList())
     private val _filteredShops: MutableStateFlow<List<Shop>> = MutableStateFlow(emptyList())
     private val _searchBarQuery: MutableStateFlow<String> = MutableStateFlow("")
