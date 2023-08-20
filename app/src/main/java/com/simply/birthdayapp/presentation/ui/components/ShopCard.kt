@@ -14,6 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
@@ -51,7 +52,7 @@ fun ShopCard(shop: Shop) {
                     .padding(horizontal = 15.dp),
                 text = shop.name,
                 fontFamily = FontFamily(Font(R.font.karma_bold)),
-                color = MaterialTheme.colorScheme.tertiary,
+                color = Color.Black,
             )
             Icon(
                 painter = painterResource(R.drawable.ic_favourite),

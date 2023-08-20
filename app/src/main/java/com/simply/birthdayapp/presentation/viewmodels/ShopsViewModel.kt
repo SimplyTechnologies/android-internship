@@ -12,10 +12,8 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
@@ -32,66 +30,55 @@ class ShopsViewModel(
 
     private val _cachedShops: MutableList<Shop> = mutableListOf()
 
-    private val _loadingAllShops: MutableStateFlow<Boolean> = MutableStateFlow(true)
-    private val _allShops: MutableStateFlow<List<Shop>> = MutableStateFlow(emptyList())
-    private val _filteredShops: MutableStateFlow<List<Shop>> = MutableStateFlow(emptyList())
+    private val _loading: MutableStateFlow<Boolean> = MutableStateFlow(true)
+    private val _shops: MutableStateFlow<List<Shop>> = MutableStateFlow(emptyList())
+    private val _scrollPosition: MutableStateFlow<Int> = MutableStateFlow(0)
     private val _searchBarQuery: MutableStateFlow<String> = MutableStateFlow("")
-    private val _searchBarActive: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
-    val loadingAllShops: StateFlow<Boolean> = _loadingAllShops.asStateFlow()
-    val allShops: StateFlow<List<Shop>> = _allShops.asStateFlow()
-    val filteredShops: StateFlow<List<Shop>> = _filteredShops.asStateFlow()
+    val loading: StateFlow<Boolean> = _loading.asStateFlow()
+    val shops: StateFlow<List<Shop>> = _shops.asStateFlow()
+    val scrollPosition: StateFlow<Int> = _scrollPosition.asStateFlow()
     val searchBarQuery: StateFlow<String> = _searchBarQuery.asStateFlow()
-    val searchBarActive: StateFlow<Boolean> = _searchBarActive.asStateFlow()
 
     init {
         observeSearchBarQuery()
-        updateAllShops()
+        fetchShops()
+    }
+
+    fun onScrollPositionChange(scrollPosition: Int) {
+        _scrollPosition.update { scrollPosition }
     }
 
     fun onSearchBarQueryChange(searchBarQuery: String) {
         _searchBarQuery.update { searchBarQuery }
     }
 
-    fun onSearchBarActiveChange(searchBarActive: Boolean) {
-        _searchBarActive.update { searchBarActive }
-    }
-
     private fun observeSearchBarQuery() {
         _searchBarQuery
-            .debounce(300)
+            .debounce(300L)
             .distinctUntilChanged()
-            .flowOn(Dispatchers.IO)
-            .onEach { searchBarQuery -> updateFilteredShops(searchBarQuery) }
-            .catch { cause -> Log.d(this::class.java.simpleName, Log.getStackTraceString(cause)) }
+            .onEach { filterShops(it) }
             .launchIn(viewModelScope)
     }
 
-    private suspend fun fetchCachedShops() = withContext(ioCatchingCoroutineContext) {
-        if (_cachedShops.isNotEmpty()) return@withContext
-        val shops = shopsRepository.getShops()
-        _cachedShops += shops
-    }
-
-    private fun updateAllShops() {
+    private fun fetchShops() {
         viewModelScope.launch(ioCatchingCoroutineContext) {
-            _loadingAllShops.update { true }
-            try {
-                fetchCachedShops()
-            } finally {
-                _allShops.update { _cachedShops }
-                _loadingAllShops.update { false }
-            }
+            _loading.update { true }
+            fetchCachedShops()
+            _shops.update { _cachedShops }
+            _loading.update { false }
         }
     }
 
-    private fun updateFilteredShops(searchBarQuery: String) {
+    private suspend fun fetchCachedShops() {
+        withContext(ioCatchingCoroutineContext) {
+            if (_cachedShops.isEmpty()) _cachedShops += shopsRepository.getShops()
+        }
+    }
+
+    private fun filterShops(searchBarQuery: String) {
         viewModelScope.launch(ioCatchingCoroutineContext) {
-            val filteredShops = _cachedShops.filter { cachedShop ->
-                searchBarQuery.isNotEmpty() &&
-                        cachedShop.name.lowercase().startsWith(searchBarQuery.lowercase())
-            }
-            _filteredShops.update { filteredShops }
+            _shops.update { _cachedShops.filter { it.name.lowercase().startsWith(searchBarQuery.lowercase()) } }
         }
     }
 }
