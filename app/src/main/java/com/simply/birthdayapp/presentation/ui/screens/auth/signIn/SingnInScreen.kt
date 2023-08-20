@@ -77,7 +77,7 @@ fun SignInScreen(onSignInBackClick: () -> Unit = {}, onForgotPasswordClick: () -
                 ) {
                     Text(
                         modifier = Modifier
-                            .padding(top = 15.dp),
+                            .padding(top = 16.dp),
                         text = stringResource(id = R.string.sign_in),
                         fontSize = 20.sp,
                         color = Primary2,

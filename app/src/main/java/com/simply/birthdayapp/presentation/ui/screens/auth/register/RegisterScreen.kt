@@ -74,8 +74,9 @@ fun RegisterScreen(onRegisterBackClick: () -> Unit = {}) {
                         .padding(horizontal = 24.dp)
                 ) {
                     Text(
+                        modifier = Modifier.padding(top = 16.dp),
                         text = stringResource(R.string.register),
-                        fontSize = 50.sp,
+                        fontSize = 20.sp,
                         color = Primary2,
                         fontWeight = FontWeight(700),
                         textAlign = TextAlign.Center,
