@@ -37,7 +37,7 @@ fun LandingScreen(
         Image(
             painter = painterResource(R.drawable.logo),
             contentDescription = "Logo",
-            modifier = Modifier.size(200.dp)
+            modifier = Modifier.size(200.dp),
         )
         LandingButton(
             shape = RoundedCornerShape(
@@ -48,18 +48,19 @@ fun LandingScreen(
             buttonTitle = stringResource(id = R.string.sign_in),
             backgroundColor = Primary1,
             textColor = Primary2,
-            onClick = { onSignInClick() })
-
+            onClick = onSignInClick
+        )
         LandingButton(
             shape = RoundedCornerShape(
                 bottomEnd = 42.dp,
                 topStart = 26.dp,
-                bottomStart = 26.dp
+                bottomStart = 26.dp,
             ),
             buttonTitle = stringResource(id = R.string.register),
             backgroundColor = Primary2,
             textColor = Primary1,
-            onClick = { onRegisterClick() })
+            onClick = onRegisterClick,
+        )
     }
 }
 
