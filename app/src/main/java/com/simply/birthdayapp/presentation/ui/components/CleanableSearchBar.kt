@@ -1,9 +1,6 @@
 package com.simply.birthdayapp.presentation.ui.components
 
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Clear
@@ -15,7 +12,6 @@ import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
@@ -26,7 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.simply.birthdayapp.R
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CleanableSearchBar(
     query: String,
@@ -35,10 +31,7 @@ fun CleanableSearchBar(
     onActiveChange: (Boolean) -> Unit = {},
     content: @Composable (() -> Unit) = {},
 ) {
-    val keyboardVisible = WindowInsets.isImeVisible
     val focusManager = LocalFocusManager.current
-
-    LaunchedEffect(keyboardVisible) { if (keyboardVisible.not()) focusManager.clearFocus() }
 
     SearchBar(
         modifier = Modifier
