@@ -1,6 +1,5 @@
 package com.simply.birthdayapp.presentation.ui.components
 
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -29,19 +28,17 @@ import com.simply.birthdayapp.R
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
-inline fun CleanableSearchBar(
+fun CleanableSearchBar(
     query: String,
-    crossinline onQueryChange: (String) -> Unit = {},
+    onQueryChange: (String) -> Unit = {},
     active: Boolean,
-    crossinline onActiveChange: (Boolean) -> Unit = {},
-    crossinline content: @Composable (() -> Unit) = {},
+    onActiveChange: (Boolean) -> Unit = {},
+    content: @Composable (() -> Unit) = {},
 ) {
     val keyboardVisible = WindowInsets.isImeVisible
     val focusManager = LocalFocusManager.current
 
-    LaunchedEffect(WindowInsets.isImeVisible) {
-        if (keyboardVisible.not()) focusManager.clearFocus()
-    }
+    LaunchedEffect(keyboardVisible) { if (keyboardVisible.not()) focusManager.clearFocus() }
 
     SearchBar(
         modifier = Modifier
@@ -88,7 +85,6 @@ inline fun CleanableSearchBar(
                 cursorColor = MaterialTheme.colorScheme.tertiary,
             )
         ),
-        interactionSource = MutableInteractionSource()
     ) {
         content()
     }

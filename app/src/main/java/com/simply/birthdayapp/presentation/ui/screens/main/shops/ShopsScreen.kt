@@ -48,9 +48,9 @@ fun ShopsScreen(
         LogoTopBar()
         CleanableSearchBar(
             query = searchBarQuery,
-            onQueryChange = { shopsViewModel.onSearchBarQueryChange(it) },
+            onQueryChange = shopsViewModel::onSearchBarQueryChange,
             active = searchBarActive,
-            onActiveChange = { shopsViewModel.onSearchBarActiveChange(it) },
+            onActiveChange = shopsViewModel::onSearchBarActiveChange,
         ) {
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
@@ -72,11 +72,7 @@ fun ShopsScreen(
                         }
                     }
 
-                    else -> {
-                        items(filteredShops) { shop ->
-                            ShopCard(shop = shop)
-                        }
-                    }
+                    else -> items(filteredShops) { shop -> ShopCard(shop = shop) }
                 }
             }
         }
@@ -92,11 +88,7 @@ fun ShopsScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 when {
-                    loadingAllShops -> {
-                        item {
-                            CircularProgressIndicator(color = MaterialTheme.colorScheme.tertiary)
-                        }
-                    }
+                    loadingAllShops -> item { CircularProgressIndicator(color = MaterialTheme.colorScheme.tertiary) }
 
                     allShops.isEmpty() -> {
                         item {
@@ -108,11 +100,7 @@ fun ShopsScreen(
                         }
                     }
 
-                    else -> {
-                        items(allShops) { shop ->
-                            ShopCard(shop = shop)
-                        }
-                    }
+                    else -> items(allShops) { shop -> ShopCard(shop = shop) }
                 }
             }
         }
