@@ -18,7 +18,6 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 @OptIn(FlowPreview::class)
 class ShopsViewModel(
@@ -64,21 +63,18 @@ class ShopsViewModel(
     private fun fetchShops() {
         viewModelScope.launch(ioCatchingCoroutineContext) {
             _loading.update { true }
-            fetchCachedShops()
-            _shops.update { _cachedShops }
-            _loading.update { false }
+            try {
+                if (_cachedShops.isEmpty()) _cachedShops += shopsRepository.getShops()
+            } finally {
+                filterShops("")
+                _loading.update { false }
+            }
         }
     }
 
-    private suspend fun fetchCachedShops() {
-        withContext(ioCatchingCoroutineContext) {
-            if (_cachedShops.isEmpty()) _cachedShops += shopsRepository.getShops()
-        }
-    }
-
-    private fun filterShops(searchBarQuery: String) {
+    private fun filterShops(namePrefix: String) {
         viewModelScope.launch(ioCatchingCoroutineContext) {
-            _shops.update { _cachedShops.filter { it.name.lowercase().startsWith(searchBarQuery.lowercase()) } }
+            _shops.update { _cachedShops.filter { it.name.lowercase().startsWith(namePrefix.lowercase()) } }
         }
     }
 }
