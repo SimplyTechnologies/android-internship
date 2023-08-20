@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.CircularProgressIndicator
@@ -52,15 +54,7 @@ fun ShopsScreen(
             active = searchBarActive,
             onActiveChange = shopsViewModel::onSearchBarActiveChange,
         ) {
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(
-                    horizontal = 20.dp,
-                    vertical = 15.dp,
-                ),
-                verticalArrangement = Arrangement.spacedBy(15.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
+            SpacedLazyColumn {
                 when {
                     filteredShops.isEmpty() -> {
                         item {
@@ -77,16 +71,7 @@ fun ShopsScreen(
             }
         }
         if (searchBarActive.not()) {
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                state = allShopsLazyListState,
-                contentPadding = PaddingValues(
-                    horizontal = 20.dp,
-                    vertical = 15.dp,
-                ),
-                verticalArrangement = Arrangement.spacedBy(15.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
+            SpacedLazyColumn(state = allShopsLazyListState) {
                 when {
                     loadingAllShops -> item { CircularProgressIndicator(color = MaterialTheme.colorScheme.tertiary) }
 
@@ -105,6 +90,24 @@ fun ShopsScreen(
             }
         }
     }
+}
+
+@Composable
+private fun SpacedLazyColumn(
+    state: LazyListState = rememberLazyListState(),
+    content: LazyListScope.() -> Unit,
+) {
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        state = state,
+        contentPadding = PaddingValues(
+            horizontal = 20.dp,
+            vertical = 15.dp,
+        ),
+        verticalArrangement = Arrangement.spacedBy(15.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        content = content,
+    )
 }
 
 @Preview
