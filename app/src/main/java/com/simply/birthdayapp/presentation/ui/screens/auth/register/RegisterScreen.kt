@@ -1,5 +1,6 @@
 package com.simply.birthdayapp.presentation.ui.screens.auth.register
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -14,11 +15,13 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -39,14 +42,28 @@ import com.simply.birthdayapp.presentation.ui.theme.Primary2
 import org.koin.androidx.compose.get
 
 @Composable
-fun RegisterScreen(registerViewModel: RegisterViewModel, onRegisterBackClick: () -> Unit = {}) {
+fun RegisterScreen(
+    registerViewModel: RegisterViewModel,
+    onRegisterBackClick: () -> Unit = {},
+    onRegisterSuccess: () -> Unit = {}
+) {
     val name by registerViewModel.name.collectAsState()
     val surName by registerViewModel.surName.collectAsState()
     val email by registerViewModel.email.collectAsState()
     val password by registerViewModel.password.collectAsState()
     val repeatPassword by registerViewModel.repeatPassword.collectAsState()
     val hasEmailError by registerViewModel.hasEmailError.collectAsState()
+    val registrationSuccess by registerViewModel.registrationSuccessState.collectAsState()
+    val context = LocalContext.current
 
+    LaunchedEffect(registrationSuccess) {
+        if (registrationSuccess) {
+            Toast.makeText(context, R.string.register_success, Toast.LENGTH_SHORT).show()
+            onRegisterSuccess()
+        }
+    }
+
+    //TODO: Alert for error case using
 
     Scaffold(
         topBar = { AppBaseTopBar(onBackClick = onRegisterBackClick) }
@@ -83,6 +100,7 @@ fun RegisterScreen(registerViewModel: RegisterViewModel, onRegisterBackClick: ()
                     BaseTextField(
                         textState = name,
                         label = stringResource(id = R.string.name),
+                        shape = RoundedCornerShape(13.dp),
                         onValueChange = { input ->
                             registerViewModel.setName(input)
                         }
@@ -90,6 +108,7 @@ fun RegisterScreen(registerViewModel: RegisterViewModel, onRegisterBackClick: ()
                     BaseTextField(
                         textState = surName,
                         label = stringResource(id = R.string.surname),
+                        shape = RoundedCornerShape(13.dp),
                         onValueChange = { surName ->
                             registerViewModel.setSurName(surName)
                         }
@@ -97,6 +116,7 @@ fun RegisterScreen(registerViewModel: RegisterViewModel, onRegisterBackClick: ()
                     BaseTextField(
                         textState = email,
                         label = stringResource(id = R.string.email),
+                        shape = RoundedCornerShape(13.dp),
                         onValueChange = { email ->
                             registerViewModel.setEmail(email)
                         },
@@ -107,7 +127,7 @@ fun RegisterScreen(registerViewModel: RegisterViewModel, onRegisterBackClick: ()
                             modifier = Modifier
                                 .padding(2.dp)
                                 .fillMaxWidth(),
-                            Arrangement.SpaceBetween,
+                            horizontalArrangement = Arrangement.SpaceBetween,
                         ) {
                             Text(
                                 modifier = Modifier.padding(start = 4.dp),

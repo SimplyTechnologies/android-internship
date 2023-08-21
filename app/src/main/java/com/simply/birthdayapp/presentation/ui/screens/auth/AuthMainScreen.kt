@@ -6,12 +6,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.simply.birthdayapp.presentation.ui.screens.auth.landing.LandingScreen
 import com.simply.birthdayapp.presentation.ui.screens.auth.register.RegisterScreen
-import com.simply.birthdayapp.presentation.ui.screens.auth.signIn.SignInScreen
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-import com.simply.birthdayapp.presentation.ui.screens.auth.landing.LandingScreen
-import com.simply.birthdayapp.presentation.ui.screens.auth.register.RegisterScreen
+import com.simply.birthdayapp.presentation.ui.screens.auth.register.RegisterViewModel
 import com.simply.birthdayapp.presentation.ui.screens.auth.signIn.SignInScreen
 import org.koin.androidx.compose.getViewModel
 
@@ -24,9 +19,18 @@ sealed class AuthScreen(val route: String) {
 @Composable
 fun AuthMainScreen() {
     val nestedNavController = rememberNavController()
+    val registerViewModel: RegisterViewModel = getViewModel()
     fun navigateToLandingScreen() {
         nestedNavController.navigate(AuthScreen.LandingScreen.route) {
             popUpTo(AuthScreen.LandingScreen.route) {
+                inclusive = true
+            }
+        }
+    }
+
+    fun navigateToSignInScreen() {
+        nestedNavController.navigate(AuthScreen.SignInScreen.route) {
+            popUpTo(AuthScreen.SignInScreen.route) {
                 inclusive = true
             }
         }
@@ -44,13 +48,16 @@ fun AuthMainScreen() {
         }
         composable(AuthScreen.RegisterScreen.route) {
             RegisterScreen(
-                registerViewModel = getViewModel(),
-                onRegisterBackClick = { navigateToLandingScreen() }
+                registerViewModel = registerViewModel,
+                onRegisterBackClick = { navigateToLandingScreen() },
+                onRegisterSuccess = { navigateToSignInScreen() }
             )
         }
         composable(AuthScreen.SignInScreen.route) {
-            SignInScreen(onSignInBackClick = { navigateToLandingScreen() })
+            SignInScreen(
+                registerViewModel = registerViewModel,
+                onSignInBackClick = { navigateToLandingScreen() }
+            )
         }
     }
 }
-

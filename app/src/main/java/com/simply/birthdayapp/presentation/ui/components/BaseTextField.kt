@@ -44,7 +44,7 @@ fun BaseTextField(
             Text(
                 text = label,
                 color = Primary2,
-                fontFamily = FontFaily(Font(R.font.karm_light)),
+                fontFamily = FontFamily(Font(R.font.karm_light)),
             )
         },
         keyboardOptions = KeyboardOptions.Default.copy(

@@ -18,6 +18,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,14 +41,20 @@ import com.simply.birthdayapp.presentation.ui.components.AuthButton
 import com.simply.birthdayapp.presentation.ui.components.BaseTextField
 import com.simply.birthdayapp.presentation.ui.components.PasswordTextFiled
 import com.simply.birthdayapp.presentation.ui.extenstions.isValidEmail
+import com.simply.birthdayapp.presentation.ui.screens.auth.register.RegisterViewModel
 import com.simply.birthdayapp.presentation.ui.theme.BackgroundColor
 import com.simply.birthdayapp.presentation.ui.theme.Primary1
 import com.simply.birthdayapp.presentation.ui.theme.Primary2
+import org.koin.androidx.compose.get
 
 @Composable
-fun SignInScreen(onSignInBackClick: () -> Unit = {}, onForgotPasswordClick: () -> Unit = {}) {
-
-    var email by remember { mutableStateOf("") }
+fun SignInScreen(
+    registerViewModel: RegisterViewModel,
+    onSignInBackClick: () -> Unit = {},
+    onForgotPasswordClick: () -> Unit = {}
+) {
+    val registeredEmail by registerViewModel.registeredEmail.collectAsState()
+    var email by remember { mutableStateOf(registeredEmail) }
     var password by remember { mutableStateOf("") }
     val checkedState = remember { mutableStateOf(false) }
     var hasEmailError by remember { mutableStateOf(false) }
@@ -172,5 +179,5 @@ fun SignInScreen(onSignInBackClick: () -> Unit = {}, onForgotPasswordClick: () -
 @Preview(showBackground = true)
 @Composable
 private fun SignInScreenPreview() {
-    SignInScreen()
+    SignInScreen(registerViewModel = get())
 }
