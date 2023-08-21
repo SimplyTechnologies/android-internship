@@ -14,11 +14,11 @@ fun NavBar(
     navController: NavController,
     onItemClick: (NavBarItem) -> Unit = {},
 ) {
-    val backStackEntry = navController.currentBackStackEntryAsState()
+    val currentBackStackEntry = navController.currentBackStackEntryAsState()
 
     NavigationBar {
         items.forEach {
-            val selected = it.route == backStackEntry.value?.destination?.route
+            val selected = it.route == currentBackStackEntry.value?.destination?.route
             NavigationBarItem(
                 selected = selected,
                 onClick = { onItemClick(it) },
