@@ -38,10 +38,9 @@ fun AppBaseTopBar(
             onClick = onBackClick
         ) {
             Icon(
-                Icons.Filled.KeyboardArrowLeft,
-                "contentDescription",
-                modifier = Modifier
-                    .fillMaxSize(),
+                imageVector = Icons.Filled.KeyboardArrowLeft,
+                modifier = Modifier.fillMaxSize(),
+                contentDescription = "contentDescription",
                 tint = Primary2,
             )
         }

@@ -9,6 +9,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.ImeAction
@@ -23,15 +24,15 @@ import com.simply.birthdayapp.presentation.ui.theme.Primary2
 fun BaseTextField(
     textState: String,
     label: String = "",
+    keyboardType: KeyboardType = KeyboardType.Text,
+    shape: Shape = TextFieldDefaults.shape,
     onValueChange: (String) -> Unit = {},
-    keyboardType: KeyboardType = KeyboardType.Text
 ) {
     TextField(
+        modifier = Modifier.padding(top = 24.dp),
         value = textState,
         onValueChange = onValueChange,
-        modifier = Modifier
-            .padding(top = 24.dp),
-        shape = RoundedCornerShape(13.dp),
+        shape = shape,
         colors = TextFieldDefaults.colors(
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
@@ -43,7 +44,7 @@ fun BaseTextField(
             Text(
                 text = label,
                 color = Primary2,
-                fontFamily = FontFamily(Font(R.font.karm_light)),
+                fontFamily = FontFaily(Font(R.font.karm_light)),
             )
         },
         keyboardOptions = KeyboardOptions.Default.copy(
@@ -57,5 +58,10 @@ fun BaseTextField(
 @Preview(showBackground = false)
 @Composable
 private fun BaseTextFieldPreview() {
-    BaseTextField("Name", "name", keyboardType = KeyboardType.Text)
+    BaseTextField(
+        textState = "Name",
+        label = "name",
+        keyboardType = KeyboardType.Text,
+        shape = RoundedCornerShape(13.dp)
+    )
 }

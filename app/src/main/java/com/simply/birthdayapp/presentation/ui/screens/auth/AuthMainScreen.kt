@@ -7,6 +7,12 @@ import androidx.navigation.compose.rememberNavController
 import com.simply.birthdayapp.presentation.ui.screens.auth.landing.LandingScreen
 import com.simply.birthdayapp.presentation.ui.screens.auth.register.RegisterScreen
 import com.simply.birthdayapp.presentation.ui.screens.auth.signIn.SignInScreen
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.simply.birthdayapp.presentation.ui.screens.auth.landing.LandingScreen
+import com.simply.birthdayapp.presentation.ui.screens.auth.register.RegisterScreen
+import com.simply.birthdayapp.presentation.ui.screens.auth.signIn.SignInScreen
 import org.koin.androidx.compose.getViewModel
 
 sealed class AuthScreen(val route: String) {
@@ -47,3 +53,4 @@ fun AuthMainScreen() {
         }
     }
 }
+
