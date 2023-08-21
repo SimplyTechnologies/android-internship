@@ -5,14 +5,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.text.selection.LocalTextSelectionColors
 import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -31,42 +29,39 @@ fun SearchBarComponent(
     onSearch: () -> Unit = {},
     trailingIcon: @Composable (() -> Unit)? = null,
 ) {
-    CompositionLocalProvider(
-        LocalTextSelectionColors provides TextSelectionColors(
-            handleColor = MaterialTheme.colorScheme.tertiary,
-            backgroundColor = MaterialTheme.colorScheme.tertiary,
-        )
-    ) {
-        TextField(
-            modifier = Modifier
-                .padding(horizontal = 20.dp, vertical = 10.dp)
-                .fillMaxWidth(),
-            value = query,
-            onValueChange = { onQueryChange(it) },
-            placeholder = {
-                Text(
-                    text = stringResource(R.string.search),
-                    fontFamily = FontFamily(Font(R.font.karma_medium)),
-                    color = Color.Gray,
-                )
-            },
-            trailingIcon = trailingIcon,
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Text,
-                imeAction = ImeAction.Search,
+    TextField(
+        modifier = Modifier
+            .padding(horizontal = 20.dp, vertical = 10.dp)
+            .fillMaxWidth(),
+        value = query,
+        onValueChange = { onQueryChange(it) },
+        placeholder = {
+            Text(
+                text = stringResource(R.string.search),
+                fontFamily = FontFamily(Font(R.font.karma_medium)),
+                color = Color.Gray,
+            )
+        },
+        trailingIcon = trailingIcon,
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Text,
+            imeAction = ImeAction.Search,
+        ),
+        keyboardActions = KeyboardActions(onSearch = { onSearch() }),
+        singleLine = true,
+        shape = CircleShape,
+        colors = TextFieldDefaults.colors(
+            focusedContainerColor = MaterialTheme.colorScheme.tertiaryContainer,
+            unfocusedContainerColor = MaterialTheme.colorScheme.tertiaryContainer,
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent,
+            cursorColor = MaterialTheme.colorScheme.tertiary,
+            selectionColors = TextSelectionColors(
+                handleColor = MaterialTheme.colorScheme.tertiary,
+                backgroundColor = MaterialTheme.colorScheme.tertiary,
             ),
-            keyboardActions = KeyboardActions(onSearch = { onSearch() }),
-            singleLine = true,
-            shape = CircleShape,
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                unfocusedContainerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-                cursorColor = MaterialTheme.colorScheme.tertiary,
-            ),
-        )
-    }
+        ),
+    )
 }
 
 @Preview
