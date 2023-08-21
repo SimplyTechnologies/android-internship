@@ -12,7 +12,7 @@ import androidx.navigation.compose.rememberNavController
 
 @Composable
 fun NavBar(
-    items: List<NavBarItem>,
+    items: List<NavBarItem> = emptyList(),
     navController: NavController,
     onItemClick: (NavBarItem) -> Unit = {},
 ) {
@@ -41,8 +41,5 @@ fun NavBar(
 @Preview
 @Composable
 private fun NavBarPreview() {
-    NavBar(
-        items = emptyList(),
-        rememberNavController(),
-    )
+    NavBar(navController = rememberNavController())
 }
