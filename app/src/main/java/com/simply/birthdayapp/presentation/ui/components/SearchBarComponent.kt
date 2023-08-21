@@ -31,7 +31,7 @@ import com.simply.birthdayapp.R
 
 @Composable
 fun SearchBarComponent(
-    query: String,
+    query: String = "",
     onQueryChange: (String) -> Unit = {},
     onSearch: () -> Unit = {},
 ) {
@@ -96,5 +96,5 @@ fun SearchBarComponent(
 @Preview
 @Composable
 private fun SearchBarComponentPreview() {
-    SearchBarComponent(query = "")
+    SearchBarComponent()
 }
