@@ -7,23 +7,24 @@ import androidx.navigation.compose.rememberNavController
 import com.simply.birthdayapp.presentation.ui.screens.auth.AuthMainScreen
 import com.simply.birthdayapp.presentation.ui.screens.main.MainScreen
 
+sealed class RootDestination(val route: String) {
+    data object MainScreen : RootDestination("main-screen")
+    data object AuthMainScreen : RootDestination("auth-main-screen")
+}
+
 @Composable
 fun RootNavigation() {
-    val navController = rememberNavController()
+    val rootNavController = rememberNavController()
 
     NavHost(
-        navController = navController,
+        navController = rootNavController,
         startDestination = RootDestination.AuthMainScreen.route,
     ) {
-        composable(RootDestination.MainScreen.route){
+        composable(RootDestination.MainScreen.route) {
             MainScreen()
         }
         composable(RootDestination.AuthMainScreen.route) {
             AuthMainScreen()
         }
     }
-}
-sealed class RootDestination(val route: String) {
-    data object MainScreen : RootDestination("main-screen")
-    data object AuthMainScreen : RootDestination("landing-Screen")
 }
