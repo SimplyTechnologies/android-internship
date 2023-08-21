@@ -45,6 +45,9 @@ fun ShopCard(shop: Shop) {
                 data = shop.image,
                 contentDescription = shop.name,
                 borderColor = MaterialTheme.colorScheme.tertiary,
+                borderWidth = 1.dp,
+                placeholder = painterResource(id = R.drawable.placeholder),
+                error = painterResource(id = R.drawable.placeholder),
             )
             Text(
                 modifier = Modifier
