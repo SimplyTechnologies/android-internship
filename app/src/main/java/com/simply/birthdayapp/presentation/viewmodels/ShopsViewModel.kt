@@ -3,7 +3,7 @@ package com.simply.birthdayapp.presentation.viewmodels
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.simply.birthdayapp.data.repositories.ShopsRepository
+import com.simply.birthdayapp.data.shops.ShopsRepository
 import com.simply.birthdayapp.presentation.ui.models.Shop
 import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.CoroutineExceptionHandler
