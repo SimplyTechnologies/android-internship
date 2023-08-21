@@ -1,15 +1,35 @@
 package com.simply.birthdayapp.presentation.ui.screens.main
 
 import androidx.compose.runtime.Composable
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.simply.birthdayapp.presentation.navigation.BottomNavigation
-import com.simply.birthdayapp.presentation.ui.components.BottomNavBarScaffold
+import com.simply.birthdayapp.presentation.ui.screens.main.shops.ShopsMainScreen
+import com.simply.birthdayapp.presentation.ui.screens.main.shops.ShopsViewModel
+import org.koin.androidx.compose.getViewModel
+
+sealed class BottomBarDestination(val route: String) {
+    data object HomeMainScreen : BottomBarDestination("home-main-screen")
+    data object ShopsMainScreen : BottomBarDestination("shops-main-screen")
+    data object ProfileMainScreen : BottomBarDestination("profile-main-screen")
+}
 
 @Composable
-fun MainScreen() {
-    val navController = rememberNavController()
+fun MainScreen(shopsViewModel: ShopsViewModel = getViewModel()) {
+    val bottomBarNavController = rememberNavController()
 
-    BottomNavBarScaffold(navController) {
-        BottomNavigation(navController)
+    BottomNavBarScaffold(bottomBarNavController = bottomBarNavController) {
+        NavHost(
+            navController = bottomBarNavController,
+            startDestination = BottomBarDestination.HomeMainScreen.route,
+        ) {
+            composable(BottomBarDestination.HomeMainScreen.route) { }
+
+            composable(BottomBarDestination.ShopsMainScreen.route) {
+                ShopsMainScreen(shopsViewModel = shopsViewModel)
+            }
+
+            composable(BottomBarDestination.ProfileMainScreen.route) { }
+        }
     }
 }

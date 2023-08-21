@@ -1,4 +1,4 @@
-package com.simply.birthdayapp.presentation.ui.components
+package com.simply.birthdayapp.presentation.ui.screens.main
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -12,13 +12,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import com.simply.birthdayapp.R
-import com.simply.birthdayapp.presentation.navigation.BottomDestination
 import com.simply.birthdayapp.presentation.navigation.NavBar
 import com.simply.birthdayapp.presentation.navigation.NavBarItem
 
 @Composable
 fun BottomNavBarScaffold(
-    navController: NavController,
+    bottomBarNavController: NavController,
     content: @Composable (BoxScope.() -> Unit),
 ) {
     Scaffold(
@@ -27,24 +26,24 @@ fun BottomNavBarScaffold(
                 items = listOf(
                     NavBarItem(
                         name = stringResource(R.string.navbar_item_home),
-                        route = BottomDestination.HomeMainScreen.route,
+                        route = BottomBarDestination.HomeMainScreen.route,
                         icon = painterResource(id = R.drawable.ic_home),
                     ),
                     NavBarItem(
                         name = stringResource(R.string.navbar_item_shops),
-                        route = BottomDestination.ShopsMainScreen.route,
+                        route = BottomBarDestination.ShopsMainScreen.route,
                         icon = painterResource(id = R.drawable.ic_shops),
                     ),
                     NavBarItem(
                         name = stringResource(R.string.navbar_item_profile),
-                        route = BottomDestination.ProfileMainScreen.route,
+                        route = BottomBarDestination.ProfileMainScreen.route,
                         icon = painterResource(id = R.drawable.ic_profile),
                     ),
                 ),
-                navController = navController,
+                navController = bottomBarNavController,
                 onItemClick = {
-                    navController.navigate(it.route) {
-                        popUpTo(navController.graph.findStartDestination().id) {
+                    bottomBarNavController.navigate(it.route) {
+                        popUpTo(bottomBarNavController.graph.findStartDestination().id) {
                             saveState = true
                         }
                         launchSingleTop = true
