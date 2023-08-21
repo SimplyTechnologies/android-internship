@@ -4,7 +4,6 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.simply.birthdayapp.presentation.viewmodels.ShopsViewModel
 
 sealed class ShopsDestination(val route: String) {
     data object ShopsScreen : ShopsDestination("shops-screen")

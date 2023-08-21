@@ -1,4 +1,4 @@
-package com.simply.birthdayapp.presentation.viewmodels
+package com.simply.birthdayapp.presentation.ui.screens.main.shops
 
 import android.util.Log
 import androidx.lifecycle.ViewModel

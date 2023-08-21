@@ -5,7 +5,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.simply.birthdayapp.presentation.ui.screens.main.shops.ShopsMainScreen
-import com.simply.birthdayapp.presentation.viewmodels.ShopsViewModel
+import com.simply.birthdayapp.presentation.ui.screens.main.shops.ShopsViewModel
 import org.koin.androidx.compose.getViewModel
 
 @Composable
