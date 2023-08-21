@@ -37,11 +37,14 @@ class RegisterViewModel(private val repository: RegisterRepository) : ViewModel(
     private var _registrationSuccessState = MutableStateFlow(false)
     val registrationSuccessState = _registrationSuccessState.asStateFlow()
 
+    private var _registeredEmail = MutableStateFlow("")
+    val registeredEmail = _registeredEmail.asStateFlow()
+
     private var _registrationErrorState = MutableStateFlow(false)
     val registrationErrorState = _registrationErrorState.asStateFlow()
 
-    private var _registeredEmail = MutableStateFlow("")
-    val registeredEmail = _registeredEmail.asStateFlow()
+    private var _registerErrorMessage = MutableStateFlow("")
+    val registerErrorMessage = _registerErrorMessage.asStateFlow()
 
     fun registerAccount() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -56,10 +59,12 @@ class RegisterViewModel(private val repository: RegisterRepository) : ViewModel(
                 it.onSuccess { userEntity ->
                     _registrationSuccessState.value = true
                     _registeredEmail.value = userEntity?.email ?: _email.value
-                }.onFailure {
+                }.onFailure { error ->
                     _registrationErrorState.value = true
+                    _registerErrorMessage.value = error.message ?: ""
                     _registeredEmail.value = _email.value
                 }
+                clearForm()
             }.catch {
                 _registrationErrorState.value = true
             }.flowOn(Dispatchers.Main)
@@ -86,5 +91,17 @@ class RegisterViewModel(private val repository: RegisterRepository) : ViewModel(
 
     fun setRepeatPassword(repeatPassword: String) {
         _repeatPassword.value = repeatPassword
+    }
+
+    fun resetSuccessState() {
+        _registrationSuccessState.value = false
+    }
+
+    private fun clearForm() {
+        _name.value = ""
+        _surName.value = ""
+        _email.value = ""
+        _password.value = ""
+        _repeatPassword.value = ""
     }
 }

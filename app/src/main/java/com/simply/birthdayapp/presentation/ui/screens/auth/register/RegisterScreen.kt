@@ -60,6 +60,7 @@ fun RegisterScreen(
         if (registrationSuccess) {
             Toast.makeText(context, R.string.register_success, Toast.LENGTH_SHORT).show()
             onRegisterSuccess()
+            registerViewModel.resetSuccessState()
         }
     }
 

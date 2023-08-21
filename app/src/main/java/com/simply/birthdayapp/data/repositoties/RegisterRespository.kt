@@ -20,7 +20,7 @@ class RegisterRepositoryImpl(private val apolloClient: ApolloClient) : RegisterR
         if (result.hasErrors()) {
             val errorMessage = result.errors?.get(0)?.message
             emit(Result.failure(Throwable(errorMessage)))
-        }
-        emit(Result.success(result.data?.signUp?.toRegisteredUser()))
+        } else
+            emit(Result.success(result.data?.signUp?.toRegisteredUser()))
     }
 }
