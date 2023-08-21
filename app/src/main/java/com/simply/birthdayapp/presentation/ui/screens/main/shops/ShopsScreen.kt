@@ -1,6 +1,7 @@
 package com.simply.birthdayapp.presentation.ui.screens.main.shops
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -17,6 +18,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -51,10 +54,13 @@ fun ShopsScreen(
             .collectLatest { shopsViewModel.onScrollPositionChange(it) }
     }
 
+    val focusManager = LocalFocusManager.current
+
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.primary),
+            .background(MaterialTheme.colorScheme.primary)
+            .pointerInput(Unit) { detectTapGestures(onTap = { focusManager.clearFocus() }) },
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
@@ -62,6 +68,7 @@ fun ShopsScreen(
         CleanableSearchBar(
             query = searchBarQuery,
             onQueryChange = shopsViewModel::onSearchBarQueryChange,
+            onSearch = { focusManager.clearFocus() },
         )
         LazyColumn(
             modifier = Modifier.fillMaxSize(),

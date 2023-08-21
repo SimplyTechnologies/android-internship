@@ -19,7 +19,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
@@ -34,9 +33,8 @@ import com.simply.birthdayapp.R
 fun CleanableSearchBar(
     query: String,
     onQueryChange: (String) -> Unit = {},
+    onSearch: () -> Unit = {},
 ) {
-    val focusManager = LocalFocusManager.current
-
     CompositionLocalProvider(
         LocalTextSelectionColors provides TextSelectionColors(
             handleColor = MaterialTheme.colorScheme.tertiary,
@@ -66,7 +64,7 @@ fun CleanableSearchBar(
                         )
                     }
                 } else {
-                    IconButton(onClick = { focusManager.clearFocus() }) {
+                    IconButton(onClick = onSearch) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_search),
                             contentDescription = stringResource(R.string.search),
@@ -80,7 +78,7 @@ fun CleanableSearchBar(
                 imeAction = ImeAction.Search,
             ),
             keyboardActions = KeyboardActions(
-                onSearch = { focusManager.clearFocus() },
+                onSearch = { onSearch() },
             ),
             singleLine = true,
             shape = CircleShape,
