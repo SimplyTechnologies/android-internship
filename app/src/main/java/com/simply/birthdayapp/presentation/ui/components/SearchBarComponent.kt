@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.dp
 import com.simply.birthdayapp.R
 
 @Composable
-fun CleanableSearchBar(
+fun SearchBarComponent(
     query: String,
     onQueryChange: (String) -> Unit = {},
     onSearch: () -> Unit = {},
@@ -95,6 +95,6 @@ fun CleanableSearchBar(
 
 @Preview
 @Composable
-private fun CleanableSearchBar() {
-    CleanableSearchBar(query = "")
+private fun SearchBarComponentPreview() {
+    SearchBarComponent(query = "")
 }

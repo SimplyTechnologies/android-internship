@@ -27,7 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.simply.birthdayapp.R
-import com.simply.birthdayapp.presentation.ui.components.CleanableSearchBar
+import com.simply.birthdayapp.presentation.ui.components.SearchBarComponent
 import com.simply.birthdayapp.presentation.ui.components.LogoTopBar
 import com.simply.birthdayapp.presentation.ui.components.ShopCard
 import com.simply.birthdayapp.presentation.viewmodels.ShopsViewModel
@@ -65,7 +65,7 @@ fun ShopsScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         LogoTopBar()
-        CleanableSearchBar(
+        SearchBarComponent(
             query = searchBarQuery,
             onQueryChange = shopsViewModel::onSearchBarQueryChange,
             onSearch = { focusManager.clearFocus() },
