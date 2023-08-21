@@ -64,9 +64,9 @@ class ShopsViewModel(
         viewModelScope.launch(ioCatchingCoroutineContext) {
             _loading.update { true }
             try {
-                if (_cachedShops.isEmpty()) _cachedShops += shopsRepository.getShops()
-            } finally {
+                if (_cachedShops.isEmpty()) _cachedShops.addAll(shopsRepository.getShops())
                 filterShops("")
+            } finally {
                 _loading.update { false }
             }
         }
