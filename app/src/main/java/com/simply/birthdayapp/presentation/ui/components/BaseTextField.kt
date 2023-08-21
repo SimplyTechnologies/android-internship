@@ -21,13 +21,12 @@ import com.simply.birthdayapp.presentation.ui.theme.Primary2
 fun BaseTextField(
     textState: String,
     label: String = "",
-    onValueChange: (String) -> Unit = {},
     keyboardType: KeyboardType = KeyboardType.Text,
     shape: Shape = TextFieldDefaults.shape,
+    onValueChange: (String) -> Unit = {},
 ) {
     TextField(
-        modifier = Modifier
-            .padding(top = 24.dp),
+        modifier = Modifier.padding(top = 24.dp),
         value = textState,
         onValueChange = onValueChange,
         shape = shape,
@@ -56,8 +55,8 @@ fun BaseTextField(
 @Composable
 private fun BaseTextFieldPreview() {
     BaseTextField(
-        "Name",
-        "name",
+        textState = "Name",
+        label = "name",
         keyboardType = KeyboardType.Text,
         shape = RoundedCornerShape(13.dp)
     )

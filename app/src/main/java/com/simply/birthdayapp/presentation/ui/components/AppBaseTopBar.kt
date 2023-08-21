@@ -33,21 +33,18 @@ fun AppBaseTopBar(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         IconButton(
-            modifier = Modifier
-                .padding(start = 16.dp),
+            modifier = Modifier.padding(start = 16.dp),
             onClick = onBackClick
         ) {
             Icon(
                 Icons.Filled.KeyboardArrowLeft,
-                "contentDescription",
-                modifier = Modifier
-                    .fillMaxSize(),
+                modifier = Modifier.fillMaxSize(),
+                contentDescription = "contentDescription",
                 tint = Primary2,
             )
         }
         Image(
-            modifier = Modifier
-                .padding(end = 24.dp),
+            modifier = Modifier.padding(end = 24.dp),
             painter = painterResource(R.drawable.logo),
             contentDescription = "logo",
         )
