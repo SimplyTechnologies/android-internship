@@ -10,23 +10,25 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import coil.size.Size
+import com.simply.birthdayapp.R
 
 @Composable
 fun RoundAsyncImage(
     modifier: Modifier = Modifier,
     data: Any? = null,
-    borderColor: Color,
-    borderWidth: Dp,
+    borderColor: Color = MaterialTheme.colorScheme.tertiary,
+    borderWidth: Dp = 1.dp,
     contentDescription: String? = null,
     contentScale: ContentScale = ContentScale.Crop,
-    placeholder: Painter? = null,
-    error: Painter? = null,
+    placeholder: Painter? = painterResource(id = R.drawable.placeholder),
+    error: Painter? = painterResource(id = R.drawable.placeholder),
 ) {
     AsyncImage(
         model = ImageRequest.Builder(LocalContext.current)
@@ -46,8 +48,5 @@ fun RoundAsyncImage(
 @Preview
 @Composable
 private fun RoundAsyncImagePreview() {
-    RoundAsyncImage(
-        borderColor = MaterialTheme.colorScheme.tertiary,
-        borderWidth = 1.dp,
-    )
+    RoundAsyncImage()
 }
