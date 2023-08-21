@@ -27,24 +27,26 @@ fun AppBaseTopBar(
 ) {
     Row(
         modifier = Modifier
-            .height(48.dp)
+            .height(50.dp)
             .fillMaxWidth()
             .background(BackgroundColor),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         IconButton(
-            modifier = Modifier.padding(start = 16.dp),
+            modifier = Modifier
+                .padding(start = 16.dp),
             onClick = onBackClick
         ) {
             Icon(
-                Icons.Filled.KeyboardArrowLeft,
+                imageVector = Icons.Filled.KeyboardArrowLeft,
                 modifier = Modifier.fillMaxSize(),
                 contentDescription = "contentDescription",
                 tint = Primary2,
             )
         }
         Image(
-            modifier = Modifier.padding(end = 24.dp),
+            modifier = Modifier
+                .padding(end = 24.dp),
             painter = painterResource(R.drawable.logo),
             contentDescription = "logo",
         )
