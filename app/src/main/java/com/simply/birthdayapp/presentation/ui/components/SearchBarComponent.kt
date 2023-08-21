@@ -7,10 +7,6 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.selection.LocalTextSelectionColors
 import androidx.compose.foundation.text.selection.TextSelectionColors
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Clear
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -19,7 +15,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -34,6 +29,7 @@ fun SearchBarComponent(
     query: String = "",
     onQueryChange: (String) -> Unit = {},
     onSearch: () -> Unit = {},
+    trailingIcon: @Composable (() -> Unit)? = null,
 ) {
     CompositionLocalProvider(
         LocalTextSelectionColors provides TextSelectionColors(
@@ -54,32 +50,12 @@ fun SearchBarComponent(
                     color = Color.Gray,
                 )
             },
-            trailingIcon = {
-                if (query.isNotEmpty()) {
-                    IconButton(onClick = { onQueryChange("") }) {
-                        Icon(
-                            imageVector = Icons.Outlined.Clear,
-                            contentDescription = stringResource(R.string.clear),
-                            tint = Color.Gray,
-                        )
-                    }
-                } else {
-                    IconButton(onClick = onSearch) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_search),
-                            contentDescription = stringResource(R.string.search),
-                            tint = Color.Gray,
-                        )
-                    }
-                }
-            },
+            trailingIcon = trailingIcon,
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Text,
                 imeAction = ImeAction.Search,
             ),
-            keyboardActions = KeyboardActions(
-                onSearch = { onSearch() },
-            ),
+            keyboardActions = KeyboardActions(onSearch = { onSearch() }),
             singleLine = true,
             shape = CircleShape,
             colors = TextFieldDefaults.colors(
