@@ -16,7 +16,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import coil.size.Size
 import com.simply.birthdayapp.R
 
 @Composable
@@ -33,7 +32,6 @@ fun RoundAsyncImage(
     AsyncImage(
         model = ImageRequest.Builder(LocalContext.current)
             .data(data)
-            .size(Size.ORIGINAL)
             .build(),
         modifier = modifier
             .clip(CircleShape)
