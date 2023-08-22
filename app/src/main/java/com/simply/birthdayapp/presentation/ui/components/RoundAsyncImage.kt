@@ -2,7 +2,6 @@ package com.simply.birthdayapp.presentation.ui.components
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -17,12 +16,13 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.simply.birthdayapp.R
+import com.simply.birthdayapp.presentation.ui.theme.BirthdayAppTheme
 
 @Composable
 fun RoundAsyncImage(
     modifier: Modifier = Modifier,
     data: Any? = null,
-    borderColor: Color = MaterialTheme.colorScheme.tertiary,
+    borderColor: Color = BirthdayAppTheme.colors.darkPink,
     borderWidth: Dp = 1.dp,
     contentDescription: String? = null,
     contentScale: ContentScale = ContentScale.Crop,

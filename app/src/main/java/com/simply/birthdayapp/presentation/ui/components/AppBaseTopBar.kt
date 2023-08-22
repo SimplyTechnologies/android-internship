@@ -12,13 +12,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.simply.birthdayapp.R
+import com.simply.birthdayapp.presentation.ui.theme.BirthdayAppTheme
 
 @Composable
 fun AppBaseTopBar(
@@ -28,7 +28,7 @@ fun AppBaseTopBar(
         modifier = Modifier
             .height(50.dp)
             .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.primary),
+            .background(BirthdayAppTheme.colors.backgroundPink),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         IconButton(
@@ -40,7 +40,7 @@ fun AppBaseTopBar(
                 imageVector = Icons.Filled.KeyboardArrowLeft,
                 modifier = Modifier.fillMaxSize(),
                 contentDescription = "contentDescription",
-                tint = MaterialTheme.colorScheme.tertiary,
+                tint = BirthdayAppTheme.colors.darkPink,
             )
         }
         Image(
