@@ -1,7 +1,8 @@
-package com.simply.birthdayapp.data.shops
+package com.simply.birthdayapp.data.repositories
 
 import com.apollographql.apollo3.ApolloClient
 import com.simply.birthdayapp.ShopsQuery
+import com.simply.birthdayapp.data.mappers.toShop
 import com.simply.birthdayapp.presentation.ui.models.Shop
 import com.simply.birthdayapp.type.ShopFilter
 import kotlinx.coroutines.Dispatchers
