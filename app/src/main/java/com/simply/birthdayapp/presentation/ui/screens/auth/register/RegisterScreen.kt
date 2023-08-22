@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.simply.birthdayapp.R
-import com.simply.birthdayapp.presentation.ui.theme.BackgroundColor
+import com.simply.birthdayapp.presentation.ui.theme.Primary
 
 
 @Composable
@@ -20,7 +20,7 @@ fun RegisterScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = BackgroundColor),
+            .background(color = Primary),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
         ) {

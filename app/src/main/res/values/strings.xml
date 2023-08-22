@@ -3,6 +3,11 @@
     <string name="navbar_item_home">Home</string>
     <string name="navbar_item_shops">Shops</string>
     <string name="navbar_item_profile">Profile</string>
+    <string name="birthday_app_logo">Birthday App Logo</string>
+    <string name="favour">Favour</string>
+    <string name="search">Search</string>
+    <string name="clear">Clear</string>
+    <string name="no_search_results_found">No search results found</string>
     <string name="register">Register</string>
     <string name="sign_in">Sign in</string>
 </resources>

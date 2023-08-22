@@ -7,7 +7,6 @@ import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Response
 
-
 fun createApolloClient(): ApolloClient {
     return ApolloClient.Builder()
         .serverUrl(BuildConfig.SERVER_URL)
@@ -18,7 +17,6 @@ fun createApolloClient(): ApolloClient {
         )
         .build()
 }
-
 
 private class AuthorizationInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
