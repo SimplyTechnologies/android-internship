@@ -6,6 +6,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.selection.TextSelectionColors
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Clear
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -13,6 +17,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -27,7 +32,7 @@ fun SearchBarComponent(
     query: String = "",
     onQueryChange: (String) -> Unit = {},
     onSearch: () -> Unit = {},
-    trailingIcon: @Composable (() -> Unit)? = null,
+    shouldShowClear: Boolean = true,
 ) {
     TextField(
         modifier = Modifier
@@ -42,7 +47,25 @@ fun SearchBarComponent(
                 color = Color.Gray,
             )
         },
-        trailingIcon = trailingIcon,
+        trailingIcon = {
+            if (shouldShowClear && query.isNotEmpty()) {
+                IconButton(onClick = { onQueryChange("") }) {
+                    Icon(
+                        imageVector = Icons.Outlined.Clear,
+                        contentDescription = stringResource(R.string.clear),
+                        tint = Color.Gray,
+                    )
+                }
+            } else {
+                IconButton(onClick = onSearch) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_search),
+                        contentDescription = stringResource(R.string.search),
+                        tint = Color.Gray,
+                    )
+                }
+            }
+        },
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Text,
             imeAction = ImeAction.Search,
