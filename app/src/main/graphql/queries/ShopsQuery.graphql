@@ -1,0 +1,8 @@
+query ShopsQuery($filter: ShopFilter!) {
+    shops(filter: $filter) {
+        id
+        name
+        image
+        isFavorite
+    }
+}

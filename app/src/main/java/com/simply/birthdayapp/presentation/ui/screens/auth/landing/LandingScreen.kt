@@ -17,9 +17,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.simply.birthdayapp.R
 import com.simply.birthdayapp.presentation.ui.components.LandingButton
-import com.simply.birthdayapp.presentation.ui.theme.BackgroundColor
-import com.simply.birthdayapp.presentation.ui.theme.Primary1
-import com.simply.birthdayapp.presentation.ui.theme.Primary2
+import com.simply.birthdayapp.presentation.ui.theme.Primary
+import com.simply.birthdayapp.presentation.ui.theme.Secondary
+import com.simply.birthdayapp.presentation.ui.theme.Tertiary
 
 @Composable
 fun LandingScreen(
@@ -29,7 +29,7 @@ fun LandingScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = BackgroundColor)
+            .background(color = Primary)
             .padding(horizontal = 54.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -46,8 +46,8 @@ fun LandingScreen(
                 bottomEnd = 26.dp
             ),
             buttonTitle = stringResource(id = R.string.sign_in),
-            backgroundColor = Primary1,
-            textColor = Primary2,
+            backgroundColor = Secondary,
+            textColor = Tertiary,
             onClick = onSignInClick
         )
         LandingButton(
@@ -57,8 +57,8 @@ fun LandingScreen(
                 bottomStart = 26.dp,
             ),
             buttonTitle = stringResource(id = R.string.register),
-            backgroundColor = Primary2,
-            textColor = Primary1,
+            backgroundColor = Tertiary,
+            textColor = Secondary,
             onClick = onRegisterClick,
         )
     }

@@ -16,8 +16,8 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.simply.birthdayapp.R
-import com.simply.birthdayapp.presentation.ui.theme.Primary1
-import com.simply.birthdayapp.presentation.ui.theme.Primary2
+import com.simply.birthdayapp.presentation.ui.theme.Secondary
+import com.simply.birthdayapp.presentation.ui.theme.Tertiary
 
 @Composable
 fun LandingButton(
@@ -54,7 +54,7 @@ private fun LandingButtonPreview() {
             bottomEnd = 26.dp
         ),
         buttonTitle = stringResource(id = R.string.sign_in),
-        backgroundColor = Primary1,
-        textColor = Primary2,
+        backgroundColor = Secondary,
+        textColor = Tertiary,
     )
 }

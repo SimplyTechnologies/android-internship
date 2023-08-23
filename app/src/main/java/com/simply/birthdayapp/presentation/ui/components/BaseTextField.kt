@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -46,14 +47,14 @@ fun BaseTextField(
         colors = TextFieldDefaults.colors(
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
-            unfocusedContainerColor = BackgroundColor,
-            focusedContainerColor = BackgroundColor,
+            unfocusedContainerColor = MaterialTheme.colorScheme.primary,
+            focusedContainerColor = MaterialTheme.colorScheme.primary,
             cursorColor = Color.Gray,
         ),
         placeholder = {
             Text(
                 text = label,
-                color = Primary2,
+                color = MaterialTheme.colorScheme.tertiary,
                 fontFamily = FontFamily(Font(R.font.karm_light)),
             )
         },

@@ -1,8 +1,7 @@
 package com.simply.birthdayapp
 
 import android.app.Application
-import com.simply.birthdayapp.di.apolloModule
-import com.simply.birthdayapp.di.registerModule
+import com.simply.birthdayapp.di.applicationModule
 import org.koin.android.BuildConfig
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -15,7 +14,7 @@ class BirthdayApp : Application() {
         startKoin {
             androidLogger(if (BuildConfig.DEBUG) Level.ERROR else Level.NONE)
             androidContext(applicationContext)
-            modules(listOf(apolloModule, registerModule))
+            modules(applicationModule)
         }
     }
 }

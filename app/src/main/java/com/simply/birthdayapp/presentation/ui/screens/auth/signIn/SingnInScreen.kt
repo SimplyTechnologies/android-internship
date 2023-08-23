@@ -46,6 +46,7 @@ import com.simply.birthdayapp.presentation.ui.theme.BackgroundColor
 import com.simply.birthdayapp.presentation.ui.theme.Primary1
 import com.simply.birthdayapp.presentation.ui.theme.Primary2
 import org.koin.androidx.compose.get
+import com.simply.birthdayapp.presentation.ui.theme.Primary
 
 @Composable
 fun SignInScreen(
@@ -66,7 +67,7 @@ fun SignInScreen(
             modifier = Modifier
                 .padding(it)
                 .fillMaxSize()
-                .background(color = BackgroundColor),
+                .background(color = Primary),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
