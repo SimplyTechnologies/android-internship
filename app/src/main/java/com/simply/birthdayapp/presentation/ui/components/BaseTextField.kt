@@ -4,9 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -22,6 +20,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.simply.birthdayapp.presentation.ui.theme.AppTheme
 import androidx.compose.ui.unit.sp
 import com.simply.birthdayapp.R
 
@@ -45,13 +44,14 @@ fun BaseTextField(
         colors = TextFieldDefaults.colors(
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
-            unfocusedContainerColor = MaterialTheme.colorScheme.primary,
-            focusedContainerColor = MaterialTheme.colorScheme.primary,
-            cursorColor = Color.Gray,
+            unfocusedContainerColor = AppTheme.colors.backgroundPink,
+            focusedContainerColor = AppTheme.colors.backgroundPink,
+            cursorColor = AppTheme.colors.gray,
         ),
         placeholder = {
             Text(
                 text = label,
+                color = AppTheme.colors.darkPink,
                 color = MaterialTheme.colorScheme.tertiary,
                 fontFamily = FontFamily(Font(R.font.karm_light)),
             )

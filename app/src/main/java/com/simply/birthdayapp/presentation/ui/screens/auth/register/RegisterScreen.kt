@@ -41,6 +41,7 @@ import com.simply.birthdayapp.presentation.ui.components.AuthButton
 import com.simply.birthdayapp.presentation.ui.components.BaseTextField
 import com.simply.birthdayapp.presentation.ui.components.PasswordTextFiled
 import org.koin.androidx.compose.getViewModel
+import com.simply.birthdayapp.presentation.ui.theme.AppTheme
 
 @Composable
 fun RegisterScreen(
@@ -101,7 +102,7 @@ fun RegisterScreen(
             modifier = Modifier
                 .padding(it)
                 .fillMaxSize()
-                .background(color = MaterialTheme.colorScheme.primary)
+                .background(color = AppTheme.colors.backgroundPink)
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,

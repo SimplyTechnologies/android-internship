@@ -50,6 +50,7 @@ import com.simply.birthdayapp.presentation.ui.screens.auth.register.RegisterView
 import org.koin.androidx.compose.get
 import com.simply.birthdayapp.presentation.ui.theme.Primary
 import org.koin.androidx.compose.getViewModel
+import com.simply.birthdayapp.presentation.ui.theme.AppTheme
 
 @Composable
 fun SignInScreen(
@@ -71,7 +72,7 @@ fun SignInScreen(
             modifier = Modifier
                 .padding(it)
                 .fillMaxSize()
-                .background(color = Primary)
+                .background(color = AppTheme.colors.backgroundPink)
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
