@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.simply.birthdayapp.presentation.ui.screens.main.home.HomeMainScreen
 
 sealed class BottomBarDestination(val route: String) {
     data object HomeMainScreen : BottomBarDestination("home-main-screen")
@@ -20,7 +21,7 @@ fun MainScreen() {
             navController = bottomBarNavController,
             startDestination = BottomBarDestination.HomeMainScreen.route,
         ) {
-            composable(BottomBarDestination.HomeMainScreen.route) { }
+            composable(BottomBarDestination.HomeMainScreen.route) { HomeMainScreen() }
 
             composable(BottomBarDestination.ShopsMainScreen.route) { }
 

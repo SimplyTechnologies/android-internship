@@ -55,6 +55,7 @@ android {
 apollo {
     service("service") {
         packageName.set("com.simply.birthdayapp")
+        mapScalarToKotlinString("Date")
     }
 }
 
@@ -75,8 +76,9 @@ dependencies {
     implementation("com.apollographql.apollo3:apollo-runtime:3.8.2")
     // koin
     implementation("io.insert-koin:koin-android:3.4.3")
+    implementation("io.insert-koin:koin-androidx-compose:3.4.6")
     // navigation
     implementation("androidx.navigation:navigation-compose:2.7.0")
-
-
+    // coil
+    implementation("io.coil-kt:coil-compose:2.4.0")
 }

@@ -1,0 +1,8 @@
+mutation CreateBirthdayMutation($createBirthdayInput: CreateBirthdayInput!) {
+    createBirthday(createBirthdayInput: $createBirthdayInput) {
+        image
+        name
+        relation
+        date
+    }
+}
