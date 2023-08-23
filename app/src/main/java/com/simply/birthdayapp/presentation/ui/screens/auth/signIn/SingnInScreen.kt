@@ -10,10 +10,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -30,6 +33,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -40,13 +44,12 @@ import com.simply.birthdayapp.presentation.ui.components.AppBaseTopBar
 import com.simply.birthdayapp.presentation.ui.components.AuthButton
 import com.simply.birthdayapp.presentation.ui.components.BaseTextField
 import com.simply.birthdayapp.presentation.ui.components.PasswordTextFiled
+import com.simply.birthdayapp.presentation.ui.extenstions.isPasswordValid
 import com.simply.birthdayapp.presentation.ui.extenstions.isValidEmail
 import com.simply.birthdayapp.presentation.ui.screens.auth.register.RegisterViewModel
-import com.simply.birthdayapp.presentation.ui.theme.BackgroundColor
-import com.simply.birthdayapp.presentation.ui.theme.Primary1
-import com.simply.birthdayapp.presentation.ui.theme.Primary2
 import org.koin.androidx.compose.get
 import com.simply.birthdayapp.presentation.ui.theme.Primary
+import org.koin.androidx.compose.getViewModel
 
 @Composable
 fun SignInScreen(
@@ -59,6 +62,7 @@ fun SignInScreen(
     var password by remember { mutableStateOf("") }
     val checkedState = remember { mutableStateOf(false) }
     var hasEmailError by remember { mutableStateOf(false) }
+    var hasPasswordError by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = { AppBaseTopBar(onBackClick = onSignInBackClick) }
@@ -67,9 +71,10 @@ fun SignInScreen(
             modifier = Modifier
                 .padding(it)
                 .fillMaxSize()
-                .background(color = Primary),
+                .background(color = Primary)
+                .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Card(
                 modifier = Modifier
@@ -84,11 +89,10 @@ fun SignInScreen(
                         .padding(horizontal = 24.dp)
                 ) {
                     Text(
-                        modifier = Modifier
-                            .padding(top = 16.dp),
+                        modifier = Modifier.padding(top = 16.dp),
                         text = stringResource(id = R.string.sign_in),
                         fontSize = 20.sp,
-                        color = Primary2,
+                        color = MaterialTheme.colorScheme.tertiary,
                         fontWeight = FontWeight(700),
                         textAlign = TextAlign.Center,
                         fontFamily = FontFamily(Font(R.font.karm_light)),
@@ -96,18 +100,19 @@ fun SignInScreen(
                     BaseTextField(
                         textState = email,
                         label = stringResource(id = R.string.email),
+                        shape = RoundedCornerShape(13.dp),
                         onValueChange = { input ->
                             email = input
                             hasEmailError = !input.isValidEmail()
                         },
-                        keyboardType = KeyboardType.Email
+                        keyboardType = KeyboardType.Email,
                     )
                     if (hasEmailError) {
                         Row(
                             modifier = Modifier
                                 .padding(2.dp)
                                 .fillMaxWidth(),
-                            Arrangement.SpaceBetween
+                            horizontalArrangement = Arrangement.SpaceBetween,
                         ) {
                             Text(
                                 modifier = Modifier.padding(start = 4.dp),
@@ -115,37 +120,39 @@ fun SignInScreen(
                                 text = stringResource(id = R.string.register_email_error),
                                 color = Color.Red,
                                 fontFamily = FontFamily(Font(R.font.karm_light)),
-                                fontSize = 16.sp
+                                fontSize = 16.sp,
                             )
                         }
                     }
                     PasswordTextFiled(
                         textState = password,
                         label = stringResource(id = R.string.password),
+                        imeAction = ImeAction.Done,
+                        hasPasswordError = hasPasswordError,
+                        errorText = stringResource(id = R.string.password_error),
                         onValueChange = { input ->
                             password = input
+                            hasPasswordError = password.isPasswordValid()
                         }
                     )
                     Row(
                         modifier = Modifier
                             .wrapContentHeight()
                             .fillMaxWidth(),
-                        Arrangement.SpaceBetween
+                        horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Checkbox(
                                 checked = checkedState.value,
                                 onCheckedChange = { checkedState.value = it },
-                                colors = CheckboxDefaults.colors(
-                                    checkedColor = Primary1
-                                )
+                                colors = CheckboxDefaults.colors(checkedColor = MaterialTheme.colorScheme.secondary),
                             )
                             Text(
                                 text = stringResource(id = R.string.remember_password),
                                 fontSize = 12.sp,
                                 fontFamily = FontFamily(Font(R.font.karm_light)),
                                 fontWeight = FontWeight(700),
-                                color = Primary2
+                                color = MaterialTheme.colorScheme.tertiary,
                             )
                         }
                     }
@@ -161,15 +168,13 @@ fun SignInScreen(
                                 fontSize = 12.sp,
                                 fontFamily = FontFamily(Font(R.font.karm_light)),
                                 fontWeight = FontWeight(700),
-                                color = Primary2
+                                color = MaterialTheme.colorScheme.tertiary,
                             )
                         }
                     }
                     AuthButton(
                         shape = RoundedCornerShape(24.dp),
                         buttonTitle = stringResource(id = R.string.register),
-                        backgroundColor = Primary1,
-                        textColor = Primary2
                     )
                 }
             }
@@ -180,5 +185,5 @@ fun SignInScreen(
 @Preview(showBackground = true)
 @Composable
 private fun SignInScreenPreview() {
-    SignInScreen(registerViewModel = get())
+    SignInScreen(registerViewModel = getViewModel())
 }

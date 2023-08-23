@@ -94,103 +94,104 @@ fun RegisterScreen(
             },
         )
     }
-        Scaffold(
-            topBar = { AppBaseTopBar(onBackClick = onRegisterBackClick) }
+    Scaffold(
+        topBar = { AppBaseTopBar(onBackClick = onRegisterBackClick) }
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(it)
+                .fillMaxSize()
+                .background(color = MaterialTheme.colorScheme.primary)
+                .verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Column(
+
+            Card(
                 modifier = Modifier
-                    .padding(it)
-                    .fillMaxSize()
-                    .background(color = MaterialTheme.colorScheme.primary)
-                    .verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
+                    .width(317.dp)
+                    .wrapContentHeight()
             ) {
-                Card(
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
-                        .width(317.dp)
                         .wrapContentHeight()
+                        .background(Color.White)
+                        .padding(horizontal = 24.dp)
                 ) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier
-                            .wrapContentHeight()
-                            .background(Color.White)
-                            .padding(horizontal = 24.dp)
-                    ) {
-                        Text(
-                            modifier = Modifier.padding(top = 16.dp),
-                            text = stringResource(id = R.string.register),
-                            fontSize = 20.sp,
-                            color = MaterialTheme.colorScheme.tertiary,
-                            fontWeight = FontWeight(700),
-                            textAlign = TextAlign.Center,
-                            fontFamily = FontFamily(Font(R.font.karm_light)),
-                        )
-                        BaseTextField(
-                            modifier = Modifier.padding(top = 24.dp),
-                            textState = name,
-                            label = stringResource(id = R.string.name),
-                            shape = RoundedCornerShape(13.dp),
-                            onValueChange = { input ->
-                                registerViewModel.setName(input)
-                            },
-                        )
-                        BaseTextField(
-                            modifier = Modifier.padding(top = 24.dp),
-                            textState = surName,
-                            label = stringResource(id = R.string.surname),
-                            shape = RoundedCornerShape(13.dp),
-                            onValueChange = { surName ->
-                                registerViewModel.setSurName(surName)
-                            },
-                        )
-                        BaseTextField(
-                            modifier = Modifier.padding(top = 24.dp),
-                            textState = email,
-                            label = stringResource(id = R.string.email),
-                            shape = RoundedCornerShape(13.dp),
-                            keyboardType = KeyboardType.Email,
-                            errorText = stringResource(id = R.string.register_email_error),
-                            hasError = hasEmailError,
-                            onValueChange = { email ->
-                                registerViewModel.setEmail(email)
-                            },
-                        )
-                        PasswordTextFiled(
-                            modifier = Modifier.padding(top = 24.dp),
-                            textState = password,
-                            label = stringResource(id = R.string.password),
-                            hasPasswordError = hasPasswordError,
-                            errorText = stringResource(id = R.string.password_error),
-                            onValueChange = { password ->
-                                registerViewModel.setPassword(password)
-                            },
-                        )
-                        PasswordTextFiled(
-                            modifier = Modifier.padding(top = 24.dp),
-                            textState = repeatPassword,
-                            label = stringResource(id = R.string.repeat_password),
-                            imeAction = ImeAction.Done,
-                            hasPasswordError = hasRepeatPasswordError,
-                            errorText = stringResource(id = R.string.repeat_password_error),
-                            onValueChange = { repeatPassword ->
-                                registerViewModel.setRepeatPassword(repeatPassword = repeatPassword)
-                            },
-                        )
-                        AuthButton(
-                            shape = RoundedCornerShape(24.dp),
-                            buttonTitle = stringResource(id = R.string.register),
-                            enabled = registerButtonEnabled,
-                            onClick = {
-                                registerViewModel.registerAccount()
-                            },
-                        )
-                    }
+                    Text(
+                        modifier = Modifier.padding(top = 16.dp),
+                        text = stringResource(id = R.string.register),
+                        fontSize = 20.sp,
+                        color = MaterialTheme.colorScheme.tertiary,
+                        fontWeight = FontWeight(700),
+                        textAlign = TextAlign.Center,
+                        fontFamily = FontFamily(Font(R.font.karm_light)),
+                    )
+                    BaseTextField(
+                        modifier = Modifier.padding(top = 24.dp),
+                        textState = name,
+                        label = stringResource(id = R.string.name),
+                        shape = RoundedCornerShape(13.dp),
+                        onValueChange = { input ->
+                            registerViewModel.setName(input)
+                        },
+                    )
+                    BaseTextField(
+                        modifier = Modifier.padding(top = 24.dp),
+                        textState = surName,
+                        label = stringResource(id = R.string.surname),
+                        shape = RoundedCornerShape(13.dp),
+                        onValueChange = { surName ->
+                            registerViewModel.setSurName(surName)
+                        },
+                    )
+                    BaseTextField(
+                        modifier = Modifier.padding(top = 24.dp),
+                        textState = email,
+                        label = stringResource(id = R.string.email),
+                        shape = RoundedCornerShape(13.dp),
+                        keyboardType = KeyboardType.Email,
+                        errorText = stringResource(id = R.string.register_email_error),
+                        hasError = hasEmailError,
+                        onValueChange = { email ->
+                            registerViewModel.setEmail(email)
+                        },
+                    )
+                    PasswordTextFiled(
+                        modifier = Modifier.padding(top = 24.dp),
+                        textState = password,
+                        label = stringResource(id = R.string.password),
+                        hasPasswordError = hasPasswordError,
+                        errorText = stringResource(id = R.string.password_error),
+                        onValueChange = { password ->
+                            registerViewModel.setPassword(password)
+                        },
+                    )
+                    PasswordTextFiled(
+                        modifier = Modifier.padding(top = 24.dp),
+                        textState = repeatPassword,
+                        label = stringResource(id = R.string.repeat_password),
+                        imeAction = ImeAction.Done,
+                        hasPasswordError = hasRepeatPasswordError,
+                        errorText = stringResource(id = R.string.repeat_password_error),
+                        onValueChange = { repeatPassword ->
+                            registerViewModel.setRepeatPassword(repeatPassword = repeatPassword)
+                        },
+                    )
+                    AuthButton(
+                        shape = RoundedCornerShape(24.dp),
+                        buttonTitle = stringResource(id = R.string.register),
+                        enabled = registerButtonEnabled,
+                        onClick = {
+                            registerViewModel.registerAccount()
+                        },
+                    )
                 }
             }
         }
     }
+}
 
 @Preview(showBackground = false)
 @Composable
