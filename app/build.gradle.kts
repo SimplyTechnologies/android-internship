@@ -55,7 +55,6 @@ android {
 apollo {
     service("service") {
         packageName.set("com.simply.birthdayapp")
-        mapScalarToKotlinString("Date")
     }
 }
 
