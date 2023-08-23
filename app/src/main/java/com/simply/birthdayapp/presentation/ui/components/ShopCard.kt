@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -19,15 +18,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.simply.birthdayapp.R
 import com.simply.birthdayapp.presentation.ui.models.Shop
-import com.simply.birthdayapp.presentation.ui.theme.BirthdayAppTheme
+import com.simply.birthdayapp.presentation.ui.theme.AppTheme
 
 @Composable
 fun ShopCard(shop: Shop) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(25.dp),
+        shape = AppTheme.shapes.mediumRoundedCorners,
         colors = CardDefaults.cardColors(
-            containerColor = BirthdayAppTheme.colors.white,
+            containerColor = AppTheme.colors.white,
         ),
     ) {
         Row(
@@ -47,8 +46,8 @@ fun ShopCard(shop: Shop) {
                     .weight(1f)
                     .padding(horizontal = 15.dp),
                 text = shop.name,
-                color = BirthdayAppTheme.colors.black,
-                style = BirthdayAppTheme.typography.bold,
+                color = AppTheme.colors.black,
+                style = AppTheme.typography.bold,
             )
             Icon(
                 painter = painterResource(R.drawable.ic_favourite),

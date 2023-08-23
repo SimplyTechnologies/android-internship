@@ -2,7 +2,6 @@ package com.simply.birthdayapp.presentation.ui.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -22,7 +21,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.simply.birthdayapp.R
-import com.simply.birthdayapp.presentation.ui.theme.BirthdayAppTheme
+import com.simply.birthdayapp.presentation.ui.theme.AppTheme
 
 @Composable
 fun SearchBarComponent(
@@ -40,8 +39,8 @@ fun SearchBarComponent(
         placeholder = {
             Text(
                 text = stringResource(R.string.search),
-                color = BirthdayAppTheme.colors.gray,
-                style = BirthdayAppTheme.typography.medium,
+                color = AppTheme.colors.gray,
+                style = AppTheme.typography.medium,
             )
         },
         trailingIcon = {
@@ -50,7 +49,7 @@ fun SearchBarComponent(
                     Icon(
                         imageVector = Icons.Outlined.Clear,
                         contentDescription = stringResource(R.string.clear),
-                        tint = BirthdayAppTheme.colors.gray,
+                        tint = AppTheme.colors.gray,
                     )
                 }
             } else {
@@ -58,7 +57,7 @@ fun SearchBarComponent(
                     Icon(
                         painter = painterResource(id = R.drawable.ic_search),
                         contentDescription = stringResource(R.string.search),
-                        tint = BirthdayAppTheme.colors.gray,
+                        tint = AppTheme.colors.gray,
                     )
                 }
             }
@@ -69,16 +68,16 @@ fun SearchBarComponent(
         ),
         keyboardActions = KeyboardActions(onSearch = { onSearch() }),
         singleLine = true,
-        shape = CircleShape,
+        shape = AppTheme.shapes.circle,
         colors = TextFieldDefaults.colors(
-            focusedContainerColor = BirthdayAppTheme.colors.white,
-            unfocusedContainerColor = BirthdayAppTheme.colors.white,
+            focusedContainerColor = AppTheme.colors.white,
+            unfocusedContainerColor = AppTheme.colors.white,
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
-            cursorColor = BirthdayAppTheme.colors.darkPink,
-            selectionColors = BirthdayAppTheme.colors.textSelection,
+            cursorColor = AppTheme.colors.darkPink,
+            selectionColors = AppTheme.colors.textSelection,
         ),
-        textStyle = BirthdayAppTheme.typography.medium,
+        textStyle = AppTheme.typography.medium,
     )
 }
 

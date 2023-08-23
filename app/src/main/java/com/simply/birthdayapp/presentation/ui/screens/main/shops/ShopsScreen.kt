@@ -27,7 +27,7 @@ import com.simply.birthdayapp.R
 import com.simply.birthdayapp.presentation.ui.components.LogoTopBar
 import com.simply.birthdayapp.presentation.ui.components.SearchBarComponent
 import com.simply.birthdayapp.presentation.ui.components.ShopCard
-import com.simply.birthdayapp.presentation.ui.theme.BirthdayAppTheme
+import com.simply.birthdayapp.presentation.ui.theme.AppTheme
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
@@ -56,7 +56,7 @@ fun ShopsScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(BirthdayAppTheme.colors.backgroundPink)
+            .background(AppTheme.colors.backgroundPink)
             .pointerInput(Unit) { detectTapGestures(onTap = { focusManager.clearFocus() }) },
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -78,13 +78,13 @@ fun ShopsScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             when {
-                loading -> item { CircularProgressIndicator(color = BirthdayAppTheme.colors.darkPink) }
+                loading -> item { CircularProgressIndicator(color = AppTheme.colors.darkPink) }
 
                 shops.isEmpty() -> item {
                     Text(
                         text = stringResource(R.string.no_search_results_found),
-                        color = BirthdayAppTheme.colors.darkPink,
-                        style = BirthdayAppTheme.typography.medium,
+                        color = AppTheme.colors.darkPink,
+                        style = AppTheme.typography.medium,
                     )
                 }
 

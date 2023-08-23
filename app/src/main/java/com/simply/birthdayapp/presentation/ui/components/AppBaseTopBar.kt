@@ -18,7 +18,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.simply.birthdayapp.R
-import com.simply.birthdayapp.presentation.ui.theme.BirthdayAppTheme
+import com.simply.birthdayapp.presentation.ui.theme.AppTheme
 
 @Composable
 fun AppBaseTopBar(
@@ -28,7 +28,7 @@ fun AppBaseTopBar(
         modifier = Modifier
             .height(50.dp)
             .fillMaxWidth()
-            .background(BirthdayAppTheme.colors.backgroundPink),
+            .background(AppTheme.colors.backgroundPink),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         IconButton(
@@ -40,7 +40,7 @@ fun AppBaseTopBar(
                 imageVector = Icons.Filled.KeyboardArrowLeft,
                 modifier = Modifier.fillMaxSize(),
                 contentDescription = "contentDescription",
-                tint = BirthdayAppTheme.colors.darkPink,
+                tint = AppTheme.colors.darkPink,
             )
         }
         Image(

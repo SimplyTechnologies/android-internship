@@ -16,6 +16,7 @@ fun BirthdayAppTheme(
 ) {
     val appColors = AppColors()
     val appTypography = AppTypography()
+    val appShapes = AppShapes()
 
     val view = LocalView.current
     if (!view.isInEditMode) {
@@ -29,11 +30,12 @@ fun BirthdayAppTheme(
     CompositionLocalProvider(
         LocalAppColors provides appColors,
         LocalAppTypography provides appTypography,
+        LocalAppShapes provides appShapes,
         content = content,
     )
 }
 
-object BirthdayAppTheme {
+object AppTheme {
     val colors: AppColors
         @Composable
         @ReadOnlyComposable
@@ -43,4 +45,9 @@ object BirthdayAppTheme {
         @Composable
         @ReadOnlyComposable
         get() = LocalAppTypography.current
+
+    val shapes: AppShapes
+        @Composable
+        @ReadOnlyComposable
+        get() = LocalAppShapes.current
 }

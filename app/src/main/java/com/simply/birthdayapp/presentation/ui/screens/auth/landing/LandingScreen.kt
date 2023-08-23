@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -17,7 +16,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.simply.birthdayapp.R
 import com.simply.birthdayapp.presentation.ui.components.LandingButton
-import com.simply.birthdayapp.presentation.ui.theme.BirthdayAppTheme
+import com.simply.birthdayapp.presentation.ui.theme.AppTheme
 
 @Composable
 fun LandingScreen(
@@ -27,7 +26,7 @@ fun LandingScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = BirthdayAppTheme.colors.backgroundPink)
+            .background(color = AppTheme.colors.backgroundPink)
             .padding(horizontal = 54.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -38,25 +37,17 @@ fun LandingScreen(
             modifier = Modifier.size(200.dp)
         )
         LandingButton(
-            shape = RoundedCornerShape(
-                topStart = 42.dp,
-                topEnd = 26.dp,
-                bottomEnd = 26.dp
-            ),
+            shape = AppTheme.shapes.risingStartRoundedEndCorners,
             buttonTitle = stringResource(id = R.string.sign_in),
-            backgroundColor = BirthdayAppTheme.colors.lightPink,
-            textColor = BirthdayAppTheme.colors.darkPink,
+            backgroundColor = AppTheme.colors.lightPink,
+            textColor = AppTheme.colors.darkPink,
             onClick = { onSignInClick() })
 
         LandingButton(
-            shape = RoundedCornerShape(
-                bottomEnd = 42.dp,
-                topStart = 26.dp,
-                bottomStart = 26.dp
-            ),
+            shape = AppTheme.shapes.risingEndRoundedStartCorners,
             buttonTitle = stringResource(id = R.string.register),
-            backgroundColor = BirthdayAppTheme.colors.darkPink,
-            textColor = BirthdayAppTheme.colors.lightPink,
+            backgroundColor = AppTheme.colors.darkPink,
+            textColor = AppTheme.colors.lightPink,
             onClick = { onRegisterClick() })
     }
 }

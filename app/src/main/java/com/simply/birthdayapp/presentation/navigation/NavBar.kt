@@ -8,7 +8,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.simply.birthdayapp.presentation.ui.theme.BirthdayAppTheme
+import com.simply.birthdayapp.presentation.ui.theme.AppTheme
 
 @Composable
 fun NavBar(
@@ -19,7 +19,7 @@ fun NavBar(
     val currentBackStackEntry = navController.currentBackStackEntryAsState()
 
     NavigationBar(
-        containerColor = BirthdayAppTheme.colors.lightPink,
+        containerColor = AppTheme.colors.lightPink,
     ) {
         items.forEach {
             val selected = it.route == currentBackStackEntry.value?.destination?.route
@@ -30,7 +30,7 @@ fun NavBar(
                     Icon(
                         painter = it.icon,
                         contentDescription = it.name,
-                        tint = if (selected) BirthdayAppTheme.colors.darkPink else BirthdayAppTheme.colors.white,
+                        tint = if (selected) AppTheme.colors.darkPink else AppTheme.colors.white,
                     )
                 },
             )

@@ -14,7 +14,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.simply.birthdayapp.R
-import com.simply.birthdayapp.presentation.ui.theme.BirthdayAppTheme
+import com.simply.birthdayapp.presentation.ui.theme.AppTheme
 
 @Composable
 fun LandingButton(
@@ -44,13 +44,9 @@ fun LandingButton(
 @Composable
 private fun LandingButtonPreview() {
     LandingButton(
-        shape = RoundedCornerShape(
-            topStart = 42.dp,
-            topEnd = 26.dp,
-            bottomEnd = 26.dp
-        ),
+        shape = AppTheme.shapes.risingStartRoundedEndCorners,
         buttonTitle = stringResource(id = R.string.sign_in),
-        backgroundColor = BirthdayAppTheme.colors.lightPink,
-        textColor = BirthdayAppTheme.colors.darkPink,
+        backgroundColor = AppTheme.colors.lightPink,
+        textColor = AppTheme.colors.darkPink,
     )
 }

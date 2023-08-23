@@ -1,7 +1,6 @@
 package com.simply.birthdayapp.presentation.ui.components
 
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -14,7 +13,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.simply.birthdayapp.presentation.ui.theme.BirthdayAppTheme
+import com.simply.birthdayapp.presentation.ui.theme.AppTheme
 
 @Composable
 fun BaseTextField(
@@ -32,14 +31,14 @@ fun BaseTextField(
         colors = TextFieldDefaults.colors(
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
-            unfocusedContainerColor = BirthdayAppTheme.colors.backgroundPink,
-            focusedContainerColor = BirthdayAppTheme.colors.backgroundPink,
-            cursorColor = BirthdayAppTheme.colors.gray,
+            unfocusedContainerColor = AppTheme.colors.backgroundPink,
+            focusedContainerColor = AppTheme.colors.backgroundPink,
+            cursorColor = AppTheme.colors.gray,
         ),
         placeholder = {
             Text(
                 text = label,
-                color = BirthdayAppTheme.colors.darkPink,
+                color = AppTheme.colors.darkPink,
             )
         },
         keyboardOptions = KeyboardOptions.Default.copy(
@@ -57,6 +56,6 @@ private fun BaseTextFieldPreview() {
         textState = "Name",
         label = "name",
         keyboardType = KeyboardType.Text,
-        shape = RoundedCornerShape(13.dp)
+        shape = AppTheme.shapes.smallRoundedCorners,
     )
 }
