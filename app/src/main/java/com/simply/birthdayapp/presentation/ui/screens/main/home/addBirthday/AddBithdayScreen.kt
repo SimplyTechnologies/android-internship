@@ -64,7 +64,7 @@ import com.simply.birthdayapp.R
 import com.simply.birthdayapp.presentation.models.RelationshipEnum
 import com.simply.birthdayapp.presentation.ui.components.AppBaseTopBar
 import com.simply.birthdayapp.presentation.ui.components.RoundAsyncImage
-import com.simply.birthdayapp.presentation.ui.theme.BackgroundColor
+import com.simply.birthdayapp.presentation.ui.theme.Primary
 import org.koin.androidx.compose.getViewModel
 import java.util.Calendar
 
@@ -96,7 +96,7 @@ fun AddBirthdayScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = BackgroundColor)
+            .background(color = Primary)
             .padding(horizontal = 16.dp)
             .verticalScroll(state = rememberScrollState())
             .pointerInput(Unit) { detectTapGestures(onTap = { focusManager.clearFocus() }) },
