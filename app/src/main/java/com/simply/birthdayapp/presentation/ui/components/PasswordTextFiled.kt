@@ -4,14 +4,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -34,6 +32,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.simply.birthdayapp.R
+import com.simply.birthdayapp.presentation.ui.theme.AppTheme
 
 @Composable
 fun PasswordTextFiled(
@@ -51,12 +50,12 @@ fun PasswordTextFiled(
         value = textState,
         onValueChange = onValueChange,
         modifier = modifier,
-        shape = RoundedCornerShape(13.dp),
+        shape = AppTheme.shapes.smallRoundedCorners,
         colors = TextFieldDefaults.colors(
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
-            unfocusedContainerColor = MaterialTheme.colorScheme.primary,
-            focusedContainerColor = MaterialTheme.colorScheme.primary,
+            unfocusedContainerColor = AppTheme.colors.backgroundPink,
+            focusedContainerColor = AppTheme.colors.backgroundPink,
             cursorColor = Color.Gray,
         ),
         singleLine = true,
@@ -72,7 +71,7 @@ fun PasswordTextFiled(
                 }
             ) {
                 Icon(
-                    tint = MaterialTheme.colorScheme.tertiary,
+                    tint = AppTheme.colors.darkPink,
                     imageVector = if (isPasswordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
                     contentDescription = stringResource(id = R.string.password_icon_description),
                 )
@@ -81,7 +80,7 @@ fun PasswordTextFiled(
         placeholder = {
             Text(
                 text = label,
-                color = MaterialTheme.colorScheme.tertiary,
+                color = AppTheme.colors.darkPink,
                 fontFamily = FontFamily(Font(R.font.karm_light)),
             )
         }
@@ -91,13 +90,13 @@ fun PasswordTextFiled(
             modifier = Modifier
                 .padding(2.dp)
                 .fillMaxWidth(),
-            Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
                 modifier = Modifier.padding(start = 4.dp),
                 textAlign = TextAlign.Start,
                 text = errorText,
-                color = Color.Red,
+                color = AppTheme.colors.errorRed,
                 fontFamily = FontFamily(Font(R.font.karm_light)),
                 fontSize = 16.sp,
             )

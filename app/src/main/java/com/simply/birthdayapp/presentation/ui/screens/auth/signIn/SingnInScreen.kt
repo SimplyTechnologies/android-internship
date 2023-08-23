@@ -16,7 +16,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -47,10 +46,8 @@ import com.simply.birthdayapp.presentation.ui.components.PasswordTextFiled
 import com.simply.birthdayapp.presentation.ui.extenstions.isPasswordValid
 import com.simply.birthdayapp.presentation.ui.extenstions.isValidEmail
 import com.simply.birthdayapp.presentation.ui.screens.auth.register.RegisterViewModel
-import org.koin.androidx.compose.get
-import com.simply.birthdayapp.presentation.ui.theme.Primary
-import org.koin.androidx.compose.getViewModel
 import com.simply.birthdayapp.presentation.ui.theme.AppTheme
+import org.koin.androidx.compose.getViewModel
 
 @Composable
 fun SignInScreen(
@@ -86,14 +83,14 @@ fun SignInScreen(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
                         .wrapContentHeight()
-                        .background(Color.White)
+                        .background(AppTheme.colors.white)
                         .padding(horizontal = 24.dp)
                 ) {
                     Text(
                         modifier = Modifier.padding(top = 16.dp),
                         text = stringResource(id = R.string.sign_in),
                         fontSize = 20.sp,
-                        color = MaterialTheme.colorScheme.tertiary,
+                        color = AppTheme.colors.darkPink,
                         fontWeight = FontWeight(700),
                         textAlign = TextAlign.Center,
                         fontFamily = FontFamily(Font(R.font.karm_light)),
@@ -146,14 +143,14 @@ fun SignInScreen(
                             Checkbox(
                                 checked = checkedState.value,
                                 onCheckedChange = { checkedState.value = it },
-                                colors = CheckboxDefaults.colors(checkedColor = MaterialTheme.colorScheme.secondary),
+                                colors = CheckboxDefaults.colors(checkedColor = AppTheme.colors.lightPink),
                             )
                             Text(
                                 text = stringResource(id = R.string.remember_password),
                                 fontSize = 12.sp,
                                 fontFamily = FontFamily(Font(R.font.karm_light)),
                                 fontWeight = FontWeight(700),
-                                color = MaterialTheme.colorScheme.tertiary,
+                                color = AppTheme.colors.darkPink,
                             )
                         }
                     }
@@ -169,7 +166,7 @@ fun SignInScreen(
                                 fontSize = 12.sp,
                                 fontFamily = FontFamily(Font(R.font.karm_light)),
                                 fontWeight = FontWeight(700),
-                                color = MaterialTheme.colorScheme.tertiary,
+                                color = AppTheme.colors.darkPink,
                             )
                         }
                     }

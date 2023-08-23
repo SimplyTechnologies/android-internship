@@ -12,7 +12,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.ImeAction
@@ -20,9 +19,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.simply.birthdayapp.presentation.ui.theme.AppTheme
 import androidx.compose.ui.unit.sp
 import com.simply.birthdayapp.R
+import com.simply.birthdayapp.presentation.ui.theme.AppTheme
 
 @Composable
 fun BaseTextField(
@@ -33,7 +32,7 @@ fun BaseTextField(
     shape: Shape = TextFieldDefaults.shape,
     imeAction: ImeAction = ImeAction.Next,
     hasError: Boolean = false,
-    errorText:String = "",
+    errorText: String = "",
     onValueChange: (String) -> Unit = {},
 ) {
     TextField(
@@ -52,7 +51,6 @@ fun BaseTextField(
             Text(
                 text = label,
                 color = AppTheme.colors.darkPink,
-                color = MaterialTheme.colorScheme.tertiary,
                 fontFamily = FontFamily(Font(R.font.karm_light)),
             )
         },
@@ -72,8 +70,8 @@ fun BaseTextField(
             Text(
                 modifier = Modifier.padding(start = 4.dp),
                 textAlign = TextAlign.Start,
-                text = errorText ,
-                color = Color.Red,
+                text = errorText,
+                color = AppTheme.colors.errorRed,
                 fontFamily = FontFamily(Font(resId = R.font.karm_light)),
                 fontSize = 16.sp,
             )
@@ -88,7 +86,7 @@ private fun BaseTextFieldPreview() {
         textState = "Name",
         label = "name",
         keyboardType = KeyboardType.Text,
-        shape = RoundedCornerShape(13.dp),
+        shape = AppTheme.shapes.mediumRoundedCorners,
         imeAction = ImeAction.Next,
         hasError = false
     )

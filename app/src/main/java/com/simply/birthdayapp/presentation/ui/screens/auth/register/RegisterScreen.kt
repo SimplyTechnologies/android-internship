@@ -13,7 +13,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -40,8 +39,8 @@ import com.simply.birthdayapp.presentation.ui.components.AppBaseTopBar
 import com.simply.birthdayapp.presentation.ui.components.AuthButton
 import com.simply.birthdayapp.presentation.ui.components.BaseTextField
 import com.simply.birthdayapp.presentation.ui.components.PasswordTextFiled
-import org.koin.androidx.compose.getViewModel
 import com.simply.birthdayapp.presentation.ui.theme.AppTheme
+import org.koin.androidx.compose.getViewModel
 
 @Composable
 fun RegisterScreen(
@@ -80,9 +79,9 @@ fun RegisterScreen(
     }
     if (registrationErrorState) {
         AlertDialog(
-            containerColor = Color.White,
-            titleContentColor = Color.Black,
-            textContentColor = Color.Black,
+            containerColor = AppTheme.colors.white,
+            titleContentColor = AppTheme.colors.black,
+            textContentColor = AppTheme.colors.black,
             onDismissRequest = { registerViewModel.registerErrorState() },
             title = { Text(text = stringResource(id = R.string.registration_error)) },
             text = { Text(text = stringResource(R.string.network_error)) },
@@ -90,7 +89,7 @@ fun RegisterScreen(
                 TextButton(
                     onClick = { registerViewModel.registerErrorState() }
                 ) {
-                    Text(text = stringResource(id = R.string.ok), color = Color.Black)
+                    Text(text = stringResource(id = R.string.ok), color = AppTheme.colors.black)
                 }
             },
         )
@@ -117,14 +116,14 @@ fun RegisterScreen(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
                         .wrapContentHeight()
-                        .background(Color.White)
+                        .background(AppTheme.colors.white)
                         .padding(horizontal = 24.dp)
                 ) {
                     Text(
                         modifier = Modifier.padding(top = 16.dp),
                         text = stringResource(id = R.string.register),
                         fontSize = 20.sp,
-                        color = MaterialTheme.colorScheme.tertiary,
+                        color = AppTheme.colors.darkPink,
                         fontWeight = FontWeight(700),
                         textAlign = TextAlign.Center,
                         fontFamily = FontFamily(Font(R.font.karm_light)),
@@ -133,7 +132,7 @@ fun RegisterScreen(
                         modifier = Modifier.padding(top = 24.dp),
                         textState = name,
                         label = stringResource(id = R.string.name),
-                        shape = RoundedCornerShape(13.dp),
+                        shape = AppTheme.shapes.smallRoundedCorners,
                         onValueChange = { input ->
                             registerViewModel.setName(input)
                         },
@@ -142,7 +141,7 @@ fun RegisterScreen(
                         modifier = Modifier.padding(top = 24.dp),
                         textState = surName,
                         label = stringResource(id = R.string.surname),
-                        shape = RoundedCornerShape(13.dp),
+                        shape = AppTheme.shapes.smallRoundedCorners,
                         onValueChange = { surName ->
                             registerViewModel.setSurName(surName)
                         },
@@ -151,7 +150,7 @@ fun RegisterScreen(
                         modifier = Modifier.padding(top = 24.dp),
                         textState = email,
                         label = stringResource(id = R.string.email),
-                        shape = RoundedCornerShape(13.dp),
+                        shape = AppTheme.shapes.smallRoundedCorners,
                         keyboardType = KeyboardType.Email,
                         errorText = stringResource(id = R.string.register_email_error),
                         hasError = hasEmailError,
