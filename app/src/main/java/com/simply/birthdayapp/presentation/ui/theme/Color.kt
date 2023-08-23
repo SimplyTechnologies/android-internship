@@ -13,13 +13,10 @@ data class AppColors(
     val white: Color = Color(0xFFFFFFFF),
     val black: Color = Color(0xFF000000),
     val gray: Color = Color(0xFF929292),
+    val textSelection: TextSelectionColors = TextSelectionColors(
+        handleColor = Color(0xff963E5A),
+        backgroundColor = Color(0xff963E5A),
+    ),
 )
 
 val LocalAppColors = staticCompositionLocalOf { AppColors() }
-
-val LocalAppTextSelectionColors = staticCompositionLocalOf {
-    TextSelectionColors(
-        handleColor = Color(0xff963E5A),
-        backgroundColor = Color(0xff963E5A),
-    )
-}

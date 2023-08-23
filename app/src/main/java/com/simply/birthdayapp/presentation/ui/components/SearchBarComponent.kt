@@ -76,7 +76,7 @@ fun SearchBarComponent(
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
             cursorColor = BirthdayAppTheme.colors.darkPink,
-            selectionColors = BirthdayAppTheme.textSelectionColors,
+            selectionColors = BirthdayAppTheme.colors.textSelection,
         ),
         textStyle = BirthdayAppTheme.typography.medium,
     )

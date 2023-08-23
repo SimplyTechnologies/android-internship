@@ -1,12 +1,10 @@
 package com.simply.birthdayapp.presentation.ui.theme
 
 import android.app.Activity
-import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.SideEffect
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
@@ -17,10 +15,6 @@ fun BirthdayAppTheme(
     content: @Composable () -> Unit,
 ) {
     val appColors = AppColors()
-    val appTextSelectionColors = TextSelectionColors(
-        handleColor = Color(0xff963E5A),
-        backgroundColor = Color(0xff963E5A),
-    )
     val appTypography = AppTypography()
 
     val view = LocalView.current
@@ -34,7 +28,6 @@ fun BirthdayAppTheme(
 
     CompositionLocalProvider(
         LocalAppColors provides appColors,
-        LocalAppTextSelectionColors provides appTextSelectionColors,
         LocalAppTypography provides appTypography,
         content = content,
     )
@@ -45,11 +38,6 @@ object BirthdayAppTheme {
         @Composable
         @ReadOnlyComposable
         get() = LocalAppColors.current
-
-    val textSelectionColors: TextSelectionColors
-        @Composable
-        @ReadOnlyComposable
-        get() = LocalAppTextSelectionColors.current
 
     val typography: AppTypography
         @Composable
