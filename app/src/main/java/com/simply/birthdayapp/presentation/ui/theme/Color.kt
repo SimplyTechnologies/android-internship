@@ -7,19 +7,19 @@ import androidx.compose.ui.graphics.Color
 
 @Immutable
 data class AppColors(
-    val backgroundPink: Color = Color.Unspecified,
-    val lightPink: Color = Color.Unspecified,
-    val darkPink: Color = Color.Unspecified,
-    val white: Color = Color.Unspecified,
-    val black: Color = Color.Unspecified,
-    val gray: Color = Color.Unspecified,
+    val backgroundPink: Color = Color(0xFFFFF5F4),
+    val lightPink: Color = Color(0xFFF68299),
+    val darkPink: Color = Color(0xff963E5A),
+    val white: Color = Color(0xFFFFFFFF),
+    val black: Color = Color(0xFF000000),
+    val gray: Color = Color(0xFF929292),
 )
 
 val LocalAppColors = staticCompositionLocalOf { AppColors() }
 
 val LocalAppTextSelectionColors = staticCompositionLocalOf {
     TextSelectionColors(
-        handleColor = Color.Unspecified,
-        backgroundColor = Color.Unspecified,
+        handleColor = Color(0xff963E5A),
+        backgroundColor = Color(0xff963E5A),
     )
 }

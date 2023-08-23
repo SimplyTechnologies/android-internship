@@ -9,33 +9,19 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
 import androidx.core.view.WindowCompat
-import com.simply.birthdayapp.R
 
 @Composable
 fun BirthdayAppTheme(
     isStatusBarAppearanceLight: Boolean = true,
     content: @Composable () -> Unit,
 ) {
-    val appColors = AppColors(
-        backgroundPink = Color(0xFFFFF5F4),
-        lightPink = Color(0xFFF68299),
-        darkPink = Color(0xff963E5A),
-        white = Color(0xFFFFFFFF),
-        black = Color(0xFF000000),
-        gray = Color(0xFF929292),
-    )
+    val appColors = AppColors()
     val appTextSelectionColors = TextSelectionColors(
         handleColor = Color(0xff963E5A),
         backgroundColor = Color(0xff963E5A),
     )
-    val appTypography = AppTypography(
-        bold = TextStyle(fontFamily = FontFamily(Font(R.font.karma_bold))),
-        medium = TextStyle(fontFamily = FontFamily(Font(R.font.karma_medium))),
-    )
+    val appTypography = AppTypography()
 
     val view = LocalView.current
     if (!view.isInEditMode) {
