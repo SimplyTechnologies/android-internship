@@ -17,14 +17,16 @@ import androidx.compose.ui.unit.dp
 import com.simply.birthdayapp.R
 import com.simply.birthdayapp.presentation.ui.theme.Primary1
 import com.simply.birthdayapp.presentation.ui.theme.Primary2
+import com.simply.birthdayapp.presentation.ui.theme.DisableButtonColor
 
 @Composable
 fun AuthButton(
     shape: RoundedCornerShape,
     buttonTitle: String,
-    backgroundColor: Color,
-    textColor: Color,
+    backgroundColor: Color = Primary1,
+    textColor: Color = Primary2,
     enabled: Boolean = true,
+    disabledContainerColor: Color = DisableButtonColor,
     onClick: () -> Unit = {}
 ) {
     Button(
@@ -35,7 +37,9 @@ fun AuthButton(
         shape = shape,
         enabled = enabled,
         onClick = onClick,
-        colors = ButtonDefaults.buttonColors(containerColor = backgroundColor),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = backgroundColor,
+            disabledContainerColor = disabledContainerColor ),
     ) {
         Text(
             text = buttonTitle,
@@ -47,11 +51,9 @@ fun AuthButton(
 
 @Preview(showBackground = true)
 @Composable
-fun RegisterButtonPreview() {
+private fun AuthButtonPreview() {
     AuthButton(
         shape = RoundedCornerShape(24.dp),
         buttonTitle = "Register",
-        backgroundColor = Primary2,
-        textColor = Primary1,
     )
 }

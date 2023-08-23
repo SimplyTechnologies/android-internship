@@ -50,7 +50,8 @@ fun AuthMainScreen() {
             RegisterScreen(
                 registerViewModel = registerViewModel,
                 onRegisterBackClick = { navigateToLandingScreen() },
-                onRegisterSuccess = { navigateToSignInScreen() }
+                onRegisterSuccess = { navigateToSignInScreen() },
+                onRegisterError = { navigateToSignInScreen() }
             )
         }
         composable(AuthScreen.SignInScreen.route) {

@@ -78,6 +78,8 @@ dependencies {
     implementation("io.insert-koin:koin-androidx-compose:3.4.3")
     // navigation
     implementation("androidx.navigation:navigation-compose:2.7.0")
-    //material icons
-    implementation ("androidx.compose.material:material-icons-extended:1.5.0")
+    // material icons
+    implementation("androidx.compose.material:material-icons-extended:1.5.0")
+    // lifecycle
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
 }

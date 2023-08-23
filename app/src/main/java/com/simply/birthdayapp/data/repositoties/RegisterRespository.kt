@@ -15,10 +15,10 @@ interface RegisterRepository {
 
 class RegisterRepositoryImpl(private val apolloClient: ApolloClient) : RegisterRepository {
     override suspend fun createAccount(registerInputEntity: RegisterInputEntity) = flow {
-        val result =
-            apolloClient.mutation(SignUpMutation(registerInputEntity.toSineUpInput())).execute()
+        val input = registerInputEntity.toSineUpInput()
+        val result = apolloClient.mutation(SignUpMutation(input)).execute()
         if (result.hasErrors()) {
-            val errorMessage = result.errors?.get(0)?.message
+            val errorMessage = result.errors?.firstOrNull()?.message
             emit(Result.failure(Throwable(errorMessage)))
         } else
             emit(Result.success(result.data?.signUp?.toRegisteredUser()))
