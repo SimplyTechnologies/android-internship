@@ -14,7 +14,7 @@ class BirthdayApp : Application() {
         startKoin {
             androidLogger(if (BuildConfig.DEBUG) Level.ERROR else Level.NONE)
             androidContext(applicationContext)
-            modules(listOf(applicationModule))
+            modules(applicationModule)
         }
     }
 }
