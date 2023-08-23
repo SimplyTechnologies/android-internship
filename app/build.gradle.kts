@@ -19,7 +19,11 @@ android {
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
-        buildConfigField("String", "SERVER_URL", gradleLocalProperties(rootDir).getProperty("SERVER_URL", "\"\""))
+        buildConfigField(
+            "String",
+            "SERVER_URL",
+            gradleLocalProperties(rootDir).getProperty("SERVER_URL", "\"\"")
+        )
     }
 
     buildTypes {
@@ -83,7 +87,7 @@ dependencies {
     // navigation
     implementation("androidx.navigation:navigation-compose:2.7.0")
     // lifecycle
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.1")
+     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.1")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
     // material icons
     implementation("androidx.compose.material:material-icons-extended:1.5.0")

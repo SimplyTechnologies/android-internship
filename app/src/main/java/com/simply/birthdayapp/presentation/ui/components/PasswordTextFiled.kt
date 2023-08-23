@@ -11,6 +11,7 @@ import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -33,9 +34,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.simply.birthdayapp.R
-import com.simply.birthdayapp.presentation.ui.theme.BackgroundColor
-import com.simply.birthdayapp.presentation.ui.theme.Primary2
-
 
 @Composable
 fun PasswordTextFiled(
@@ -57,8 +55,8 @@ fun PasswordTextFiled(
         colors = TextFieldDefaults.colors(
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
-            unfocusedContainerColor = BackgroundColor,
-            focusedContainerColor = BackgroundColor,
+            unfocusedContainerColor = MaterialTheme.colorScheme.primary,
+            focusedContainerColor = MaterialTheme.colorScheme.primary,
             cursorColor = Color.Gray,
         ),
         singleLine = true,
@@ -74,7 +72,7 @@ fun PasswordTextFiled(
                 }
             ) {
                 Icon(
-                    tint = Primary2,
+                    tint = MaterialTheme.colorScheme.tertiary,
                     imageVector = if (isPasswordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
                     contentDescription = stringResource(id = R.string.password_icon_description),
                 )
@@ -83,7 +81,7 @@ fun PasswordTextFiled(
         placeholder = {
             Text(
                 text = label,
-                color = Primary2,
+                color = MaterialTheme.colorScheme.tertiary,
                 fontFamily = FontFamily(Font(R.font.karm_light)),
             )
         }

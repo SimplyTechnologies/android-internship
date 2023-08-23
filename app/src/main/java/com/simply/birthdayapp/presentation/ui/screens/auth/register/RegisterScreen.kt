@@ -13,6 +13,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -34,14 +35,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.simply.birthdayapp.R
 import com.simply.birthdayapp.presentation.ui.components.AppBaseTopBar
 import com.simply.birthdayapp.presentation.ui.components.AuthButton
 import com.simply.birthdayapp.presentation.ui.components.BaseTextField
 import com.simply.birthdayapp.presentation.ui.components.PasswordTextFiled
-import com.simply.birthdayapp.presentation.ui.theme.Primary
-import com.simply.birthdayapp.presentation.ui.theme.Primary2
+import org.koin.androidx.compose.getViewModel
 
 @Composable
 fun RegisterScreen(
@@ -94,6 +93,7 @@ fun RegisterScreen(
                 }
             },
         )
+    }
         Scaffold(
             topBar = { AppBaseTopBar(onBackClick = onRegisterBackClick) }
         ) {
@@ -101,7 +101,7 @@ fun RegisterScreen(
                 modifier = Modifier
                     .padding(it)
                     .fillMaxSize()
-                    .background(color = Primary)
+                    .background(color = MaterialTheme.colorScheme.primary)
                     .verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -122,7 +122,7 @@ fun RegisterScreen(
                             modifier = Modifier.padding(top = 16.dp),
                             text = stringResource(id = R.string.register),
                             fontSize = 20.sp,
-                            color = Primary2,
+                            color = MaterialTheme.colorScheme.tertiary,
                             fontWeight = FontWeight(700),
                             textAlign = TextAlign.Center,
                             fontFamily = FontFamily(Font(R.font.karm_light)),
@@ -191,10 +191,9 @@ fun RegisterScreen(
             }
         }
     }
-}
 
 @Preview(showBackground = false)
 @Composable
 private fun RegisterScreenPreview() {
-    RegisterScreen(registerViewModel = viewModel())
+    RegisterScreen(registerViewModel = getViewModel())
 }

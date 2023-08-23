@@ -1,4 +1,4 @@
-package com.simply.birthdayapp.data.repositoties
+package com.simply.birthdayapp.data.repositories
 
 import com.apollographql.apollo3.ApolloClient
 import com.simply.birthdayapp.SignUpMutation

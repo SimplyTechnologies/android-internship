@@ -24,8 +24,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.simply.birthdayapp.R
-import com.simply.birthdayapp.presentation.ui.theme.BackgroundColor
-import com.simply.birthdayapp.presentation.ui.theme.Primary2
 
 @Composable
 fun BaseTextField(

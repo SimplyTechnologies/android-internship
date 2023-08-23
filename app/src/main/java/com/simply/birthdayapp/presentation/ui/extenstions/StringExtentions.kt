@@ -7,10 +7,3 @@ fun String.isValidEmail(): Boolean {
 }
 fun String.isPasswordValid(): Boolean =
     Regex("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,}$").matches(this)
-
-
-
-
-
-
-

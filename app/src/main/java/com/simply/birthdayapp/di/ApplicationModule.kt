@@ -6,5 +6,6 @@ val applicationModule = module {
     includes(
         dataModule,
         presentationModule,
+        registerModule,
     )
 }
