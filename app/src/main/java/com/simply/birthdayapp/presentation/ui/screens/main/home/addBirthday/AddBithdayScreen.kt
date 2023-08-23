@@ -20,8 +20,6 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
@@ -33,7 +31,6 @@ import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DatePickerFormatter
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
@@ -54,8 +51,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -64,7 +59,7 @@ import com.simply.birthdayapp.R
 import com.simply.birthdayapp.presentation.models.RelationshipEnum
 import com.simply.birthdayapp.presentation.ui.components.AppBaseTopBar
 import com.simply.birthdayapp.presentation.ui.components.RoundAsyncImage
-import com.simply.birthdayapp.presentation.ui.theme.Primary
+import com.simply.birthdayapp.presentation.ui.theme.AppTheme
 import org.koin.androidx.compose.getViewModel
 import java.util.Calendar
 
@@ -96,7 +91,7 @@ fun AddBirthdayScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = Primary)
+            .background(color = AppTheme.colors.backgroundPink)
             .padding(horizontal = 16.dp)
             .verticalScroll(state = rememberScrollState())
             .pointerInput(Unit) { detectTapGestures(onTap = { focusManager.clearFocus() }) },
@@ -109,7 +104,7 @@ fun AddBirthdayScreen(
                     .padding(top = 50.dp)
                     .height(100.dp)
                     .width(100.dp)
-                    .clip(CircleShape)
+                    .clip(AppTheme.shapes.circle)
                     .clickable { launcher.launch("image/*") },
                 painter = painterResource(id = R.drawable.placeholder_user_avatar),
                 contentDescription = null,
@@ -120,7 +115,7 @@ fun AddBirthdayScreen(
                     .padding(top = 50.dp)
                     .height(100.dp)
                     .width(100.dp)
-                    .clip(CircleShape)
+                    .clip(AppTheme.shapes.circle)
                     .clickable { launcher.launch("image/*") },
                 data = selectedImageUri,
                 borderColor = Color.Transparent,
@@ -134,8 +129,7 @@ fun AddBirthdayScreen(
                 .padding(top = 30.dp, start = 40.dp)
                 .align(Alignment.Start),
             text = stringResource(id = R.string.name),
-            fontFamily = FontFamily(Font(R.font.karma_bold)),
-            color = MaterialTheme.colorScheme.tertiary,
+            style = AppTheme.typography.boldKarmaDarkPink,
             fontSize = 18.sp,
         )
         TextField(
@@ -144,14 +138,14 @@ fun AddBirthdayScreen(
             modifier = Modifier
                 .padding(top = 3.dp)
                 .padding(horizontal = 50.dp),
-            shape = CircleShape,
+            shape = AppTheme.shapes.circle,
             keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
             colors = TextFieldDefaults.colors(
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
-                unfocusedContainerColor = Color.White,
-                focusedContainerColor = Color.White,
-                cursorColor = Color.Gray,
+                unfocusedContainerColor = AppTheme.colors.white,
+                focusedContainerColor = AppTheme.colors.white,
+                cursorColor = AppTheme.colors.gray,
             ),
             singleLine = true,
         )
@@ -160,8 +154,7 @@ fun AddBirthdayScreen(
                 .padding(top = 30.dp, start = 40.dp)
                 .align(Alignment.Start),
             text = stringResource(id = R.string.relationship),
-            fontFamily = FontFamily(Font(R.font.karma_bold)),
-            color = MaterialTheme.colorScheme.tertiary,
+            style = AppTheme.typography.boldKarmaDarkPink,
             fontSize = 18.sp,
         )
         LazyVerticalGrid(
@@ -171,21 +164,21 @@ fun AddBirthdayScreen(
         ) {
             items(relationshipList) { relationship ->
                 Card(
-                    shape = CircleShape,
+                    shape = AppTheme.shapes.circle,
                     modifier = Modifier
                         .padding(4.dp)
                         .height(37.dp)
-                        .clip(CircleShape)
+                        .clip(AppTheme.shapes.circle)
                         .clickable(onClick = {
                             addBirthdayViewModel.setRelationship(if (selectedRelationship == relationship) null else relationship)
                             focusManager.clearFocus()
                         })
                         .border(
                             width = 2.dp,
-                            color = if (selectedRelationship == relationship) MaterialTheme.colorScheme.tertiary else Color.Transparent,
-                            shape = CircleShape,
+                            color = if (selectedRelationship == relationship) AppTheme.colors.darkPink else Color.Transparent,
+                            shape = AppTheme.shapes.circle,
                         ),
-                    colors = CardDefaults.cardColors(containerColor = Color.White),
+                    colors = CardDefaults.cardColors(containerColor = AppTheme.colors.white),
                 ) {
                     Box(
                         modifier = Modifier.fillMaxSize(),
@@ -193,7 +186,7 @@ fun AddBirthdayScreen(
                     ) {
                         Text(
                             text = relationship.value,
-                            fontFamily = FontFamily(Font(R.font.karma_bold)),
+                            style = AppTheme.typography.boldKarmaBlack,
                             fontSize = 14.sp,
                         )
                     }
@@ -206,16 +199,16 @@ fun AddBirthdayScreen(
                 .align(Alignment.Start)
                 .clickable { showDatePicker = true },
             text = stringResource(id = R.string.date),
-            fontFamily = FontFamily(Font(R.font.karma_bold)),
-            color = MaterialTheme.colorScheme.tertiary,
+            style = AppTheme.typography.boldKarmaDarkPink,
             fontSize = 18.sp,
         )
         Card(
-            shape = RoundedCornerShape(20.dp),
+            shape = AppTheme.shapes.circle,
             modifier = Modifier
                 .width(200.dp)
+                .clip(AppTheme.shapes.circle)
                 .clickable { showDatePicker = true },
-            colors = CardDefaults.cardColors(containerColor = Color.White),
+            colors = CardDefaults.cardColors(containerColor = AppTheme.colors.white),
         ) {
             Text(
                 text = selectedDate,
@@ -232,12 +225,12 @@ fun AddBirthdayScreen(
                 addBirthdayViewModel.createBirthday(context)
             },
             modifier = Modifier.padding(top = 16.dp),
-            shape = RoundedCornerShape(16.dp),
-            colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.tertiary),
+            shape = AppTheme.shapes.smallRoundedCorners,
+            colors = ButtonDefaults.buttonColors(AppTheme.colors.darkPink),
         ) {
             Text(
                 text = stringResource(id = R.string.done),
-                fontFamily = FontFamily(Font(R.font.karma_bold)),
+                style = AppTheme.typography.bold,
             )
         }
 
@@ -249,14 +242,14 @@ fun AddBirthdayScreen(
                         showDatePicker = false
                         addBirthdayViewModel.setDate(datePickerState.selectedDateMillis)
                     }) {
-                        Text(text = "Confirm", color = MaterialTheme.colorScheme.tertiary)
+                        Text(text = "Confirm", color = AppTheme.colors.darkPink)
                     }
                 },
                 dismissButton = {
                     TextButton(
                         onClick = { showDatePicker = false },
                     ) {
-                        Text(text = "Cancel", color = MaterialTheme.colorScheme.tertiary)
+                        Text(text = "Cancel", color = AppTheme.colors.darkPink)
                     }
                 },
             ) {
@@ -267,12 +260,12 @@ fun AddBirthdayScreen(
                     showModeToggle = false,
                     title = null,
                     colors = DatePickerDefaults.colors(
-                        selectedDayContainerColor = MaterialTheme.colorScheme.tertiary,
-                        selectedYearContainerColor = MaterialTheme.colorScheme.tertiary,
-                        todayContentColor = MaterialTheme.colorScheme.tertiary,
-                        currentYearContentColor = MaterialTheme.colorScheme.tertiary,
-                        weekdayContentColor = MaterialTheme.colorScheme.tertiary,
-                        headlineContentColor = MaterialTheme.colorScheme.tertiary,
+                        selectedDayContainerColor = AppTheme.colors.darkPink,
+                        selectedYearContainerColor = AppTheme.colors.darkPink,
+                        todayContentColor = AppTheme.colors.darkPink,
+                        currentYearContentColor = AppTheme.colors.darkPink,
+                        weekdayContentColor = AppTheme.colors.darkPink,
+                        headlineContentColor = AppTheme.colors.darkPink,
                     ),
                 )
             }
