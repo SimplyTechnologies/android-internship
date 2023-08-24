@@ -3,18 +3,23 @@ package com.simply.birthdayapp.presentation.ui.screens.main.shops
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.PullRefreshState
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
@@ -28,30 +33,39 @@ import com.simply.birthdayapp.presentation.ui.components.LogoTopBar
 import com.simply.birthdayapp.presentation.ui.components.SearchBarComponent
 import com.simply.birthdayapp.presentation.ui.components.ShopCard
 import com.simply.birthdayapp.presentation.ui.theme.AppTheme
-import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.debounce
 import org.koin.androidx.compose.getViewModel
 
-@OptIn(FlowPreview::class)
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ShopsScreen(
     shopsViewModel: ShopsViewModel,
+    onShowSnackbar: suspend (String) -> Unit = {},
 ) {
     val loading by shopsViewModel.loading.collectAsStateWithLifecycle()
     val shops by shopsViewModel.shops.collectAsStateWithLifecycle()
     val scrollPosition by shopsViewModel.scrollPosition.collectAsStateWithLifecycle()
     val searchBarQuery by shopsViewModel.searchBarQuery.collectAsStateWithLifecycle()
+    val lastFavouredShopName by shopsViewModel.lastFavouredShopName.collectAsStateWithLifecycle()
 
     val shopsLazyListState = rememberLazyListState(initialFirstVisibleItemIndex = scrollPosition)
+    val pullRefreshState: PullRefreshState = rememberPullRefreshState(
+        refreshing = loading,
+        onRefresh = shopsViewModel::onPullRefresh,
+    )
+    val focusManager = LocalFocusManager.current
 
-    LaunchedEffect(shopsLazyListState) {
-        snapshotFlow { shopsLazyListState.firstVisibleItemIndex }
-            .debounce(500L)
-            .collectLatest { shopsViewModel.onScrollPositionChange(it) }
+    LaunchedEffect(lastFavouredShopName) {
+        if (lastFavouredShopName == null) return@LaunchedEffect
+        onShowSnackbar("Favoured $lastFavouredShopName")
+        shopsViewModel.clearLastFavouredShopName()
     }
 
-    val focusManager = LocalFocusManager.current
+    DisposableEffect(Unit) {
+        onDispose {
+            shopsViewModel.onScrollPositionChange(shopsLazyListState.firstVisibleItemIndex)
+            shopsViewModel.clearLastFavouredShopName()
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -67,29 +81,48 @@ fun ShopsScreen(
             onQueryChange = shopsViewModel::onSearchBarQueryChange,
             onSearch = { focusManager.clearFocus() },
         )
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            state = shopsLazyListState,
-            contentPadding = PaddingValues(
-                horizontal = 20.dp,
-                vertical = 15.dp,
-            ),
-            verticalArrangement = Arrangement.spacedBy(15.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .pullRefresh(pullRefreshState),
+            contentAlignment = Alignment.Center,
         ) {
-            when {
-                loading -> item { CircularProgressIndicator(color = AppTheme.colors.darkPink) }
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                state = shopsLazyListState,
+                contentPadding = PaddingValues(
+                    horizontal = 20.dp,
+                    vertical = 15.dp,
+                ),
+                verticalArrangement = Arrangement.spacedBy(15.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                when {
+                    loading -> item { Box(modifier = Modifier.fillMaxSize()) }
 
-                shops.isEmpty() -> item {
-                    Text(
-                        text = stringResource(R.string.no_search_results_found),
-                        color = AppTheme.colors.darkPink,
-                        style = AppTheme.typography.medium,
-                    )
+                    shops.isEmpty() -> item {
+                        Text(
+                            text = stringResource(R.string.no_search_results_found),
+                            color = AppTheme.colors.darkPink,
+                            style = AppTheme.typography.medium,
+                        )
+                    }
+
+                    else -> items(shops) { shop ->
+                        ShopCard(
+                            shop = shop,
+                            onIsFavouriteChange = shopsViewModel::onShopIsFavouriteChange,
+                        )
+                    }
                 }
-
-                else -> items(shops) { ShopCard(shop = it) }
             }
+            PullRefreshIndicator(
+                modifier = Modifier.align(Alignment.TopCenter),
+                refreshing = loading,
+                state = pullRefreshState,
+                backgroundColor = AppTheme.colors.backgroundPink,
+                contentColor = AppTheme.colors.lightPink,
+            )
         }
     }
 }

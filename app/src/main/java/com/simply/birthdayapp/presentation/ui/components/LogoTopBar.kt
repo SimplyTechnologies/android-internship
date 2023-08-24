@@ -17,12 +17,14 @@ import androidx.compose.ui.unit.dp
 import com.simply.birthdayapp.R
 
 @Composable
-fun LogoTopBar() {
+fun LogoTopBar(
+    logoHorizontalArrangement: Arrangement.Horizontal = Arrangement.Center,
+) {
     Row(
         modifier = Modifier
-            .padding(vertical = 15.dp)
+            .padding(vertical = 15.dp, horizontal = 20.dp)
             .fillMaxWidth(),
-        horizontalArrangement = Arrangement.Center,
+        horizontalArrangement = logoHorizontalArrangement,
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Image(

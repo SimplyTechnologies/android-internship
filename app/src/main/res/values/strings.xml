@@ -4,10 +4,13 @@
     <string name="navbar_item_shops">Shops</string>
     <string name="navbar_item_profile">Profile</string>
     <string name="birthday_app_logo">Birthday App Logo</string>
-    <string name="favour">Favour</string>
     <string name="search">Search</string>
     <string name="clear">Clear</string>
     <string name="no_search_results_found">No search results found</string>
     <string name="register">Register</string>
     <string name="sign_in">Sign in</string>
+    <string name="remove_from_favourites">Remove from favourites</string>
+    <string name="add_to_favourites">Add to favourites</string>
+    <string name="shop_added_to_favourites">Shop added to favourites!</string>
+    <string name="loading_shops">Loading shops</string>
 </resources>

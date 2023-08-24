@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.simply.birthdayapp.data.repositories.ShopsRepository
-import com.simply.birthdayapp.presentation.ui.models.Shop
+import com.simply.birthdayapp.presentation.models.Shop
 import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
@@ -27,17 +27,22 @@ class ShopsViewModel(
         Log.d(this::class.java.simpleName, Log.getStackTraceString(cause))
     }
 
-    private val _cachedShops: MutableList<Shop> = mutableListOf()
+    private var _cachedShops: MutableList<Shop> = mutableListOf()
 
     private val _loading: MutableStateFlow<Boolean> = MutableStateFlow(true)
-    private val _shops: MutableStateFlow<List<Shop>> = MutableStateFlow(emptyList())
-    private val _scrollPosition: MutableStateFlow<Int> = MutableStateFlow(0)
-    private val _searchBarQuery: MutableStateFlow<String> = MutableStateFlow("")
-
     val loading: StateFlow<Boolean> = _loading.asStateFlow()
+
+    private val _shops: MutableStateFlow<List<Shop>> = MutableStateFlow(emptyList())
     val shops: StateFlow<List<Shop>> = _shops.asStateFlow()
+
+    private val _scrollPosition: MutableStateFlow<Int> = MutableStateFlow(0)
     val scrollPosition: StateFlow<Int> = _scrollPosition.asStateFlow()
+
+    private val _searchBarQuery: MutableStateFlow<String> = MutableStateFlow("")
     val searchBarQuery: StateFlow<String> = _searchBarQuery.asStateFlow()
+
+    private val _lastFavouredShopName: MutableStateFlow<String?> = MutableStateFlow(null)
+    val lastFavouredShopName: StateFlow<String?> = _lastFavouredShopName.asStateFlow()
 
     init {
         observeSearchBarQuery()
@@ -52,11 +57,42 @@ class ShopsViewModel(
         _searchBarQuery.update { searchBarQuery }
     }
 
+    fun onShopIsFavouriteChange(shop: Shop) {
+        viewModelScope.launch(ioCatchingCoroutineContext) {
+            _cachedShops.indexOfFirst { it.id == shop.id }.takeIf { it != -1 }?.let {
+                _cachedShops[it] = _cachedShops[it].copy(isLoadingFavourite = true)
+                filterShops()
+            }
+            try {
+                if (shop.isFavourite) shopsRepository.removeShopFromFavourites(shop.id)
+                else shopsRepository.addShopToFavourites(shop.id)
+                _cachedShops.indexOfFirst { it.id == shop.id }.takeIf { it != -1 }?.let {
+                    _cachedShops[it] = _cachedShops[it].copy(isFavourite = shop.isFavourite.not())
+                    filterShops()
+                    if (shop.isFavourite.not()) _lastFavouredShopName.update { shop.name }
+                }
+            } finally {
+                _cachedShops.indexOfFirst { it.id == shop.id }.takeIf { it != -1 }?.let {
+                    _cachedShops[it] = _cachedShops[it].copy(isLoadingFavourite = false)
+                    filterShops()
+                }
+            }
+        }
+    }
+
+    fun clearLastFavouredShopName() {
+        _lastFavouredShopName.update { null }
+    }
+
+    fun onPullRefresh() {
+        fetchShops()
+    }
+
     private fun observeSearchBarQuery() {
         _searchBarQuery
             .debounce(300L)
             .distinctUntilChanged()
-            .onEach { filterShops(it) }
+            .onEach { filterShops() }
             .launchIn(viewModelScope)
     }
 
@@ -64,17 +100,19 @@ class ShopsViewModel(
         viewModelScope.launch(ioCatchingCoroutineContext) {
             _loading.update { true }
             try {
-                if (_cachedShops.isEmpty()) _cachedShops.addAll(shopsRepository.getShops())
-                filterShops("")
+                _cachedShops = shopsRepository.getShops().toMutableList()
+                filterShops()
             } finally {
                 _loading.update { false }
             }
         }
     }
 
-    private fun filterShops(namePrefix: String) {
+    private fun filterShops() {
         viewModelScope.launch(ioCatchingCoroutineContext) {
-            _shops.update { _cachedShops.filter { it.name.lowercase().startsWith(namePrefix.lowercase()) } }
+            _shops.update {
+                _cachedShops.filter { it.name.lowercase().startsWith(_searchBarQuery.value.lowercase()) }
+            }
         }
     }
 }

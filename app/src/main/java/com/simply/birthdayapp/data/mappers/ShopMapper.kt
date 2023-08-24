@@ -2,7 +2,7 @@ package com.simply.birthdayapp.data.mappers
 
 import android.util.Base64
 import com.simply.birthdayapp.ShopsQuery
-import com.simply.birthdayapp.presentation.ui.models.Shop
+import com.simply.birthdayapp.presentation.models.Shop
 
 fun ShopsQuery.Shop.toShop(): Shop {
     var imageData = byteArrayOf()
@@ -15,6 +15,6 @@ fun ShopsQuery.Shop.toShop(): Shop {
         id = id,
         name = name,
         image = imageData,
-        isFavorite = isFavorite,
+        isFavourite = isFavorite ?: false,
     )
 }
