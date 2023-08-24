@@ -1,5 +1,6 @@
 package com.simply.birthdayapp.presentation.ui.screens.main.home
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,12 +17,15 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.simply.birthdayapp.R
 import com.simply.birthdayapp.presentation.ui.components.BirthdayCard
 import com.simply.birthdayapp.presentation.ui.components.LogoTopBar
 import com.simply.birthdayapp.presentation.ui.theme.AppTheme
@@ -31,12 +35,22 @@ import org.koin.androidx.compose.getViewModel
 fun HomeScreen(homeViewModel: HomeViewModel = getViewModel(), onFabClick: () -> Unit = {}) {
     val birthdayList by homeViewModel.birthdayList.collectAsState()
     val scrollPosition by homeViewModel.scrollPosition.collectAsState()
+    val errorState by homeViewModel.errorState.collectAsState()
     val birthdaysLazyListState = rememberLazyListState(initialFirstVisibleItemIndex = scrollPosition)
+    val context = LocalContext.current
 
     DisposableEffect(Unit) {
         onDispose { homeViewModel.setScrollPosition(birthdaysLazyListState.firstVisibleItemIndex) }
     }
+
+    LaunchedEffect(errorState) {
+        if (errorState) {
+            Toast.makeText(context, R.string.failed_birthdays_loading, Toast.LENGTH_SHORT).show()
+            homeViewModel.setErrorStateFalse()
+        }
+    }
     Box {
+        Toast(context)
         Column(
             modifier = Modifier
                 .fillMaxSize()

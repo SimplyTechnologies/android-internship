@@ -20,6 +20,9 @@ class HomeViewModel(
     private val _scrollPosition: MutableStateFlow<Int> = MutableStateFlow(0)
     val scrollPosition: StateFlow<Int> = _scrollPosition.asStateFlow()
 
+    private val _errorState = MutableStateFlow(false)
+    val errorState = _errorState.asStateFlow()
+
     init {
         fetchBirthdays()
     }
@@ -28,9 +31,18 @@ class HomeViewModel(
         _scrollPosition.update { scrollPosition }
     }
 
+    fun setErrorStateFalse() {
+        _errorState.value = false
+    }
+
     private fun fetchBirthdays() {
         viewModelScope.launch {
-            _birthdayList.update { homeRepository.getBirthdays() }
+            homeRepository.getBirthdays()
+                .onFailure { exception ->
+                    exception.message
+                    _errorState.value = true
+                }
+                .onSuccess { birthdays -> _birthdayList.update { birthdays } }
         }
     }
 }
