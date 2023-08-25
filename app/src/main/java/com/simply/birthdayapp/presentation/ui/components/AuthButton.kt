@@ -10,7 +10,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
@@ -19,37 +18,42 @@ import com.simply.birthdayapp.R
 import com.simply.birthdayapp.presentation.ui.theme.AppTheme
 
 @Composable
-fun LandingButton(
+fun AuthButton(
     shape: RoundedCornerShape,
     buttonTitle: String,
-    backgroundColor: Color,
-    textColor: Color,
-    onClick: () -> Unit = {},
+    backgroundColor: Color = AppTheme.colors.lightPink,
+    textColor: Color = AppTheme.colors.darkPink,
+
+    enabled: Boolean = true,
+    disabledContainerColor: Color = AppTheme.colors.disableButtonColor,
+    onClick: () -> Unit = {}
 ) {
     Button(
         modifier = Modifier
-            .padding(3.dp)
+            .padding(horizontal = 32.dp, vertical = 16.dp)
             .height(51.dp)
             .fillMaxWidth(),
         shape = shape,
-        onClick = { onClick() },
-        colors = ButtonDefaults.buttonColors(containerColor = backgroundColor),
+        enabled = enabled,
+        onClick = onClick,
+        colors = ButtonDefaults.buttonColors(
+            containerColor = backgroundColor,
+            disabledContainerColor = disabledContainerColor
+        ),
     ) {
         Text(
             text = buttonTitle,
             color = textColor,
-            fontFamily = FontFamily(Font(R.font.karm_light))
+            fontFamily = FontFamily(Font(R.font.karm_light)),
         )
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-private fun LandingButtonPreview() {
-    LandingButton(
-        shape = AppTheme.shapes.risingStartRoundedEndCorners,
-        buttonTitle = stringResource(id = R.string.sign_in),
-        backgroundColor = AppTheme.colors.lightPink,
-        textColor = AppTheme.colors.darkPink,
+private fun AuthButtonPreview() {
+    AuthButton(
+        shape = RoundedCornerShape(24.dp),
+        buttonTitle = "Register",
     )
 }
