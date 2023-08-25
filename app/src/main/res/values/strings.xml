@@ -10,4 +10,5 @@
     <string name="no_search_results_found">No search results found</string>
     <string name="register">Register</string>
     <string name="sign_in">Sign in</string>
+    <string name="relationship">Relationship</string>
 </resources>
