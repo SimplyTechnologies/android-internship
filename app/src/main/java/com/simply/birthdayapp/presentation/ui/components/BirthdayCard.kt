@@ -45,15 +45,13 @@ fun BirthdayCard(birthday: Birthday) {
             Column(modifier = Modifier.padding(start = 30.dp)) {
                 Text(
                     text = birthday.name,
-                    color = AppTheme.colors.black,
                     fontSize = 20.sp,
-                    style = AppTheme.typography.bold,
+                    style = AppTheme.typography.boldKarmaBlack,
                 )
                 Text(
                     text = birthday.date,
-                    color = AppTheme.colors.black,
                     fontSize = 14.sp,
-                    style = AppTheme.typography.bold,
+                    style = AppTheme.typography.boldKarmaBlack,
                 )
             }
         }
