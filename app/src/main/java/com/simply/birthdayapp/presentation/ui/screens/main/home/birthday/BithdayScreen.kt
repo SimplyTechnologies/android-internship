@@ -124,8 +124,6 @@ fun BirthdayScreen(
                     .clip(AppTheme.shapes.circle)
                     .clickable { launcher.launch("image/*") },
                 data = selectedImageUri,
-                borderColor = Color.Transparent,
-                borderWidth = 0.dp,
                 placeholder = painterResource(id = R.drawable.placeholder_user_avatar),
                 error = painterResource(id = R.drawable.placeholder_user_avatar),
             )
