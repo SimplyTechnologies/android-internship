@@ -20,7 +20,7 @@ fun HomeMainScreen() {
         composable(HomeDestination.HomeScreen.route) {}
         composable(HomeDestination.BirthdayScreen.route) {
             BirthdayScreen(
-                onDoneClick = { homeNavController.navigate(HomeDestination.HomeScreen.route) },
+                navigateToHomeScreen = { homeNavController.navigate(HomeDestination.HomeScreen.route) },
                 onBackClick = { homeNavController.navigate(HomeDestination.HomeScreen.route) },
             )
         }

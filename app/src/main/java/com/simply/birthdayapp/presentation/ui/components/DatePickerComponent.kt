@@ -22,24 +22,26 @@ import com.simply.birthdayapp.presentation.ui.theme.AppTheme
 @Composable
 fun DatePickerComponent(
     datePickerState: DatePickerState,
-    onDismissRequest: () -> Unit,
-    onConfirmButtonClick: () -> Unit,
-    onDismissButtonClick: () -> Unit
+    onDismissRequest: () -> Unit = {},
+    onConfirmButtonClick: () -> Unit = {},
+    onDismissButtonClick: () -> Unit = {},
 ) {
     DatePickerDialog(
-        onDismissRequest = { onDismissRequest() },
+        onDismissRequest = onDismissRequest,
         confirmButton = {
-            TextButton(onClick = {
-                onConfirmButtonClick()
-            }) {
-                Text(text = stringResource(id = R.string.confirm), color = AppTheme.colors.darkPink)
+            TextButton(onClick = onConfirmButtonClick) {
+                Text(
+                    text = stringResource(id = R.string.confirm),
+                    color = AppTheme.colors.darkPink,
+                )
             }
         },
         dismissButton = {
-            TextButton(
-                onClick = { onDismissButtonClick() },
-            ) {
-                Text(text = stringResource(id = R.string.cancel), color = AppTheme.colors.darkPink)
+            TextButton(onClick = onDismissButtonClick) {
+                Text(
+                    text = stringResource(id = R.string.cancel),
+                    color = AppTheme.colors.darkPink,
+                )
             }
         },
     ) {
@@ -65,5 +67,5 @@ fun DatePickerComponent(
 @Composable
 @Preview
 private fun DatePickerComponentPreview() {
-    DatePickerComponent(rememberDatePickerState(), {}, {}, {})
+    DatePickerComponent(rememberDatePickerState())
 }

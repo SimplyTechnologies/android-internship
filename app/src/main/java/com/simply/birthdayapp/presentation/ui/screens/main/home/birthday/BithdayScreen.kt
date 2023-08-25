@@ -65,7 +65,7 @@ import java.util.Calendar
 @Composable
 fun BirthdayScreen(
     birthdayViewModel: BirthdayViewModel = getViewModel(),
-    onDoneClick: () -> Unit = {},
+    navigateToHomeScreen: () -> Unit = {},
     onBackClick: () -> Unit = {},
 ) {
     val name by birthdayViewModel.name.collectAsState()
@@ -226,12 +226,7 @@ fun BirthdayScreen(
         }
         Button(
             enabled = doneButtonEnable,
-            onClick = {
-                birthdayViewModel.createBirthday()
-                if (createBirthdayError == false) {
-                    onDoneClick()
-                }
-            },
+            onClick = { birthdayViewModel.createBirthday(navigateToHomeScreen) },
             modifier = Modifier.padding(top = 16.dp),
             shape = AppTheme.shapes.smallRoundedCorners,
             colors = ButtonDefaults.buttonColors(AppTheme.colors.darkPink),

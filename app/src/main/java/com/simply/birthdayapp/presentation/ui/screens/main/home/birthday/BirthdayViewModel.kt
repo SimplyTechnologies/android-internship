@@ -78,17 +78,20 @@ class BirthdayViewModel(
         _createBirthdayError.value = false
     }
 
-    fun createBirthday() {
+    fun createBirthday(navigateToHomeScreen: () -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
             val imageUri = imageUri.value
             birthdayRepository.createBirthday(
                 createBirthday = CreateBirthdayEntity(
                     name = _name.value,
                     imageBase64 = imageUri?.uriToBase64(context = getApplication<Application>().applicationContext),
-                    relation = getApplication<Application>().applicationContext.getString(_relationship.value?.resId ?: RelationshipEnum.BEST_FRIEND.resId),
+                    relation = getApplication<Application>().applicationContext.getString(
+                        _relationship.value?.resId ?: RelationshipEnum.BEST_FRIEND.resId
+                    ),
                     date = _date.value.toString(),
                 ),
             ).onEach {
+                it.onSuccess { navigateToHomeScreen() }
                 it.onFailure { _createBirthdayError.update { true } }
             }.catch { _createBirthdayError.update { true } }.flowOn(Dispatchers.Main).collect()
         }
