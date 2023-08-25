@@ -15,4 +15,15 @@
     <string name="date">Date*</string>
     <string name="done">Done</string>
     <string name="addToCalendar">Add to Calendar</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
+    <string name="best_friend">Best friend</string>
+    <string name="mother">Mother</string>
+    <string name="father">Father</string>
+    <string name="grandfather">Grandfather</string>
+    <string name="grandmother">Grandmother</string>
+    <string name="brother">Brother</string>
+    <string name="sister">Sister</string>
+    <string name="uncle">Uncle</string>
+    <string name="fail_to_create_birthday">Fail to create birthday</string>
 </resources>

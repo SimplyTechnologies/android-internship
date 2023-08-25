@@ -4,11 +4,11 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.simply.birthdayapp.presentation.ui.screens.main.home.addBirthday.AddBirthdayScreen
+import com.simply.birthdayapp.presentation.ui.screens.main.home.birthday.BirthdayScreen
 
 sealed class HomeDestination(val route: String) {
     data object HomeScreen : HomeDestination("home-screen")
-    data object AddBirthdayScreen : HomeDestination("add-birthday-screen")
+    data object BirthdayScreen : HomeDestination("birthday-screen")
     data object BirthdayDetailsScreen : HomeDestination("birthday-details-screen")
 }
 
@@ -18,8 +18,8 @@ fun HomeMainScreen() {
 
     NavHost(navController = homeNavController, startDestination = HomeDestination.HomeScreen.route) {
         composable(HomeDestination.HomeScreen.route) {}
-        composable(HomeDestination.AddBirthdayScreen.route) {
-            AddBirthdayScreen(
+        composable(HomeDestination.BirthdayScreen.route) {
+            BirthdayScreen(
                 onDoneClick = { homeNavController.navigate(HomeDestination.HomeScreen.route) },
                 onBackClick = { homeNavController.navigate(HomeDestination.HomeScreen.route) },
             )

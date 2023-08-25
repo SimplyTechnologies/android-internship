@@ -1,11 +1,11 @@
-package com.simply.birthdayapp.presentation.ui.screens.main.home.addBirthday
+package com.simply.birthdayapp.presentation.ui.screens.main.home.birthday
 
-import android.content.Context
+import android.app.Application
 import android.net.Uri
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.simply.birthdayapp.data.entities.CreateBirthdayEntity
-import com.simply.birthdayapp.data.repositories.AddBirthdayRepository
+import com.simply.birthdayapp.data.repositories.BirthdayRepository
 import com.simply.birthdayapp.presentation.extensions.uriToBase64
 import com.simply.birthdayapp.presentation.models.RelationshipEnum
 import kotlinx.coroutines.Dispatchers
@@ -22,20 +22,27 @@ import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
-class AddBirthdayViewModel(
-    private val addBirthdayRepository: AddBirthdayRepository,
-) : ViewModel() {
+class BirthdayViewModel(
+    application: Application,
+    private val birthdayRepository: BirthdayRepository,
+) : AndroidViewModel(application) {
 
     private val _name: MutableStateFlow<String> = MutableStateFlow("")
+    val name: StateFlow<String> = _name.asStateFlow()
+
     private val _imageUri: MutableStateFlow<Uri?> = MutableStateFlow(null)
+    val imageUri: StateFlow<Uri?> = _imageUri.asStateFlow()
+
     private val _relationship: MutableStateFlow<RelationshipEnum?> = MutableStateFlow(null)
+    val relationship: StateFlow<RelationshipEnum?> = _relationship.asStateFlow()
+
     private val _dateTitle: MutableStateFlow<String> = MutableStateFlow("__.__.____")
+    val dateTitle: StateFlow<String> = _dateTitle.asStateFlow()
+
     private val _date: MutableStateFlow<Date?> = MutableStateFlow(null)
 
-    val name: StateFlow<String> = _name.asStateFlow()
-    val imageUri: StateFlow<Uri?> = _imageUri.asStateFlow()
-    val relationship: StateFlow<RelationshipEnum?> = _relationship.asStateFlow()
-    val dateTitle: StateFlow<String> = _dateTitle.asStateFlow()
+    private val _createBirthdayError = MutableStateFlow(false)
+    val createBirthdayError = _createBirthdayError.asStateFlow()
 
     private val formatter = SimpleDateFormat("dd.MM.yyyy", Locale.ROOT)
     val combine = combine(
@@ -63,17 +70,21 @@ class AddBirthdayViewModel(
         _dateTitle.update { formatter.format(Date(date ?: Calendar.getInstance().timeInMillis)) }
     }
 
-    fun createBirthday(context: Context) {
+    fun setCreateBirthdayErrorFalse() {
+        _createBirthdayError.value = false
+    }
+
+    fun createBirthday() {
         viewModelScope.launch(Dispatchers.IO) {
             val imageUri = imageUri.value
-            addBirthdayRepository.createBirthday(
+            birthdayRepository.createBirthday(
                 createBirthday = CreateBirthdayEntity(
                     name = _name.value,
-                    imageBase64 = imageUri?.uriToBase64(context),
-                    relation = _relationship.value?.value ?: RelationshipEnum.BEST_FRIEND.value,
+                    imageBase64 = imageUri?.uriToBase64(context = getApplication<Application>().applicationContext),
+                    relation = getApplication<Application>().applicationContext.getString(_relationship.value?.resId ?: RelationshipEnum.BEST_FRIEND.resId),
                     date = _date.value.toString(),
-                )
-            )
+                ),
+            ).onFailure { _createBirthdayError.value = true }
         }
     }
 }

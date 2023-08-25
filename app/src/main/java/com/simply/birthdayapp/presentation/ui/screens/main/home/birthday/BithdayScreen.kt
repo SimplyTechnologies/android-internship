@@ -1,6 +1,7 @@
-package com.simply.birthdayapp.presentation.ui.screens.main.home.addBirthday
+package com.simply.birthdayapp.presentation.ui.screens.main.home.birthday
 
 import android.net.Uri
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -26,17 +27,13 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.DatePicker
-import androidx.compose.material3.DatePickerDefaults
-import androidx.compose.material3.DatePickerDialog
-import androidx.compose.material3.DatePickerFormatter
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -58,6 +55,7 @@ import androidx.compose.ui.unit.sp
 import com.simply.birthdayapp.R
 import com.simply.birthdayapp.presentation.models.RelationshipEnum
 import com.simply.birthdayapp.presentation.ui.components.AppBaseTopBar
+import com.simply.birthdayapp.presentation.ui.components.DatePickerComponent
 import com.simply.birthdayapp.presentation.ui.components.RoundAsyncImage
 import com.simply.birthdayapp.presentation.ui.theme.AppTheme
 import org.koin.androidx.compose.getViewModel
@@ -65,27 +63,35 @@ import java.util.Calendar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddBirthdayScreen(
-    addBirthdayViewModel: AddBirthdayViewModel = getViewModel(),
+fun BirthdayScreen(
+    birthdayViewModel: BirthdayViewModel = getViewModel(),
     onDoneClick: () -> Unit = {},
     onBackClick: () -> Unit = {},
 ) {
-    val name by addBirthdayViewModel.name.collectAsState()
-    val selectedImageUri by addBirthdayViewModel.imageUri.collectAsState()
+    val name by birthdayViewModel.name.collectAsState()
+    val selectedImageUri by birthdayViewModel.imageUri.collectAsState()
     val calendar = Calendar.getInstance()
     val datePickerState = rememberDatePickerState(initialSelectedDateMillis = calendar.timeInMillis)
-    val selectedDate by addBirthdayViewModel.dateTitle.collectAsState()
+    val selectedDate by birthdayViewModel.dateTitle.collectAsState()
     var showDatePicker by rememberSaveable { mutableStateOf(false) }
-    val selectedRelationship by addBirthdayViewModel.relationship.collectAsState()
-    val doneButtonEnable by addBirthdayViewModel.combine.collectAsState()
+    val selectedRelationship by birthdayViewModel.relationship.collectAsState()
+    val doneButtonEnable by birthdayViewModel.combine.collectAsState()
     val focusManager = LocalFocusManager.current
-    val relationshipList = RelationshipEnum.values()
     val context = LocalContext.current
+    val relationshipList = RelationshipEnum.values()
+    val createBirthdayError by birthdayViewModel.createBirthdayError.collectAsState()
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
-        if (uri != null) addBirthdayViewModel.setImage(uri)
+        if (uri != null) birthdayViewModel.setImage(uri)
+    }
+
+    LaunchedEffect(createBirthdayError) {
+        if (createBirthdayError) {
+            Toast.makeText(context, R.string.fail_to_create_birthday, Toast.LENGTH_SHORT).show()
+            birthdayViewModel.setCreateBirthdayErrorFalse()
+        }
     }
 
     Column(
@@ -134,11 +140,12 @@ fun AddBirthdayScreen(
         )
         TextField(
             value = name,
-            onValueChange = { if (it.length <= 25) addBirthdayViewModel.setName(it) },
+            onValueChange = { if (it.length <= 25) birthdayViewModel.setName(it) },
             modifier = Modifier
                 .padding(top = 3.dp)
                 .padding(horizontal = 50.dp),
             shape = AppTheme.shapes.circle,
+            singleLine = true,
             keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
             colors = TextFieldDefaults.colors(
                 focusedIndicatorColor = Color.Transparent,
@@ -147,7 +154,6 @@ fun AddBirthdayScreen(
                 focusedContainerColor = AppTheme.colors.white,
                 cursorColor = AppTheme.colors.gray,
             ),
-            singleLine = true,
         )
         Text(
             modifier = Modifier
@@ -170,7 +176,7 @@ fun AddBirthdayScreen(
                         .height(37.dp)
                         .clip(AppTheme.shapes.circle)
                         .clickable(onClick = {
-                            addBirthdayViewModel.setRelationship(if (selectedRelationship == relationship) null else relationship)
+                            birthdayViewModel.setRelationship(if (selectedRelationship == relationship) null else relationship)
                             focusManager.clearFocus()
                         })
                         .border(
@@ -185,7 +191,7 @@ fun AddBirthdayScreen(
                         contentAlignment = Alignment.Center,
                     ) {
                         Text(
-                            text = relationship.value,
+                            text = stringResource(id = relationship.resId),
                             style = AppTheme.typography.boldKarmaBlack,
                             fontSize = 14.sp,
                         )
@@ -221,8 +227,10 @@ fun AddBirthdayScreen(
         Button(
             enabled = doneButtonEnable,
             onClick = {
-                onDoneClick()
-                addBirthdayViewModel.createBirthday(context)
+                birthdayViewModel.createBirthday()
+                if (createBirthdayError == false) {
+                    onDoneClick()
+                }
             },
             modifier = Modifier.padding(top = 16.dp),
             shape = AppTheme.shapes.smallRoundedCorners,
@@ -235,46 +243,18 @@ fun AddBirthdayScreen(
         }
 
         if (showDatePicker) {
-            DatePickerDialog(
-                onDismissRequest = { showDatePicker = false },
-                confirmButton = {
-                    TextButton(onClick = {
-                        showDatePicker = false
-                        addBirthdayViewModel.setDate(datePickerState.selectedDateMillis)
-                    }) {
-                        Text(text = "Confirm", color = AppTheme.colors.darkPink)
-                    }
-                },
-                dismissButton = {
-                    TextButton(
-                        onClick = { showDatePicker = false },
-                    ) {
-                        Text(text = "Cancel", color = AppTheme.colors.darkPink)
-                    }
-                },
-            ) {
-                DatePicker(
-                    dateFormatter = DatePickerFormatter(),
-                    modifier = Modifier.padding(top = 16.dp),
-                    state = datePickerState,
-                    showModeToggle = false,
-                    title = null,
-                    colors = DatePickerDefaults.colors(
-                        selectedDayContainerColor = AppTheme.colors.darkPink,
-                        selectedYearContainerColor = AppTheme.colors.darkPink,
-                        todayContentColor = AppTheme.colors.darkPink,
-                        currentYearContentColor = AppTheme.colors.darkPink,
-                        weekdayContentColor = AppTheme.colors.darkPink,
-                        headlineContentColor = AppTheme.colors.darkPink,
-                    ),
-                )
-            }
+            DatePickerComponent(datePickerState = datePickerState, onDismissRequest = { showDatePicker = false }, onConfirmButtonClick = {
+                showDatePicker = false
+                birthdayViewModel.setDate(datePickerState.selectedDateMillis)
+            }, onDismissButtonClick = {
+                showDatePicker = false
+            })
         }
     }
 }
 
 @Composable
 @Preview(showBackground = true)
-fun AddBirthdayScreenPreview() {
-    AddBirthdayScreen(addBirthdayViewModel = getViewModel())
+private fun BirthdayScreenPreview() {
+    BirthdayScreen(birthdayViewModel = getViewModel())
 }

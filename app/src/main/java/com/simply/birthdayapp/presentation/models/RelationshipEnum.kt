@@ -1,12 +1,14 @@
 package com.simply.birthdayapp.presentation.models
 
-enum class RelationshipEnum(val value: String) {
-    BEST_FRIEND("Best friend"),
-    MOTHER("Mother"),
-    FATHER("Father"),
-    GRANDMOTHER("Grandmother"),
-    GRANDFATHER("Grandfather"),
-    BROTHER("Brother"),
-    SISTER("Sister"),
-    UNCLE("Uncle")
+import com.simply.birthdayapp.R
+
+enum class RelationshipEnum(val resId: Int) {
+    BEST_FRIEND(R.string.best_friend),
+    MOTHER(R.string.mother),
+    FATHER(R.string.father),
+    GRANDMOTHER(R.string.grandmother),
+    GRANDFATHER(R.string.father),
+    BROTHER(R.string.brother),
+    SISTER(R.string.sister),
+    UNCLE(R.string.uncle)
 }
