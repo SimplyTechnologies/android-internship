@@ -134,7 +134,7 @@ fun BirthdayScreen(
             modifier = Modifier
                 .padding(top = 30.dp, start = 40.dp)
                 .align(Alignment.Start),
-            text = stringResource(id = R.string.name),
+            text = stringResource(id = R.string.name) + "*",
             style = AppTheme.typography.boldKarmaDarkPink,
             fontSize = 18.sp,
         )
@@ -159,7 +159,7 @@ fun BirthdayScreen(
             modifier = Modifier
                 .padding(top = 30.dp, start = 40.dp)
                 .align(Alignment.Start),
-            text = stringResource(id = R.string.relationship),
+            text = stringResource(id = R.string.relationship) + "*",
             style = AppTheme.typography.boldKarmaDarkPink,
             fontSize = 18.sp,
         )
@@ -204,7 +204,7 @@ fun BirthdayScreen(
                 .padding(top = 20.dp, start = 40.dp)
                 .align(Alignment.Start)
                 .clickable { showDatePicker = true },
-            text = stringResource(id = R.string.date),
+            text = stringResource(id = R.string.date) + "*",
             style = AppTheme.typography.boldKarmaDarkPink,
             fontSize = 18.sp,
         )

@@ -93,7 +93,8 @@ class BirthdayViewModel(
             ).onEach {
                 it.onSuccess { navigateToHomeScreen() }
                 it.onFailure { _createBirthdayError.update { true } }
-            }.catch { _createBirthdayError.update { true } }.flowOn(Dispatchers.Main).collect()
+            }.catch { _createBirthdayError.update { true } }
+                .flowOn(Dispatchers.Main).collect()
         }
     }
 }
