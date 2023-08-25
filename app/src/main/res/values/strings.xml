@@ -10,7 +10,6 @@
     <string name="no_search_results_found">No search results found</string>
     <string name="register">Register</string>
     <string name="sign_in">Sign in</string>
-    <string name="name">Name*</string>
     <string name="relationship">Relationship*</string>
     <string name="date">Date*</string>
     <string name="done">Done</string>
@@ -26,4 +25,19 @@
     <string name="sister">Sister</string>
     <string name="uncle">Uncle</string>
     <string name="fail_to_create_birthday">Fail to create birthday</string>
+    <string name="name">Name</string>
+    <string name="surname">Surname</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="repeat_password">Repeat Password</string>
+    <string name="forgot_password">Forgot password?</string>
+    <string name="remember_password">Remember password</string>
+    <string name="register_email_error">Invalid email*</string>
+    <string name="password_error">Invalid password*</string>
+    <string name="repeat_password_error">Password don\'t match</string>
+    <string name="password_icon_description">password icon</string>
+    <string name="register_success">Register Success</string>
+    <string name="ok">OK</string>
+    <string name="registration_error">Registration Error</string>
+    <string name="network_error">Sorry, an error occurred registering your account, please try again.</string>
 </resources>

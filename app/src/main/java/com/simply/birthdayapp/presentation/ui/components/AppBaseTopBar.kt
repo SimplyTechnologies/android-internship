@@ -32,8 +32,7 @@ fun AppBaseTopBar(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         IconButton(
-            modifier = Modifier
-                .padding(start = 16.dp),
+            modifier = Modifier.padding(start = 16.dp),
             onClick = onBackClick
         ) {
             Icon(
@@ -44,8 +43,7 @@ fun AppBaseTopBar(
             )
         }
         Image(
-            modifier = Modifier
-                .padding(end = 24.dp),
+            modifier = Modifier.padding(end = 24.dp),
             painter = painterResource(R.drawable.logo),
             contentDescription = "logo",
         )
@@ -55,5 +53,5 @@ fun AppBaseTopBar(
 @Preview(showBackground = false)
 @Composable
 private fun AppBaseTopBarPreview() {
-    AppBaseTopBar {}
+    AppBaseTopBar()
 }
