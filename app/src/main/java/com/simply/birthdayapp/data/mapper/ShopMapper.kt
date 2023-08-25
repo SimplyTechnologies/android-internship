@@ -1,4 +1,4 @@
-package com.simply.birthdayapp.data.mappers
+package com.simply.birthdayapp.data.mapper
 
 import android.util.Base64
 import com.simply.birthdayapp.ShopsQuery
