@@ -20,9 +20,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -33,9 +36,13 @@ import com.simply.birthdayapp.presentation.ui.components.LogoTopBar
 import com.simply.birthdayapp.presentation.ui.components.SearchBarComponent
 import com.simply.birthdayapp.presentation.ui.components.ShopCard
 import com.simply.birthdayapp.presentation.ui.theme.AppTheme
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.getViewModel
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, FlowPreview::class)
 @Composable
 fun ShopsScreen(
     shopsViewModel: ShopsViewModel,
@@ -45,25 +52,51 @@ fun ShopsScreen(
     val shops by shopsViewModel.shops.collectAsStateWithLifecycle()
     val scrollPosition by shopsViewModel.scrollPosition.collectAsStateWithLifecycle()
     val searchBarQuery by shopsViewModel.searchBarQuery.collectAsStateWithLifecycle()
+    val numOfShopsLoadingIsFavourite by shopsViewModel.numOfShopsLoadingIsFavourite.collectAsStateWithLifecycle()
     val lastFavouredShopName by shopsViewModel.lastFavouredShopName.collectAsStateWithLifecycle()
+    val lastShopsError by shopsViewModel.lastShopsError.collectAsStateWithLifecycle()
 
+    val focusManager = LocalFocusManager.current
+    val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
     val shopsLazyListState = rememberLazyListState(initialFirstVisibleItemIndex = scrollPosition)
     val pullRefreshState: PullRefreshState = rememberPullRefreshState(
         refreshing = loading,
-        onRefresh = shopsViewModel::onPullRefresh,
+        onRefresh = {
+            if (numOfShopsLoadingIsFavourite == 0) shopsViewModel.onPullRefresh()
+            else coroutineScope.launch {
+                onShowSnackbar(context.getString(R.string.can_not_load_shops_while_updating_favourites))
+            }
+        },
     )
-    val focusManager = LocalFocusManager.current
+
+    LaunchedEffect(shopsLazyListState) {
+        snapshotFlow { shopsLazyListState.firstVisibleItemIndex }
+            .debounce(500L)
+            .collectLatest { shopsViewModel.onScrollPositionChange(it) }
+    }
 
     LaunchedEffect(lastFavouredShopName) {
-        if (lastFavouredShopName == null) return@LaunchedEffect
-        onShowSnackbar("Favoured $lastFavouredShopName")
-        shopsViewModel.clearLastFavouredShopName()
+        val shopName = lastFavouredShopName
+        if (shopName != null) {
+            onShowSnackbar(context.getString(R.string.favoured_shop_with_name_of, shopName))
+            shopsViewModel.clearLastFavouredShopName()
+        }
+    }
+
+    LaunchedEffect(lastShopsError) {
+        val error = lastShopsError
+        if (error != null) {
+            onShowSnackbar(context.getString(error.messageId))
+            shopsViewModel.clearLastShopsError()
+        }
     }
 
     DisposableEffect(Unit) {
         onDispose {
             shopsViewModel.onScrollPositionChange(shopsLazyListState.firstVisibleItemIndex)
             shopsViewModel.clearLastFavouredShopName()
+            shopsViewModel.clearLastShopsError()
         }
     }
 

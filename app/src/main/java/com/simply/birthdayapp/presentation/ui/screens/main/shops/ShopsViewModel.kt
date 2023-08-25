@@ -1,12 +1,10 @@
 package com.simply.birthdayapp.presentation.ui.screens.main.shops
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.simply.birthdayapp.data.repositories.ShopsRepository
 import com.simply.birthdayapp.presentation.models.Shop
-import kotlin.coroutines.CoroutineContext
-import kotlinx.coroutines.CoroutineExceptionHandler
+import com.simply.birthdayapp.presentation.models.ShopsError
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,6 +12,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
@@ -23,10 +22,6 @@ import kotlinx.coroutines.launch
 class ShopsViewModel(
     private val shopsRepository: ShopsRepository,
 ) : ViewModel() {
-    private val ioCatchingCoroutineContext: CoroutineContext = Dispatchers.IO + CoroutineExceptionHandler { _, cause ->
-        Log.d(this::class.java.simpleName, Log.getStackTraceString(cause))
-    }
-
     private var _cachedShops: MutableList<Shop> = mutableListOf()
 
     private val _loading: MutableStateFlow<Boolean> = MutableStateFlow(true)
@@ -41,8 +36,14 @@ class ShopsViewModel(
     private val _searchBarQuery: MutableStateFlow<String> = MutableStateFlow("")
     val searchBarQuery: StateFlow<String> = _searchBarQuery.asStateFlow()
 
+    private val _numOfShopsLoadingIsFavourite: MutableStateFlow<Int> = MutableStateFlow(0)
+    val numOfShopsLoadingIsFavourite: StateFlow<Int> = _numOfShopsLoadingIsFavourite.asStateFlow()
+
     private val _lastFavouredShopName: MutableStateFlow<String?> = MutableStateFlow(null)
     val lastFavouredShopName: StateFlow<String?> = _lastFavouredShopName.asStateFlow()
+
+    private val _lastShopsError: MutableStateFlow<ShopsError?> = MutableStateFlow(null)
+    val lastShopsError: StateFlow<ShopsError?> = _lastShopsError.asStateFlow()
 
     init {
         observeSearchBarQuery()
@@ -58,25 +59,12 @@ class ShopsViewModel(
     }
 
     fun onShopIsFavouriteChange(shop: Shop) {
-        viewModelScope.launch(ioCatchingCoroutineContext) {
-            _cachedShops.indexOfFirst { it.id == shop.id }.takeIf { it != -1 }?.let {
-                _cachedShops[it] = _cachedShops[it].copy(isLoadingFavourite = true)
-                filterShops()
-            }
-            try {
-                if (shop.isFavourite) shopsRepository.removeShopFromFavourites(shop.id)
-                else shopsRepository.addShopToFavourites(shop.id)
-                _cachedShops.indexOfFirst { it.id == shop.id }.takeIf { it != -1 }?.let {
-                    _cachedShops[it] = _cachedShops[it].copy(isFavourite = shop.isFavourite.not())
-                    filterShops()
-                    if (shop.isFavourite.not()) _lastFavouredShopName.update { shop.name }
-                }
-            } finally {
-                _cachedShops.indexOfFirst { it.id == shop.id }.takeIf { it != -1 }?.let {
-                    _cachedShops[it] = _cachedShops[it].copy(isLoadingFavourite = false)
-                    filterShops()
-                }
-            }
+        viewModelScope.launch(Dispatchers.IO) {
+            val cachedShopIndex = _cachedShops.indexOfFirst { it.id == shop.id }.takeIf { it != -1 }
+            setCachedShopIsLoadingFavourite(cachedShopIndex, true)
+            if (shop.isFavourite) removeShopFromFavourites(shop, cachedShopIndex)
+            else addShopToFavourites(shop, cachedShopIndex)
+            setCachedShopIsLoadingFavourite(cachedShopIndex, false)
         }
     }
 
@@ -84,8 +72,53 @@ class ShopsViewModel(
         _lastFavouredShopName.update { null }
     }
 
+    fun clearLastShopsError() {
+        _lastShopsError.update { null }
+    }
+
     fun onPullRefresh() {
         fetchShops()
+    }
+
+    private suspend fun removeShopFromFavourites(
+        shop: Shop,
+        cachedShopIndex: Int?,
+    ) {
+        shopsRepository.removeShopFromFavourites(shop.id)
+            .onSuccess { setCachedShopIsFavourite(cachedShopIndex, false) }
+            .onFailure { _lastShopsError.update { ShopsError.RemoveShopFromFavourites } }
+    }
+
+    private suspend fun addShopToFavourites(
+        shop: Shop,
+        cachedShopIndex: Int?,
+    ) {
+        shopsRepository.addShopToFavourites(shop.id)
+            .onSuccess {
+                setCachedShopIsFavourite(cachedShopIndex, true)
+                _lastFavouredShopName.update { shop.name }
+            }
+            .onFailure { _lastShopsError.update { ShopsError.AddShopToFavourites } }
+    }
+
+    private fun setCachedShopIsLoadingFavourite(
+        cachedShopIndex: Int?,
+        isLoadingFavourite: Boolean,
+    ) {
+        cachedShopIndex?.let {
+            _cachedShops[it] = _cachedShops[it].copy(isLoadingFavourite = isLoadingFavourite)
+            filterShops()
+        }
+    }
+
+    private fun setCachedShopIsFavourite(
+        cachedShopIndex: Int?,
+        isFavourite: Boolean,
+    ) {
+        cachedShopIndex?.let {
+            _cachedShops[it] = _cachedShops[it].copy(isFavourite = isFavourite)
+            filterShops()
+        }
     }
 
     private fun observeSearchBarQuery() {
@@ -93,26 +126,29 @@ class ShopsViewModel(
             .debounce(300L)
             .distinctUntilChanged()
             .onEach { filterShops() }
+            .flowOn(Dispatchers.IO)
             .launchIn(viewModelScope)
     }
 
     private fun fetchShops() {
-        viewModelScope.launch(ioCatchingCoroutineContext) {
+        viewModelScope.launch(Dispatchers.IO) {
             _loading.update { true }
-            try {
-                _cachedShops = shopsRepository.getShops().toMutableList()
-                filterShops()
-            } finally {
-                _loading.update { false }
-            }
+            shopsRepository.getShops()
+                .onSuccess {
+                    _cachedShops = it.toMutableList()
+                    filterShops()
+                }
+                .onFailure { _lastShopsError.update { ShopsError.LoadShops } }
+            _loading.update { false }
         }
     }
 
     private fun filterShops() {
-        viewModelScope.launch(ioCatchingCoroutineContext) {
-            _shops.update {
-                _cachedShops.filter { it.name.lowercase().startsWith(_searchBarQuery.value.lowercase()) }
-            }
+        _shops.update {
+            _cachedShops.filter { it.name.lowercase().startsWith(_searchBarQuery.value.lowercase()) }
+        }
+        _numOfShopsLoadingIsFavourite.update {
+            _cachedShops.count { it.isLoadingFavourite }
         }
     }
 }
