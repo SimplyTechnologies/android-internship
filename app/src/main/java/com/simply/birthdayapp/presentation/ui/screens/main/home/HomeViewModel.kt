@@ -4,9 +4,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.simply.birthdayapp.data.repositories.HomeRepository
 import com.simply.birthdayapp.presentation.models.Birthday
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -32,17 +37,22 @@ class HomeViewModel(
     }
 
     fun setErrorStateFalse() {
-        _errorState.value = false
+        _errorState.update { false }
     }
 
     private fun fetchBirthdays() {
-        viewModelScope.launch {
-            homeRepository.getBirthdays()
-                .onFailure { exception ->
-                    exception.message
-                    _errorState.value = true
+        viewModelScope.launch(Dispatchers.IO) {
+            homeRepository.getBirthdays().onEach {
+                it.onSuccess { birthdayList ->
+                    setErrorStateFalse()
+                    _birthdayList.update { birthdayList }
                 }
-                .onSuccess { birthdays -> _birthdayList.update { birthdays } }
+                it.onFailure {
+                    _errorState.update { true }
+                }
+            }.catch {
+                _errorState.update { true }
+            }.flowOn(Dispatchers.Main).collect()
         }
     }
 }
