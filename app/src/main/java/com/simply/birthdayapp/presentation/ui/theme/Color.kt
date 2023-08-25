@@ -17,6 +17,8 @@ data class AppColors(
         handleColor = Color(0xff963E5A),
         backgroundColor = Color(0xff963E5A),
     ),
+    val disableButtonColor: Color = Color(0xFFFFD3D8),
+    val errorRed: Color = Color(0xFFFF0000)
 )
 
 val LocalAppColors = staticCompositionLocalOf { AppColors() }
