@@ -13,7 +13,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -84,7 +88,9 @@ class BirthdayViewModel(
                     relation = getApplication<Application>().applicationContext.getString(_relationship.value?.resId ?: RelationshipEnum.BEST_FRIEND.resId),
                     date = _date.value.toString(),
                 ),
-            ).onFailure { _createBirthdayError.value = true }
+            ).onEach {
+                it.onFailure { _createBirthdayError.update { true } }
+            }.catch { _createBirthdayError.update { true } }.flowOn(Dispatchers.Main).collect()
         }
     }
 }

@@ -4,30 +4,25 @@ import com.apollographql.apollo3.ApolloClient
 import com.simply.birthdayapp.CreateBirthdayMutation
 import com.simply.birthdayapp.data.entities.CreateBirthdayEntity
 import com.simply.birthdayapp.data.mappers.toCreateBirthdayInput
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 interface BirthdayRepository {
-    suspend fun createBirthday(createBirthday: CreateBirthdayEntity): Result<Unit>
+    suspend fun createBirthday(createBirthday: CreateBirthdayEntity): Flow<Result<Unit>>
 }
 
 class BirthdayRepositoryImpl(
     private val apolloClient: ApolloClient,
 ) : BirthdayRepository {
-    override suspend fun createBirthday(createBirthday: CreateBirthdayEntity): Result<Unit> = withContext(Dispatchers.IO) {
-        val response = try {
-            apolloClient.mutation(CreateBirthdayMutation(createBirthday.toCreateBirthdayInput())).execute()
-        } catch (e: Exception) {
-            return@withContext Result.failure(e)
-        }
-
+    override suspend fun createBirthday(createBirthday: CreateBirthdayEntity): Flow<Result<Unit>> = flow {
+        val response = apolloClient.mutation(CreateBirthdayMutation(createBirthday.toCreateBirthdayInput())).execute()
         if (response.hasErrors()) {
-            return@withContext Result.failure(Exception())
+            emit(Result.failure(Throwable(response.errors?.firstOrNull()?.message)))
         } else {
             if (response.data == null) {
-                return@withContext Result.failure(Exception())
+                emit(Result.failure(Exception()))
             } else {
-                return@withContext Result.success(Unit)
+                emit(Result.success(Unit))
             }
         }
     }
