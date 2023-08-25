@@ -34,7 +34,7 @@ fun LandingScreen(
         Image(
             painter = painterResource(R.drawable.logo),
             contentDescription = "Logo",
-            modifier = Modifier.size(200.dp)
+            modifier = Modifier.size(200.dp),
         )
         LandingButton(
             shape = AppTheme.shapes.risingStartRoundedEndCorners,

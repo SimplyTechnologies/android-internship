@@ -18,4 +18,19 @@
     <string name="failed_to_load_shops">Failed to load shops</string>
     <string name="favoured_shop_with_name_of">Favoured %1$s</string>
     <string name="can_not_load_shops_while_updating_favourites">Can not load shops while updating favourites</string>
+    <string name="name">Name</string>
+    <string name="surname">Surname</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="repeat_password">Repeat Password</string>
+    <string name="forgot_password">Forgot password?</string>
+    <string name="remember_password">Remember password</string>
+    <string name="register_email_error">Invalid email*</string>
+    <string name="password_error">Invalid password*</string>
+    <string name="repeat_password_error">Password don\'t match</string>
+    <string name="password_icon_description">password icon</string>
+    <string name="register_success">Register Success</string>
+    <string name="ok">OK</string>
+    <string name="registration_error">Registration Error</string>
+    <string name="network_error">Sorry, an error occurred registering your account, please try again.</string>
 </resources>
