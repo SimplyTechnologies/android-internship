@@ -44,6 +44,8 @@ fun ShopCard(
                 modifier = Modifier.size(70.dp),
                 data = shop.image,
                 contentDescription = shop.name,
+                borderColor = AppTheme.colors.darkPink,
+                borderWidth = 1.dp,
             )
             Text(
                 modifier = Modifier

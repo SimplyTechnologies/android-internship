@@ -7,6 +7,7 @@ import androidx.compose.runtime.remember
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.simply.birthdayapp.presentation.ui.screens.main.home.HomeMainScreen
 import com.simply.birthdayapp.presentation.ui.screens.main.shops.ShopsMainScreen
 import com.simply.birthdayapp.presentation.ui.screens.main.shops.ShopsViewModel
 import org.koin.androidx.compose.getViewModel
@@ -30,7 +31,7 @@ fun MainScreen(shopsViewModel: ShopsViewModel = getViewModel()) {
             navController = bottomBarNavController,
             startDestination = BottomBarDestination.HomeMainScreen.route,
         ) {
-            composable(BottomBarDestination.HomeMainScreen.route) { }
+            composable(BottomBarDestination.HomeMainScreen.route) { HomeMainScreen() }
 
             composable(BottomBarDestination.ShopsMainScreen.route) {
                 ShopsMainScreen(
