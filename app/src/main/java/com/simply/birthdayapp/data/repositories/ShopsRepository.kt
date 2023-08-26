@@ -8,63 +8,44 @@ import com.simply.birthdayapp.data.mappers.toShop
 import com.simply.birthdayapp.presentation.models.Shop
 import com.simply.birthdayapp.type.ShopFilter
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 
 interface ShopsRepository {
-    suspend fun getShops(): Result<List<Shop>>
-    suspend fun addShopToFavourites(shopId: Int): Result<Int>
-    suspend fun removeShopFromFavourites(shopId: Int): Result<Int>
+    fun getShops(): Flow<Result<List<Shop>>>
+    fun addShopToFavourites(shopId: Int): Flow<Result<Int>>
+    fun removeShopFromFavourites(shopId: Int): Flow<Result<Int>>
 }
 
 class ShopsRepositoryImpl(
     private val apolloClient: ApolloClient,
 ) : ShopsRepository {
-    override suspend fun getShops(): Result<List<Shop>> = withContext(Dispatchers.IO) {
-        val response = try {
-            apolloClient.query(ShopsQuery(ShopFilter())).execute()
-        } catch (e: Exception) {
-            return@withContext Result.failure(e)
-        }
-        if (response.hasErrors()) {
-            return@withContext Result.failure(Exception())
-        } else {
-            return@withContext Result.success(response.data?.shops?.map(ShopsQuery.Shop::toShop) ?: emptyList())
-        }
-    }
+    override fun getShops(): Flow<Result<List<Shop>>> = flow {
+        val response = apolloClient.query(ShopsQuery(ShopFilter())).execute()
+        if (response.hasErrors()) emit(Result.failure(Throwable()))
+        else emit(Result.success(response.data?.shops?.map(ShopsQuery.Shop::toShop) ?: emptyList()))
+    }.flowOn(Dispatchers.IO)
 
-    override suspend fun addShopToFavourites(shopId: Int): Result<Int> = withContext(Dispatchers.IO) {
-        val response = try {
-            apolloClient.mutation(AddShopToFavouriteMutation(shopId)).execute()
-        } catch (e: Exception) {
-            return@withContext Result.failure(e)
-        }
+    override fun addShopToFavourites(shopId: Int): Flow<Result<Int>> = flow {
+        val response = apolloClient.mutation(AddShopToFavouriteMutation(shopId)).execute()
         if (response.hasErrors()) {
-            return@withContext Result.failure(Exception())
+            emit(Result.failure(Throwable()))
         } else {
             val responseShopId = response.data?.addShopToFavorite?.shopId
-            if (responseShopId == null) {
-                return@withContext Result.failure(Exception())
-            } else {
-                return@withContext Result.success(responseShopId)
-            }
+            if (responseShopId == null) emit(Result.failure(Throwable()))
+            else emit(Result.success(responseShopId))
         }
-    }
+    }.flowOn(Dispatchers.IO)
 
-    override suspend fun removeShopFromFavourites(shopId: Int): Result<Int> = withContext(Dispatchers.IO) {
-        val response = try {
-            apolloClient.mutation(RemoveShopFromFavouriteMutation(shopId)).execute()
-        } catch (e: Exception) {
-            return@withContext Result.failure(e)
-        }
+    override fun removeShopFromFavourites(shopId: Int): Flow<Result<Int>> = flow {
+        val response = apolloClient.mutation(RemoveShopFromFavouriteMutation(shopId)).execute()
         if (response.hasErrors()) {
-            return@withContext Result.failure(Exception())
+            emit(Result.failure(Throwable()))
         } else {
             val responseShopId = response.data?.removeShopFromFavorite?.shopId
-            if (responseShopId == null) {
-                return@withContext Result.failure(Exception())
-            } else {
-                return@withContext Result.success(responseShopId)
-            }
+            if (responseShopId == null) emit(Result.failure(Throwable()))
+            else emit(Result.success(responseShopId))
         }
-    }
+    }.flowOn(Dispatchers.IO)
 }

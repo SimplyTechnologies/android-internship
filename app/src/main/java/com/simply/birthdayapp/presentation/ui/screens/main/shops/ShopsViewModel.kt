@@ -10,13 +10,17 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @OptIn(FlowPreview::class)
 class ShopsViewModel(
@@ -61,10 +65,8 @@ class ShopsViewModel(
     fun onShopIsFavouriteChange(shop: Shop) {
         viewModelScope.launch(Dispatchers.IO) {
             val cachedShopIndex = _cachedShops.indexOfFirst { it.id == shop.id }.takeIf { it != -1 }
-            setCachedShopIsLoadingFavourite(cachedShopIndex, true)
             if (shop.isFavourite) removeShopFromFavourites(shop, cachedShopIndex)
             else addShopToFavourites(shop, cachedShopIndex)
-            setCachedShopIsLoadingFavourite(cachedShopIndex, false)
         }
     }
 
@@ -80,47 +82,6 @@ class ShopsViewModel(
         fetchShops()
     }
 
-    private suspend fun removeShopFromFavourites(
-        shop: Shop,
-        cachedShopIndex: Int?,
-    ) {
-        shopsRepository.removeShopFromFavourites(shop.id)
-            .onSuccess { setCachedShopIsFavourite(cachedShopIndex, false) }
-            .onFailure { _lastShopsError.update { ShopsError.RemoveShopFromFavourites } }
-    }
-
-    private suspend fun addShopToFavourites(
-        shop: Shop,
-        cachedShopIndex: Int?,
-    ) {
-        shopsRepository.addShopToFavourites(shop.id)
-            .onSuccess {
-                setCachedShopIsFavourite(cachedShopIndex, true)
-                _lastFavouredShopName.update { shop.name }
-            }
-            .onFailure { _lastShopsError.update { ShopsError.AddShopToFavourites } }
-    }
-
-    private fun setCachedShopIsLoadingFavourite(
-        cachedShopIndex: Int?,
-        isLoadingFavourite: Boolean,
-    ) {
-        cachedShopIndex?.let {
-            _cachedShops[it] = _cachedShops[it].copy(isLoadingFavourite = isLoadingFavourite)
-            filterShops()
-        }
-    }
-
-    private fun setCachedShopIsFavourite(
-        cachedShopIndex: Int?,
-        isFavourite: Boolean,
-    ) {
-        cachedShopIndex?.let {
-            _cachedShops[it] = _cachedShops[it].copy(isFavourite = isFavourite)
-            filterShops()
-        }
-    }
-
     private fun observeSearchBarQuery() {
         _searchBarQuery
             .debounce(300L)
@@ -131,19 +92,77 @@ class ShopsViewModel(
     }
 
     private fun fetchShops() {
-        viewModelScope.launch(Dispatchers.IO) {
-            _loading.update { true }
-            shopsRepository.getShops()
-                .onSuccess {
+        shopsRepository.getShops()
+            .onStart { _loading.update { true } }
+            .onCompletion { _loading.update { false } }
+            .onEach { result ->
+                result.onSuccess {
                     _cachedShops = it.toMutableList()
                     filterShops()
                 }
-                .onFailure { _lastShopsError.update { ShopsError.LoadShops } }
-            _loading.update { false }
+                result.onFailure { _lastShopsError.update { ShopsError.LoadShops } }
+            }
+            .catch { _lastShopsError.update { ShopsError.LoadShops } }
+            .flowOn(Dispatchers.IO)
+            .launchIn(viewModelScope)
+    }
+
+    private fun addShopToFavourites(
+        shop: Shop,
+        cachedShopIndex: Int?,
+    ) {
+        shopsRepository.addShopToFavourites(shop.id)
+            .onStart { setCachedShopIsLoadingFavourite(cachedShopIndex, true) }
+            .onCompletion { setCachedShopIsLoadingFavourite(cachedShopIndex, false) }
+            .onEach { result ->
+                result.onSuccess {
+                    setCachedShopIsFavourite(cachedShopIndex, true)
+                    _lastFavouredShopName.update { shop.name }
+                }
+                result.onFailure { _lastShopsError.update { ShopsError.AddShopToFavourites } }
+            }
+            .catch { _lastShopsError.update { ShopsError.AddShopToFavourites } }
+            .flowOn(Dispatchers.IO)
+            .launchIn(viewModelScope)
+    }
+
+    private fun removeShopFromFavourites(
+        shop: Shop,
+        cachedShopIndex: Int?,
+    ) {
+        shopsRepository.removeShopFromFavourites(shop.id)
+            .onStart { setCachedShopIsLoadingFavourite(cachedShopIndex, true) }
+            .onCompletion { setCachedShopIsLoadingFavourite(cachedShopIndex, false) }
+            .onEach { result ->
+                result.onSuccess { setCachedShopIsFavourite(cachedShopIndex, false) }
+                result.onFailure { _lastShopsError.update { ShopsError.RemoveShopFromFavourites } }
+            }
+            .catch { _lastShopsError.update { ShopsError.RemoveShopFromFavourites } }
+            .flowOn(Dispatchers.IO)
+            .launchIn(viewModelScope)
+    }
+
+    private suspend fun setCachedShopIsLoadingFavourite(
+        cachedShopIndex: Int?,
+        isLoadingFavourite: Boolean,
+    ) = withContext(Dispatchers.IO) {
+        cachedShopIndex?.let {
+            _cachedShops[it] = _cachedShops[it].copy(isLoadingFavourite = isLoadingFavourite)
+            filterShops()
         }
     }
 
-    private fun filterShops() {
+    private suspend fun setCachedShopIsFavourite(
+        cachedShopIndex: Int?,
+        isFavourite: Boolean,
+    ) = withContext(Dispatchers.IO) {
+        cachedShopIndex?.let {
+            _cachedShops[it] = _cachedShops[it].copy(isFavourite = isFavourite)
+            filterShops()
+        }
+    }
+
+    private suspend fun filterShops() = withContext(Dispatchers.IO) {
         _shops.update {
             _cachedShops.filter { it.name.lowercase().startsWith(_searchBarQuery.value.lowercase()) }
         }
