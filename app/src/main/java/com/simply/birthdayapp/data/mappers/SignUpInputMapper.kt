@@ -1,6 +1,6 @@
-package com.simply.birthdayapp.data.mapper
+package com.simply.birthdayapp.data.mappers
 
-import com.simply.birthdayapp.data.entity.RegisterInputEntity
+import com.simply.birthdayapp.data.entities.RegisterInputEntity
 import com.simply.birthdayapp.type.SignUpInput
 
 fun RegisterInputEntity.toSineUpInput(): SignUpInput {

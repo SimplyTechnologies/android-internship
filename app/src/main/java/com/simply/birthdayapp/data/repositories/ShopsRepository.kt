@@ -4,7 +4,7 @@ import com.apollographql.apollo3.ApolloClient
 import com.simply.birthdayapp.AddShopToFavouriteMutation
 import com.simply.birthdayapp.RemoveShopFromFavouriteMutation
 import com.simply.birthdayapp.ShopsQuery
-import com.simply.birthdayapp.data.mapper.toShop
+import com.simply.birthdayapp.data.mappers.toShop
 import com.simply.birthdayapp.presentation.models.Shop
 import com.simply.birthdayapp.type.ShopFilter
 import kotlinx.coroutines.Dispatchers

@@ -2,10 +2,10 @@ package com.simply.birthdayapp.data.repositories
 
 import com.apollographql.apollo3.ApolloClient
 import com.simply.birthdayapp.SignUpMutation
-import com.simply.birthdayapp.data.entity.RegisterInputEntity
-import com.simply.birthdayapp.data.entity.RegisteredUserEntity
-import com.simply.birthdayapp.data.mapper.toRegisteredUser
-import com.simply.birthdayapp.data.mapper.toSineUpInput
+import com.simply.birthdayapp.data.entities.RegisterInputEntity
+import com.simply.birthdayapp.data.entities.RegisteredUserEntity
+import com.simply.birthdayapp.data.mappers.toRegisteredUser
+import com.simply.birthdayapp.data.mappers.toSineUpInput
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
