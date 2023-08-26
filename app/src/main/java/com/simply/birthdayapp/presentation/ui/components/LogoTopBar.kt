@@ -29,7 +29,7 @@ fun LogoTopBar(
     ) {
         Image(
             modifier = Modifier
-                .width(80.dp)
+                .width(88.dp)
                 .height(40.dp),
             painter = painterResource(id = R.drawable.logo),
             contentDescription = stringResource(R.string.birthday_app_logo),

@@ -46,8 +46,7 @@ fun BottomNavBarScaffold(
                     Text(
                         modifier = Modifier.padding(20.dp),
                         text = it.visuals.message,
-                        color = AppTheme.colors.white,
-                        style = AppTheme.typography.medium,
+                        style = AppTheme.typography.mediumKarmaWhite,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                     )

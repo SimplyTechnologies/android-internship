@@ -20,6 +20,14 @@ data class AppTypography(
         fontFamily = FontFamily(Font(R.font.karma_bold)),
         color = Color(0xFF000000),
     ),
+    val mediumKarmaGray: TextStyle = TextStyle(
+        fontFamily = FontFamily(Font(R.font.karma_medium)),
+        color = Color(0xFF929292),
+    ),
+    val mediumKarmaWhite: TextStyle = TextStyle(
+        fontFamily = FontFamily(Font(R.font.karma_medium)),
+        color = Color(0xFFFFFFFF),
+    ),
 )
 
 val LocalAppTypography = staticCompositionLocalOf { AppTypography() }

@@ -19,6 +19,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.simply.birthdayapp.R
 import com.simply.birthdayapp.presentation.models.Shop
 import com.simply.birthdayapp.presentation.ui.theme.AppTheme
@@ -52,9 +53,9 @@ fun ShopCard(
                     .weight(1f)
                     .padding(horizontal = 15.dp),
                 text = shop.name,
-                color = AppTheme.colors.black,
-                style = AppTheme.typography.bold,
-                maxLines = 3,
+                fontSize = 20.sp,
+                style = AppTheme.typography.boldKarmaBlack,
+                maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
             )
             if (shop.isLoadingFavourite) {
