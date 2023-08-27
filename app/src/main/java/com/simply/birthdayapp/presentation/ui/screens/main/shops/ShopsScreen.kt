@@ -37,6 +37,7 @@ import com.simply.birthdayapp.presentation.ui.components.LogoTopBar
 import com.simply.birthdayapp.presentation.ui.components.SearchBarComponent
 import com.simply.birthdayapp.presentation.ui.components.ShopCard
 import com.simply.birthdayapp.presentation.ui.screens.main.LocalSnackbarHostState
+import com.simply.birthdayapp.presentation.ui.screens.main.shops.details.ShopDetailsViewModel
 import com.simply.birthdayapp.presentation.ui.theme.AppTheme
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collectLatest
@@ -46,7 +47,11 @@ import org.koin.androidx.compose.getViewModel
 
 @OptIn(ExperimentalMaterialApi::class, FlowPreview::class)
 @Composable
-fun ShopsScreen(shopsViewModel: ShopsViewModel) {
+fun ShopsScreen(
+    shopsViewModel: ShopsViewModel,
+    shopDetailsViewModel: ShopDetailsViewModel,
+    navToShopDetails: () -> Unit = {},
+) {
     val loading by shopsViewModel.loading.collectAsStateWithLifecycle()
     val shops by shopsViewModel.shops.collectAsStateWithLifecycle()
     val scrollPosition by shopsViewModel.scrollPosition.collectAsStateWithLifecycle()
@@ -148,8 +153,7 @@ fun ShopsScreen(shopsViewModel: ShopsViewModel) {
                     shops.isEmpty() -> item {
                         Text(
                             text = stringResource(R.string.no_search_results_found),
-                            color = AppTheme.colors.darkPink,
-                            style = AppTheme.typography.medium,
+                            style = AppTheme.typography.mediumKarmaDarkPink,
                         )
                     }
 
@@ -157,6 +161,10 @@ fun ShopsScreen(shopsViewModel: ShopsViewModel) {
                         ShopCard(
                             shop = shop,
                             onIsFavouriteChange = shopsViewModel::onShopIsFavouriteChange,
+                            onClick = {
+                                shopDetailsViewModel.setLastClickedShop(shop)
+                                navToShopDetails()
+                            },
                         )
                     }
                 }
@@ -175,5 +183,8 @@ fun ShopsScreen(shopsViewModel: ShopsViewModel) {
 @Preview
 @Composable
 private fun ShopsScreenPreview() {
-    ShopsScreen(shopsViewModel = getViewModel())
+    ShopsScreen(
+        shopsViewModel = getViewModel(),
+        shopDetailsViewModel = getViewModel(),
+    )
 }

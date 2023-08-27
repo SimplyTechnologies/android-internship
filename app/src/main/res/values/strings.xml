@@ -49,4 +49,12 @@
     <string name="ok">OK</string>
     <string name="registration_error">Registration Error</string>
     <string name="network_error">Sorry, an error occurred registering your account, please try again.</string>
+    <string name="shop_website">Shop website</string>
+    <string name="shop_phone">Phone: %1$s</string>
+    <string name="not_specified">not specified</string>
+    <string name="shop_address">"Address: "</string>
+    <string name="google_maps_search_query"><![CDATA[https://www.google.com/maps/search/?api=1&query=%1$s]]></string>
+    <string name="shop_website_not_specified">Shop website not specified</string>
+    <string name="could_not_load_shop_details">Could not load shop details</string>
+    <string name="url_annotated_string_tag">url</string>
 </resources>

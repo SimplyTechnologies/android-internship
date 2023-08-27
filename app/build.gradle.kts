@@ -88,7 +88,7 @@ dependencies {
     // navigation
     implementation("androidx.navigation:navigation-compose:2.7.1")
     // lifecycle
-     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.1")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.1")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
     // material icons
     implementation("androidx.compose.material:material-icons-extended:1.5.0")
