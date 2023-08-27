@@ -10,10 +10,7 @@ sealed class ShopsDestination(val route: String) {
 }
 
 @Composable
-fun ShopsMainScreen(
-    shopsViewModel: ShopsViewModel,
-    onShowSnackbar: suspend (String) -> Unit,
-) {
+fun ShopsMainScreen(shopsViewModel: ShopsViewModel) {
     val shopsNavController = rememberNavController()
 
     NavHost(
@@ -21,10 +18,7 @@ fun ShopsMainScreen(
         startDestination = ShopsDestination.ShopsScreen.route,
     ) {
         composable(ShopsDestination.ShopsScreen.route) {
-            ShopsScreen(
-                shopsViewModel = shopsViewModel,
-                onShowSnackbar = onShowSnackbar,
-            )
+            ShopsScreen(shopsViewModel = shopsViewModel)
         }
     }
 }

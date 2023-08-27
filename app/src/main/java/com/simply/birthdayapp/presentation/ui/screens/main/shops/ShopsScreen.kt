@@ -15,6 +15,7 @@ import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.PullRefreshState
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -35,6 +36,7 @@ import com.simply.birthdayapp.R
 import com.simply.birthdayapp.presentation.ui.components.LogoTopBar
 import com.simply.birthdayapp.presentation.ui.components.SearchBarComponent
 import com.simply.birthdayapp.presentation.ui.components.ShopCard
+import com.simply.birthdayapp.presentation.ui.screens.main.LocalSnackbarHostState
 import com.simply.birthdayapp.presentation.ui.theme.AppTheme
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collectLatest
@@ -44,10 +46,7 @@ import org.koin.androidx.compose.getViewModel
 
 @OptIn(ExperimentalMaterialApi::class, FlowPreview::class)
 @Composable
-fun ShopsScreen(
-    shopsViewModel: ShopsViewModel,
-    onShowSnackbar: suspend (String) -> Unit = {},
-) {
+fun ShopsScreen(shopsViewModel: ShopsViewModel) {
     val loading by shopsViewModel.loading.collectAsStateWithLifecycle()
     val shops by shopsViewModel.shops.collectAsStateWithLifecycle()
     val scrollPosition by shopsViewModel.scrollPosition.collectAsStateWithLifecycle()
@@ -58,6 +57,7 @@ fun ShopsScreen(
 
     val focusManager = LocalFocusManager.current
     val context = LocalContext.current
+    val snackbarHostState = LocalSnackbarHostState.current
     val coroutineScope = rememberCoroutineScope()
     val shopsLazyListState = rememberLazyListState(initialFirstVisibleItemIndex = scrollPosition)
     val pullRefreshState: PullRefreshState = rememberPullRefreshState(
@@ -65,7 +65,11 @@ fun ShopsScreen(
         onRefresh = {
             if (numOfShopsLoadingIsFavourite == 0) shopsViewModel.onPullRefresh()
             else coroutineScope.launch {
-                onShowSnackbar(context.getString(R.string.can_not_load_shops_while_updating_favourites))
+                snackbarHostState.currentSnackbarData?.dismiss()
+                snackbarHostState.showSnackbar(
+                    message = context.getString(R.string.can_not_load_shops_while_updating_favourites),
+                    duration = SnackbarDuration.Short,
+                )
             }
         },
     )
@@ -79,7 +83,11 @@ fun ShopsScreen(
     LaunchedEffect(lastFavouredShopName) {
         val shopName = lastFavouredShopName
         if (shopName != null) {
-            onShowSnackbar(context.getString(R.string.favoured_shop_with_name_of, shopName))
+            snackbarHostState.currentSnackbarData?.dismiss()
+            snackbarHostState.showSnackbar(
+                message = context.getString(R.string.favoured_shop_with_name_of, shopName),
+                duration = SnackbarDuration.Short,
+            )
             shopsViewModel.clearLastFavouredShopName()
         }
     }
@@ -87,7 +95,11 @@ fun ShopsScreen(
     LaunchedEffect(lastShopsError) {
         val error = lastShopsError
         if (error != null) {
-            onShowSnackbar(context.getString(error.messageId))
+            snackbarHostState.currentSnackbarData?.dismiss()
+            snackbarHostState.showSnackbar(
+                message = context.getString(error.messageId),
+                duration = SnackbarDuration.Short,
+            )
             shopsViewModel.clearLastShopsError()
         }
     }

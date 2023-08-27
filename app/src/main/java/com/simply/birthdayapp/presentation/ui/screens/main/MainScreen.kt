@@ -1,9 +1,6 @@
 package com.simply.birthdayapp.presentation.ui.screens.main
 
-import androidx.compose.material3.SnackbarDuration
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -21,12 +18,8 @@ sealed class BottomBarDestination(val route: String) {
 @Composable
 fun MainScreen(shopsViewModel: ShopsViewModel = getViewModel()) {
     val bottomBarNavController = rememberNavController()
-    val snackbarHostState = remember { SnackbarHostState() }
 
-    BottomNavBarScaffold(
-        bottomBarNavController = bottomBarNavController,
-        snackbarHostState = snackbarHostState,
-    ) {
+    BottomNavBarScaffold(bottomBarNavController = bottomBarNavController) {
         NavHost(
             navController = bottomBarNavController,
             startDestination = BottomBarDestination.HomeMainScreen.route,
@@ -34,16 +27,7 @@ fun MainScreen(shopsViewModel: ShopsViewModel = getViewModel()) {
             composable(BottomBarDestination.HomeMainScreen.route) { HomeMainScreen() }
 
             composable(BottomBarDestination.ShopsMainScreen.route) {
-                ShopsMainScreen(
-                    shopsViewModel = shopsViewModel,
-                    onShowSnackbar = { message ->
-                        snackbarHostState.currentSnackbarData?.dismiss()
-                        snackbarHostState.showSnackbar(
-                            message = message,
-                            duration = SnackbarDuration.Short,
-                        )
-                    },
-                )
+                ShopsMainScreen(shopsViewModel = shopsViewModel)
             }
 
             composable(BottomBarDestination.ProfileMainScreen.route) { }
