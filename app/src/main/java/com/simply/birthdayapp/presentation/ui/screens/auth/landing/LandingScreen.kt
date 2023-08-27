@@ -16,7 +16,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.simply.birthdayapp.R
 import com.simply.birthdayapp.presentation.ui.components.LandingButton
+import com.simply.birthdayapp.presentation.ui.screens.auth.AuthMainViewModel
 import com.simply.birthdayapp.presentation.ui.theme.AppTheme
+import org.koin.androidx.compose.getViewModel
 
 @Composable
 fun LandingScreen(

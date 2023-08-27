@@ -24,5 +24,11 @@
     <string name="register_success">Register Success</string>
     <string name="ok">OK</string>
     <string name="registration_error">Registration Error</string>
+    <string name="sign_in_error">Sign in Error</string>
     <string name="network_error">Sorry, an error occurred registering your account, please try again.</string>
+    <string name="get_the_code">Get The Code</string>
+    <string name="set_new_password">Set New Password</string>
+    <string name="done">Done</string>
+    <string name="login_success">Login Success</string>
+    <string name="get_code_success">Get Code Success</string>
 </resources>

@@ -19,20 +19,18 @@ import com.simply.birthdayapp.presentation.ui.theme.AppTheme
 
 @Composable
 fun AuthButton(
+    modifier:Modifier = Modifier,
+    fontFamily :FontFamily = FontFamily(Font(R.font.karm_light)),
     shape: RoundedCornerShape,
     buttonTitle: String,
     backgroundColor: Color = AppTheme.colors.lightPink,
     textColor: Color = AppTheme.colors.darkPink,
-
     enabled: Boolean = true,
     disabledContainerColor: Color = AppTheme.colors.disableButtonColor,
     onClick: () -> Unit = {}
 ) {
     Button(
-        modifier = Modifier
-            .padding(horizontal = 32.dp, vertical = 16.dp)
-            .height(51.dp)
-            .fillMaxWidth(),
+        modifier = modifier,
         shape = shape,
         enabled = enabled,
         onClick = onClick,
@@ -44,7 +42,7 @@ fun AuthButton(
         Text(
             text = buttonTitle,
             color = textColor,
-            fontFamily = FontFamily(Font(R.font.karm_light)),
+            fontFamily = fontFamily,
         )
     }
 }
