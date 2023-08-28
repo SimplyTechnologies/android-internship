@@ -14,7 +14,7 @@ fun ShopsQuery.Shop.toShop(): Shop = Shop(
         byteArrayOf()
     },
     isFavourite = isFavorite ?: false,
-    formattedPhone = phone?.chunked(3)?.joinToString(" - "),
+    formattedPhoneNumber = phone?.chunked(3)?.joinToString(" - "),
     address = address,
     addressQuery = address.replace(' ', '+'),
     website = url,

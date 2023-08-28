@@ -6,7 +6,7 @@ data class Shop(
     val image: ByteArray,
     val isFavourite: Boolean,
     val isLoadingFavourite: Boolean = false,
-    val formattedPhone: String?,
+    val formattedPhoneNumber: String?,
     val address: String,
     val addressQuery: String,
     val website: String?,

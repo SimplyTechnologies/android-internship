@@ -30,11 +30,24 @@ fun ShopDetails(shop: Shop) {
     val context = LocalContext.current
     val uriHandler = LocalUriHandler.current
 
+    val phoneNumberAnnotatedString = buildAnnotatedString {
+        if (shop.formattedPhoneNumber == null) {
+            withStyle(AppTheme.typography.urlPrefix) { append(stringResource(R.string.shop_phone_number_not_specified)) }
+        } else {
+            withStyle(AppTheme.typography.urlPrefix) { append(stringResource(R.string.shop_phone_number)) }
+            pushStringAnnotation(
+                tag = stringResource(R.string.url_annotated_string_tag),
+                annotation = stringResource(id = R.string.tel_url, shop.formattedPhoneNumber),
+            )
+            withStyle(AppTheme.typography.url) { append(shop.formattedPhoneNumber) }
+            pop()
+        }
+    }
     val addressAnnotatedString = buildAnnotatedString {
         withStyle(AppTheme.typography.urlPrefix) { append(stringResource(R.string.shop_address)) }
         pushStringAnnotation(
             tag = stringResource(R.string.url_annotated_string_tag),
-            annotation = stringResource(id = R.string.google_maps_search_query, shop.addressQuery),
+            annotation = stringResource(id = R.string.google_maps_search_url, shop.addressQuery),
         )
         withStyle(AppTheme.typography.url) { append(shop.address) }
         pop()
@@ -72,13 +85,13 @@ fun ShopDetails(shop: Shop) {
             style = AppTheme.typography.boldKarmaBlack,
             textAlign = TextAlign.Center,
         )
-        Text(
-            text = stringResource(
-                id = R.string.shop_phone,
-                shop.formattedPhone ?: stringResource(R.string.not_specified),
-            ),
-            fontSize = 20.sp,
-            style = AppTheme.typography.boldKarmaBlack,
+        ClickableText(
+            text = phoneNumberAnnotatedString,
+            onClick = {
+                phoneNumberAnnotatedString
+                    .getStringAnnotations(context.getString(R.string.url_annotated_string_tag), it, it)
+                    .firstOrNull()?.let { stringAnnotation -> uriHandler.openUri(stringAnnotation.item) }
+            },
         )
         ClickableText(
             text = addressAnnotatedString,
@@ -109,7 +122,7 @@ private fun ShopDetailsPreview() {
         name = "Kitten",
         image = byteArrayOf(),
         isFavourite = false,
-        formattedPhone = "111 - 222 - 333",
+        formattedPhoneNumber = "111 - 222 - 333",
         address = "Cat cafe",
         addressQuery = "Cat+cafe",
         website = "",

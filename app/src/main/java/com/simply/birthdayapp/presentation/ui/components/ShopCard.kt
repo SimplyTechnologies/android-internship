@@ -97,7 +97,7 @@ private fun ShopCardPreview() {
         name = "Kitten",
         image = byteArrayOf(),
         isFavourite = false,
-        formattedPhone = null,
+        formattedPhoneNumber = null,
         address = "",
         addressQuery = "",
         website = null,
