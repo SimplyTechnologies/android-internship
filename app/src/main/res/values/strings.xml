@@ -58,4 +58,6 @@
     <string name="shop_website_not_specified">Shop website not specified</string>
     <string name="could_not_load_shop_details">Could not load shop details</string>
     <string name="url_annotated_string_tag">url</string>
+    <string name="shops_related_error">Shops Related Error</string>
+    <string name="dismiss">Dismiss</string>
 </resources>

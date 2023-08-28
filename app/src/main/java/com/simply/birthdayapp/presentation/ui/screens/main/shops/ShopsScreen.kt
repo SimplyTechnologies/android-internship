@@ -57,7 +57,8 @@ fun ShopsScreen(
     val searchBarQuery by shopsViewModel.searchBarQuery.collectAsStateWithLifecycle()
     val numOfShopsLoadingIsFavourite by shopsViewModel.numOfShopsLoadingIsFavourite.collectAsStateWithLifecycle()
     val lastFavouredShopName by shopsViewModel.lastFavouredShopName.collectAsStateWithLifecycle()
-    val lastShopsError by shopsViewModel.lastShopsError.collectAsStateWithLifecycle()
+    val lastNetworkErrorMessage by shopsViewModel.lastNetworkErrorMessage.collectAsStateWithLifecycle()
+    val lastGeneralError by shopsViewModel.lastGeneralError.collectAsStateWithLifecycle()
 
     val focusManager = LocalFocusManager.current
     val context = LocalContext.current
@@ -95,14 +96,14 @@ fun ShopsScreen(
         }
     }
 
-    LaunchedEffect(lastShopsError) {
-        lastShopsError?.let {
+    LaunchedEffect(lastNetworkErrorMessage) {
+        lastNetworkErrorMessage?.let {
             snackbarHostState.currentSnackbarData?.dismiss()
             snackbarHostState.showSnackbar(
-                message = context.getString(it.messageId),
+                message = it,
                 duration = SnackbarDuration.Short,
             )
-            shopsViewModel.clearLastShopsError()
+            shopsViewModel.clearLastNetworkErrorMessage()
         }
     }
 
@@ -110,8 +111,16 @@ fun ShopsScreen(
         onDispose {
             shopsViewModel.onScrollPositionChange(shopsLazyListState.firstVisibleItemIndex)
             shopsViewModel.clearLastFavouredShopName()
-            shopsViewModel.clearLastShopsError()
+            shopsViewModel.clearLastNetworkErrorMessage()
+            shopsViewModel.clearLastGeneralError()
         }
+    }
+
+    lastGeneralError?.let {
+        ShopsRelatedErrorAlertDialog(
+            error = it,
+            onDismiss = { shopsViewModel.clearLastGeneralError() },
+        )
     }
 
     Column(

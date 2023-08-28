@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.simply.birthdayapp.data.repositories.ShopsRepository
 import com.simply.birthdayapp.presentation.models.Shop
-import com.simply.birthdayapp.presentation.models.ShopsError
+import com.simply.birthdayapp.presentation.models.ShopsGeneralError
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -46,8 +46,11 @@ class ShopsViewModel(
     private val _lastFavouredShopName: MutableStateFlow<String?> = MutableStateFlow(null)
     val lastFavouredShopName: StateFlow<String?> = _lastFavouredShopName.asStateFlow()
 
-    private val _lastShopsError: MutableStateFlow<ShopsError?> = MutableStateFlow(null)
-    val lastShopsError: StateFlow<ShopsError?> = _lastShopsError.asStateFlow()
+    private val _lastNetworkErrorMessage: MutableStateFlow<String?> = MutableStateFlow(null)
+    val lastNetworkErrorMessage: StateFlow<String?> = _lastNetworkErrorMessage.asStateFlow()
+
+    private val _lastGeneralError: MutableStateFlow<ShopsGeneralError?> = MutableStateFlow(null)
+    val lastGeneralError: StateFlow<ShopsGeneralError?> = _lastGeneralError.asStateFlow()
 
     init {
         observeSearchBarQuery()
@@ -75,8 +78,12 @@ class ShopsViewModel(
         _lastFavouredShopName.update { null }
     }
 
-    fun clearLastShopsError() {
-        _lastShopsError.update { null }
+    fun clearLastNetworkErrorMessage() {
+        _lastNetworkErrorMessage.update { null }
+    }
+
+    fun clearLastGeneralError() {
+        _lastGeneralError.update { null }
     }
 
     fun onPullRefresh() {
@@ -101,9 +108,9 @@ class ShopsViewModel(
                     _cachedShops = it.toMutableList()
                     filterShops()
                 }
-                result.onFailure { _lastShopsError.update { ShopsError.LoadShops } }
+                result.onFailure { cause -> _lastNetworkErrorMessage.update { cause.message } }
             }
-            .catch { _lastShopsError.update { ShopsError.LoadShops } }
+            .catch { _lastGeneralError.update { ShopsGeneralError.FailedToLoadShops } }
             .flowOn(Dispatchers.IO)
             .launchIn(viewModelScope)
     }
@@ -120,9 +127,9 @@ class ShopsViewModel(
                     setCachedShopIsFavourite(cachedShopIndex, true)
                     _lastFavouredShopName.update { shop.name }
                 }
-                result.onFailure { _lastShopsError.update { ShopsError.AddShopToFavourites } }
+                result.onFailure { cause -> _lastNetworkErrorMessage.update { cause.message } }
             }
-            .catch { _lastShopsError.update { ShopsError.AddShopToFavourites } }
+            .catch { _lastGeneralError.update { ShopsGeneralError.FailedToAddShopToFavourites } }
             .flowOn(Dispatchers.IO)
             .launchIn(viewModelScope)
     }
@@ -136,9 +143,9 @@ class ShopsViewModel(
             .onCompletion { setCachedShopIsLoadingFavourite(cachedShopIndex, false) }
             .onEach { result ->
                 result.onSuccess { setCachedShopIsFavourite(cachedShopIndex, false) }
-                result.onFailure { _lastShopsError.update { ShopsError.RemoveShopFromFavourites } }
+                result.onFailure { cause -> _lastNetworkErrorMessage.update { cause.message } }
             }
-            .catch { _lastShopsError.update { ShopsError.RemoveShopFromFavourites } }
+            .catch { _lastGeneralError.update { ShopsGeneralError.FailedToRemoveShopFromFavourites } }
             .flowOn(Dispatchers.IO)
             .launchIn(viewModelScope)
     }

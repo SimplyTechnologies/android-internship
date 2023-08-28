@@ -21,14 +21,17 @@ class ShopsRepositoryImpl(
 ) : ShopsRepository {
     override fun getShops(): Flow<Result<List<Shop>>> = flow {
         val response = apolloClient.query(ShopsQuery(ShopFilter())).execute()
-        if (response.hasErrors()) emit(Result.failure(Throwable()))
-        else emit(Result.success(response.data?.shops?.map(ShopsQuery.Shop::toShop) ?: emptyList()))
+        if (response.hasErrors()) {
+            emit(Result.failure(Throwable(response.errors?.firstOrNull()?.message)))
+        } else {
+            emit(Result.success(response.data?.shops?.map(ShopsQuery.Shop::toShop) ?: emptyList()))
+        }
     }
 
     override fun addShopToFavourites(shopId: Int): Flow<Result<Int>> = flow {
         val response = apolloClient.mutation(AddShopToFavouriteMutation(shopId)).execute()
         if (response.hasErrors()) {
-            emit(Result.failure(Throwable()))
+            emit(Result.failure(Throwable(response.errors?.firstOrNull()?.message)))
         } else {
             val responseShopId = response.data?.addShopToFavorite?.shopId
             if (responseShopId == null) emit(Result.failure(Throwable()))
@@ -39,7 +42,7 @@ class ShopsRepositoryImpl(
     override fun removeShopFromFavourites(shopId: Int): Flow<Result<Int>> = flow {
         val response = apolloClient.mutation(RemoveShopFromFavouriteMutation(shopId)).execute()
         if (response.hasErrors()) {
-            emit(Result.failure(Throwable()))
+            emit(Result.failure(Throwable(response.errors?.firstOrNull()?.message)))
         } else {
             val responseShopId = response.data?.removeShopFromFavorite?.shopId
             if (responseShopId == null) emit(Result.failure(Throwable()))
