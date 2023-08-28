@@ -1,5 +1,6 @@
 package com.simply.birthdayapp.presentation.ui.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,6 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -28,9 +30,13 @@ import com.simply.birthdayapp.presentation.ui.theme.AppTheme
 fun ShopCard(
     shop: Shop,
     onIsFavouriteChange: (Shop) -> Unit = {},
+    onClick: () -> Unit = {},
 ) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(AppTheme.shapes.circle)
+            .clickable { onClick() },
         shape = AppTheme.shapes.mediumRoundedCorners,
         colors = CardDefaults.cardColors(containerColor = AppTheme.colors.white),
     ) {
@@ -91,6 +97,10 @@ private fun ShopCardPreview() {
         name = "Kitten",
         image = byteArrayOf(),
         isFavourite = false,
+        formattedPhoneNumber = null,
+        address = "",
+        addressQuery = "",
+        website = null,
     )
     ShopCard(shop)
 }

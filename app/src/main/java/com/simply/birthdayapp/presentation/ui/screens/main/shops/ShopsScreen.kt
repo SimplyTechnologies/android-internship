@@ -33,6 +33,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.simply.birthdayapp.R
+import com.simply.birthdayapp.presentation.models.Shop
 import com.simply.birthdayapp.presentation.ui.components.LogoTopBar
 import com.simply.birthdayapp.presentation.ui.components.SearchBarComponent
 import com.simply.birthdayapp.presentation.ui.components.ShopCard
@@ -46,7 +47,10 @@ import org.koin.androidx.compose.getViewModel
 
 @OptIn(ExperimentalMaterialApi::class, FlowPreview::class)
 @Composable
-fun ShopsScreen(shopsViewModel: ShopsViewModel) {
+fun ShopsScreen(
+    shopsViewModel: ShopsViewModel,
+    onShopClick: (Shop) -> Unit = {},
+) {
     val loading by shopsViewModel.loading.collectAsStateWithLifecycle()
     val shops by shopsViewModel.shops.collectAsStateWithLifecycle()
     val scrollPosition by shopsViewModel.scrollPosition.collectAsStateWithLifecycle()
@@ -148,8 +152,7 @@ fun ShopsScreen(shopsViewModel: ShopsViewModel) {
                     shops.isEmpty() -> item {
                         Text(
                             text = stringResource(R.string.no_search_results_found),
-                            color = AppTheme.colors.darkPink,
-                            style = AppTheme.typography.medium,
+                            style = AppTheme.typography.mediumKarmaDarkPink,
                         )
                     }
 
@@ -157,6 +160,7 @@ fun ShopsScreen(shopsViewModel: ShopsViewModel) {
                         ShopCard(
                             shop = shop,
                             onIsFavouriteChange = shopsViewModel::onShopIsFavouriteChange,
+                            onClick = { onShopClick(shop) },
                         )
                     }
                 }
