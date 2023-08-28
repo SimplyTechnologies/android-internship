@@ -14,6 +14,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
@@ -69,6 +70,7 @@ fun ShopDetails(shop: Shop) {
             text = shop.name,
             fontSize = 20.sp,
             style = AppTheme.typography.boldKarmaBlack,
+            textAlign = TextAlign.Center,
         )
         Text(
             text = stringResource(
