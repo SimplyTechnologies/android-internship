@@ -27,8 +27,10 @@ fun ShopsMainScreen(
         composable(ShopsDestination.ShopsScreen.route) {
             ShopsScreen(
                 shopsViewModel = shopsViewModel,
-                shopDetailsViewModel = shopDetailsViewModel,
-                navToShopDetails = { shopsNavController.navigate(ShopsDestination.ShopDetailsScreen.route) },
+                onShopClick = { shop ->
+                    shopDetailsViewModel.setLastClickedShop(shop)
+                    shopsNavController.navigate(ShopsDestination.ShopDetailsScreen.route)
+                },
             )
         }
 

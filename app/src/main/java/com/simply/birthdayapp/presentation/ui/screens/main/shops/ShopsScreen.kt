@@ -33,11 +33,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.simply.birthdayapp.R
+import com.simply.birthdayapp.presentation.models.Shop
 import com.simply.birthdayapp.presentation.ui.components.LogoTopBar
 import com.simply.birthdayapp.presentation.ui.components.SearchBarComponent
 import com.simply.birthdayapp.presentation.ui.components.ShopCard
 import com.simply.birthdayapp.presentation.ui.screens.main.LocalSnackbarHostState
-import com.simply.birthdayapp.presentation.ui.screens.main.shops.details.ShopDetailsViewModel
 import com.simply.birthdayapp.presentation.ui.theme.AppTheme
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collectLatest
@@ -49,8 +49,7 @@ import org.koin.androidx.compose.getViewModel
 @Composable
 fun ShopsScreen(
     shopsViewModel: ShopsViewModel,
-    shopDetailsViewModel: ShopDetailsViewModel,
-    navToShopDetails: () -> Unit = {},
+    onShopClick: (Shop) -> Unit = {},
 ) {
     val loading by shopsViewModel.loading.collectAsStateWithLifecycle()
     val shops by shopsViewModel.shops.collectAsStateWithLifecycle()
@@ -161,10 +160,7 @@ fun ShopsScreen(
                         ShopCard(
                             shop = shop,
                             onIsFavouriteChange = shopsViewModel::onShopIsFavouriteChange,
-                            onClick = {
-                                shopDetailsViewModel.setLastClickedShop(shop)
-                                navToShopDetails()
-                            },
+                            onClick = { onShopClick(shop) },
                         )
                     }
                 }
@@ -183,8 +179,5 @@ fun ShopsScreen(
 @Preview
 @Composable
 private fun ShopsScreenPreview() {
-    ShopsScreen(
-        shopsViewModel = getViewModel(),
-        shopDetailsViewModel = getViewModel(),
-    )
+    ShopsScreen(shopsViewModel = getViewModel())
 }

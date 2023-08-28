@@ -26,7 +26,7 @@ import com.simply.birthdayapp.presentation.ui.components.RoundAsyncImage
 import com.simply.birthdayapp.presentation.ui.theme.AppTheme
 
 @Composable
-fun ShopDetails(shop: Shop) {
+fun ShopDetailsComponent(shop: Shop) {
     val context = LocalContext.current
     val uriHandler = LocalUriHandler.current
 
@@ -127,5 +127,5 @@ private fun ShopDetailsPreview() {
         addressQuery = "Cat+cafe",
         website = "",
     )
-    ShopDetails(shop = shop)
+    ShopDetailsComponent(shop = shop)
 }

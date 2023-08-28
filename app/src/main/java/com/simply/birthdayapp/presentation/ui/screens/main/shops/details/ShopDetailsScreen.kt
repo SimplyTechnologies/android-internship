@@ -25,7 +25,6 @@ fun ShopDetailsScreen(
     navBack: () -> Unit = {},
 ) {
     val lastClickedShop by shopDetailsViewModel.lastClickedShop.collectAsStateWithLifecycle()
-    val shop = lastClickedShop
 
     BackHandler { navBack() }
 
@@ -37,7 +36,9 @@ fun ShopDetailsScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         AppBaseTopBar(onBackClick = navBack)
-        if (shop == null) {
+        lastClickedShop?.let {
+            ShopDetailsComponent(shop = it)
+        } ?: run {
             Box(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center,
@@ -47,8 +48,6 @@ fun ShopDetailsScreen(
                     style = AppTheme.typography.mediumKarmaDarkPink,
                 )
             }
-        } else {
-            ShopDetails(shop = shop)
         }
     }
 }
