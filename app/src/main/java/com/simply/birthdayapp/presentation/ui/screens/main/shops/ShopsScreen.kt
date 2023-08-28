@@ -85,11 +85,10 @@ fun ShopsScreen(
     }
 
     LaunchedEffect(lastFavouredShopName) {
-        val shopName = lastFavouredShopName
-        if (shopName != null) {
+        lastFavouredShopName?.let {
             snackbarHostState.currentSnackbarData?.dismiss()
             snackbarHostState.showSnackbar(
-                message = context.getString(R.string.favoured_shop_with_name_of, shopName),
+                message = context.getString(R.string.favoured_shop_with_name_of, it),
                 duration = SnackbarDuration.Short,
             )
             shopsViewModel.clearLastFavouredShopName()
@@ -97,11 +96,10 @@ fun ShopsScreen(
     }
 
     LaunchedEffect(lastShopsError) {
-        val error = lastShopsError
-        if (error != null) {
+        lastShopsError?.let {
             snackbarHostState.currentSnackbarData?.dismiss()
             snackbarHostState.showSnackbar(
-                message = context.getString(error.messageId),
+                message = context.getString(it.messageId),
                 duration = SnackbarDuration.Short,
             )
             shopsViewModel.clearLastShopsError()

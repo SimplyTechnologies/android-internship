@@ -31,9 +31,7 @@ fun ShopDetailsComponent(shop: Shop) {
     val uriHandler = LocalUriHandler.current
 
     val phoneNumberAnnotatedString = buildAnnotatedString {
-        if (shop.formattedPhoneNumber == null) {
-            withStyle(AppTheme.typography.urlPrefix) { append(stringResource(R.string.shop_phone_number_not_specified)) }
-        } else {
+        shop.formattedPhoneNumber?.let {
             withStyle(AppTheme.typography.urlPrefix) { append(stringResource(R.string.shop_phone_number)) }
             pushStringAnnotation(
                 tag = stringResource(R.string.url_annotated_string_tag),
@@ -41,6 +39,8 @@ fun ShopDetailsComponent(shop: Shop) {
             )
             withStyle(AppTheme.typography.url) { append(shop.formattedPhoneNumber) }
             pop()
+        } ?: run {
+            withStyle(AppTheme.typography.urlPrefix) { append(stringResource(R.string.shop_phone_number_not_specified)) }
         }
     }
     val addressAnnotatedString = buildAnnotatedString {
@@ -53,15 +53,15 @@ fun ShopDetailsComponent(shop: Shop) {
         pop()
     }
     val websiteAnnotatedString = buildAnnotatedString {
-        if (shop.website == null) {
-            withStyle(AppTheme.typography.urlPrefix) { append(stringResource(R.string.shop_website_not_specified)) }
-        } else {
+        shop.website?.let {
             pushStringAnnotation(
                 tag = stringResource(R.string.url_annotated_string_tag),
                 annotation = shop.website,
             )
             withStyle(AppTheme.typography.url) { append(stringResource(R.string.shop_website)) }
             pop()
+        } ?: run {
+            withStyle(AppTheme.typography.urlPrefix) { append(stringResource(R.string.shop_website_not_specified)) }
         }
     }
 

@@ -77,10 +77,14 @@ fun ShopCard(
                     onClick = { onIsFavouriteChange(shop) },
                 ) {
                     Icon(
-                        painter = if (shop.isFavourite) painterResource(id = R.drawable.ic_heart_filled)
-                        else painterResource(id = R.drawable.ic_heart_empty),
-                        contentDescription = if (shop.isFavourite) stringResource(R.string.remove_from_favourites)
-                        else stringResource(R.string.add_to_favourites),
+                        painter = painterResource(
+                            id = if (shop.isFavourite) R.drawable.ic_heart_filled
+                            else R.drawable.ic_heart_empty,
+                        ),
+                        contentDescription = stringResource(
+                            id = if (shop.isFavourite) R.string.remove_from_favourites
+                            else R.string.add_to_favourites,
+                        ),
                         tint = if (shop.isFavourite) AppTheme.colors.lightPink else AppTheme.colors.gray,
                     )
                 }

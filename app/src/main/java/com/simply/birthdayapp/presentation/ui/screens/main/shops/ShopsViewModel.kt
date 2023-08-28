@@ -64,9 +64,10 @@ class ShopsViewModel(
 
     fun onShopIsFavouriteChange(shop: Shop) {
         viewModelScope.launch(Dispatchers.IO) {
-            val cachedShopIndex = _cachedShops.indexOfFirst { it.id == shop.id }.takeIf { it != -1 }
-            if (shop.isFavourite) removeShopFromFavourites(shop, cachedShopIndex)
-            else addShopToFavourites(shop, cachedShopIndex)
+            _cachedShops.indexOfFirst { it.id == shop.id }.takeIf { it != -1 }?.let {
+                if (shop.isFavourite) removeShopFromFavourites(shop, it)
+                else addShopToFavourites(shop, it)
+            }
         }
     }
 
@@ -109,7 +110,7 @@ class ShopsViewModel(
 
     private fun addShopToFavourites(
         shop: Shop,
-        cachedShopIndex: Int?,
+        cachedShopIndex: Int,
     ) {
         shopsRepository.addShopToFavourites(shop.id)
             .onStart { setCachedShopIsLoadingFavourite(cachedShopIndex, true) }
@@ -128,7 +129,7 @@ class ShopsViewModel(
 
     private fun removeShopFromFavourites(
         shop: Shop,
-        cachedShopIndex: Int?,
+        cachedShopIndex: Int,
     ) {
         shopsRepository.removeShopFromFavourites(shop.id)
             .onStart { setCachedShopIsLoadingFavourite(cachedShopIndex, true) }
@@ -143,26 +144,22 @@ class ShopsViewModel(
     }
 
     private suspend fun setCachedShopIsLoadingFavourite(
-        cachedShopIndex: Int?,
+        cachedShopIndex: Int,
         isLoadingFavourite: Boolean,
-    ) = withContext(Dispatchers.IO) {
-        cachedShopIndex?.let {
-            _cachedShops[it] = _cachedShops[it].copy(isLoadingFavourite = isLoadingFavourite)
-            filterShops()
-        }
+    ) = withContext(Dispatchers.Default) {
+        _cachedShops[cachedShopIndex] = _cachedShops[cachedShopIndex].copy(isLoadingFavourite = isLoadingFavourite)
+        filterShops()
     }
 
     private suspend fun setCachedShopIsFavourite(
-        cachedShopIndex: Int?,
+        cachedShopIndex: Int,
         isFavourite: Boolean,
-    ) = withContext(Dispatchers.IO) {
-        cachedShopIndex?.let {
-            _cachedShops[it] = _cachedShops[it].copy(isFavourite = isFavourite)
-            filterShops()
-        }
+    ) = withContext(Dispatchers.Default) {
+        _cachedShops[cachedShopIndex] = _cachedShops[cachedShopIndex].copy(isFavourite = isFavourite)
+        filterShops()
     }
 
-    private suspend fun filterShops() = withContext(Dispatchers.IO) {
+    private suspend fun filterShops() = withContext(Dispatchers.Default) {
         _shops.update {
             _cachedShops.filter { it.name.lowercase().startsWith(_searchBarQuery.value.lowercase()) }
         }
