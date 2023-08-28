@@ -21,8 +21,8 @@ import com.simply.birthdayapp.presentation.ui.theme.AppTheme
 fun RoundAsyncImage(
     modifier: Modifier = Modifier,
     data: Any? = null,
-    borderColor: Color = AppTheme.colors.darkPink,
-    borderWidth: Dp = 1.dp,
+    borderColor: Color = Color.Transparent,
+    borderWidth: Dp = 0.dp,
     contentDescription: String? = null,
     contentScale: ContentScale = ContentScale.Crop,
     placeholder: Painter? = painterResource(id = R.drawable.placeholder),

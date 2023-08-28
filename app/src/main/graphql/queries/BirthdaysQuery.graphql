@@ -1,0 +1,15 @@
+query BirthdayQuery{
+    birthdays {
+        id
+        userId
+        name
+        image
+        relation
+        message
+        date
+        upcomingBirthday
+        upcomingAge
+        createdAt
+        updatedAt
+    }
+}
