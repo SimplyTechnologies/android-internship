@@ -10,10 +10,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.simply.birthdayapp.R
 import com.simply.birthdayapp.presentation.ui.theme.AppTheme
 
@@ -23,8 +26,9 @@ fun AuthButton(
     buttonTitle: String,
     backgroundColor: Color = AppTheme.colors.lightPink,
     textColor: Color = AppTheme.colors.darkPink,
-
     enabled: Boolean = true,
+    fontSize:TextUnit = 15.sp,
+    textStyle: TextStyle = AppTheme.typography.bold,
     disabledContainerColor: Color = AppTheme.colors.disableButtonColor,
     onClick: () -> Unit = {}
 ) {
@@ -44,7 +48,9 @@ fun AuthButton(
         Text(
             text = buttonTitle,
             color = textColor,
+            fontSize =fontSize,
             fontFamily = FontFamily(Font(R.font.karm_light)),
+            style = textStyle,
         )
     }
 }
