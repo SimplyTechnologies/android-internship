@@ -53,9 +53,9 @@ fun ForgotPasswordScreen(
     val showPasswordCodeSection by forgotPasswordViewModel.hasGetCodeSuccess.collectAsState()
     val hasGetCodeSuccess by forgotPasswordViewModel.hasGetCodeSuccess.collectAsState()
     val getCodeErrorState by forgotPasswordViewModel.getCodeErrorState.collectAsState()
+    val enabledGetCodeButton by forgotPasswordViewModel.enabledGetCodeButton.collectAsState()
     val emailMaxLength = 30
     val codeMaxLength = 6
-    val enabledGetCodeButton: Boolean = email.isNotEmpty() && !hasEmailError
     val context = LocalContext.current
 
     LaunchedEffect(hasGetCodeSuccess) {
@@ -64,7 +64,6 @@ fun ForgotPasswordScreen(
             forgotPasswordViewModel.resetSuccessState()
         }
     }
-
     LaunchedEffect(getCodeErrorMessage) {
         if (getCodeErrorMessage.isNotEmpty()) {
             Toast.makeText(context, getCodeErrorMessage, Toast.LENGTH_SHORT).show()

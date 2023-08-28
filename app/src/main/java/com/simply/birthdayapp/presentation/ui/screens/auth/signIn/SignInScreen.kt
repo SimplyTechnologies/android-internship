@@ -25,8 +25,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -52,7 +50,7 @@ import org.koin.androidx.compose.getViewModel
 fun SignInScreen(
     signInViewModel: SignInViewModel = getViewModel(),
     onSignInBackClick: () -> Unit = {},
-    onLoginSuccass: () -> Unit = {},
+    onLoginSuccess: () -> Unit = {},
     onForgotPasswordClick: () -> Unit = {}
 ) {
     val loginSuccess by signInViewModel.loginSuccessState.collectAsState()
@@ -62,14 +60,14 @@ fun SignInScreen(
     val hasEmailError by signInViewModel.hasEmailError.collectAsState()
     val email by signInViewModel.email.collectAsState()
     val password by signInViewModel.password.collectAsState()
-    val checkedState = remember { mutableStateOf(false) }
+    val checkedState by signInViewModel.checkedState.collectAsState()
     val loginButtonEnabled by signInViewModel.enableLoginButton.collectAsState()
     val context = LocalContext.current
 
     LaunchedEffect(loginSuccess) {
         if (loginSuccess) {
             Toast.makeText(context, R.string.login_success, Toast.LENGTH_SHORT).show()
-            onLoginSuccass()
+            onLoginSuccess()
             signInViewModel.loginSuccessState()
         }
     }
@@ -157,10 +155,9 @@ fun SignInScreen(
                     ) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Checkbox(
-                                checked = checkedState.value,
-                                onCheckedChange = {isChecked ->
-                                    signInViewModel.changeRememberPasswordStat(isChecked)
-                                    checkedState.value = isChecked
+                                checked = checkedState,
+                                onCheckedChange = { isChecked ->
+                                    signInViewModel.changeRememberPasswordState(isChecked)
                                 },
                                 colors = CheckboxDefaults.colors(checkedColor = AppTheme.colors.lightPink),
                             )

@@ -37,7 +37,7 @@ fun NewPasswordScreen(
     forgotPasswordViewModel: ForgotPasswordViewModel,
     onResetPasswordSuccess: () -> Unit = {},
     onCodeInvalid: () -> Unit = {},
-    navToFprgotPasswordScreen: () -> Unit = {}
+    navToForgotPasswordScreen: () -> Unit = {}
 ) {
     val password by forgotPasswordViewModel.password.collectAsState()
     val hasPasswordError by forgotPasswordViewModel.hasPasswordError.collectAsState()
@@ -80,7 +80,7 @@ fun NewPasswordScreen(
         )
     }
     Scaffold(
-        topBar = { AppBaseTopBar(onBackClick = navToFprgotPasswordScreen) }
+        topBar = { AppBaseTopBar(onBackClick = navToForgotPasswordScreen) }
     ) {
         Column(
             modifier = Modifier
@@ -95,7 +95,7 @@ fun NewPasswordScreen(
                 modifier = Modifier
                     .padding(top = 100.dp, start = 70.dp)
                     .align(Alignment.Start),
-                text = "New password",
+                text = stringResource(R.string.new_password),
                 color = AppTheme.colors.darkPink,
                 style = AppTheme.typography.bold,
                 fontSize = 18.sp,
@@ -121,7 +121,7 @@ fun NewPasswordScreen(
                 modifier = Modifier
                     .padding(top = 24.dp, start = 70.dp)
                     .align(Alignment.Start),
-                text = "Repeat New Password",
+                text = stringResource(R.string.repeat_new_password),
                 color = AppTheme.colors.darkPink,
                 style = AppTheme.typography.bold,
                 fontSize = 18.sp,

@@ -4,7 +4,6 @@ import com.simply.birthdayapp.data.localdatastore.DataStoreManager
 import kotlinx.coroutines.flow.first
 
 interface AuthRepository {
-
     suspend fun getRememberPassword(): Boolean
 }
 

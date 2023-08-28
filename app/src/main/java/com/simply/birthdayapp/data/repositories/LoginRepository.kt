@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 
 interface LoginRepository {
-    suspend fun signInAccount(loginInputEntity: LoginInputEntity): Flow<Result<Unit?>>
+    suspend fun signInAccount(loginInputEntity: LoginInputEntity): Flow<Result<Unit>>
     suspend fun getEmail(): String
     suspend fun setRememberPassword(hasRememberPassword: Boolean)
 }
@@ -29,10 +29,11 @@ class LoginRepositoryImpl(
             val errorMessage = result.errors?.firstOrNull()?.message
             emit(Result.failure(Throwable(errorMessage)))
         } else {
-            dataStoreManager.setAccessToken(
-                result.data?.login?.toLoginAccessToken()?.accessToken ?: ""
-            )
-            emit(Result.success(Unit))
+            val accessToken = result.data?.login?.toLoginAccessToken()?.accessToken
+            if (!accessToken.isNullOrEmpty()) {
+                dataStoreManager.setAccessToken(accessToken)
+                emit(Result.success(Unit))
+            }
         }
     }
 

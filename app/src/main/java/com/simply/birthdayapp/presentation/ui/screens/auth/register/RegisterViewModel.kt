@@ -13,7 +13,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -86,8 +85,7 @@ class RegisterViewModel(private val repository: RegisterRepository) : ViewModel(
                 clearForm()
             }.catch {
                 _registrationErrorState.value = true
-            }.flowOn(Dispatchers.Main)
-                .collect()
+            }.collect()
         }
     }
 

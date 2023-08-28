@@ -76,7 +76,7 @@ fun AuthMainScreen(
         composable(AuthScreen.SignInScreen.route) {
             SignInScreen(
                 onSignInBackClick = { navigateToLandingScreen() },
-                onLoginSuccass = navigateToMainScreen,
+                onLoginSuccess = navigateToMainScreen,
                 onForgotPasswordClick = { navigateToForgotMainScreen() }
             )
         }

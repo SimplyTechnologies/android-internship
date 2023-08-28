@@ -40,7 +40,6 @@ fun ForgotMainScreen(
         startDestination = ForgotScreen.ForgotPasswordScreen.route,
         route = "root",
     ) {
-
         composable(ForgotScreen.ForgotPasswordScreen.route) {
             ForgotPasswordScreen(
                 onNewPasswordButtonClick = { navigateToNewPasswordScreen() },
@@ -53,7 +52,7 @@ fun ForgotMainScreen(
                 forgotPasswordViewModel = forgotPasswordViewModel,
                 onResetPasswordSuccess = navToSignInScreen,
                 onCodeInvalid = { navigateToForgotPasswordScreen() },
-                navToFprgotPasswordScreen = { navigateToForgotPasswordScreen() },
+                navToForgotPasswordScreen = { navigateToForgotPasswordScreen() },
             )
         }
     }

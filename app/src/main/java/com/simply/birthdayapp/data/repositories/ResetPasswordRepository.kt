@@ -12,9 +12,7 @@ import kotlinx.coroutines.flow.flow
 
 interface ForgotPasswordRepository {
     suspend fun resetPasswordEmail(email: String): Flow<Result<GetCodeResponseModel?>>
-
     suspend fun forgotPassword(forgotPasswordEntity: ForgotPasswordEntity): Flow<Result<Unit>>
-
 }
 
 class ForgotPasswordRepositoryImpl(private val apolloClient: ApolloClient) :

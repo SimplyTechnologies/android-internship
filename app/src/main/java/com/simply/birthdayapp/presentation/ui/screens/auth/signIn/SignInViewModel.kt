@@ -13,7 +13,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -41,6 +40,10 @@ class SignInViewModel(private val loginRepository: LoginRepository) : ViewModel(
     private var _hasEmailError = MutableStateFlow(false)
     val hasEmailError = _hasEmailError.asStateFlow()
 
+    private var _checkedState = MutableStateFlow(false)
+    val checkedState = _checkedState.asStateFlow()
+
+
     init {
         viewModelScope.launch {
             _email.value = loginRepository.getEmail()
@@ -63,8 +66,7 @@ class SignInViewModel(private val loginRepository: LoginRepository) : ViewModel(
                 clearForm()
             }.catch {
                 _loginErrorState.value = true
-            }.flowOn(Dispatchers.Main)
-                .collect()
+            }.collect()
         }
     }
 
@@ -79,7 +81,8 @@ class SignInViewModel(private val loginRepository: LoginRepository) : ViewModel(
         viewModelScope, SharingStarted.WhileSubscribed(), false
     )
 
-    fun changeRememberPasswordStat(hasRememberPassword: Boolean) {
+    fun changeRememberPasswordState(hasRememberPassword: Boolean) {
+        _checkedState.value = hasRememberPassword
         viewModelScope.launch {
             loginRepository.setRememberPassword(hasRememberPassword)
         }

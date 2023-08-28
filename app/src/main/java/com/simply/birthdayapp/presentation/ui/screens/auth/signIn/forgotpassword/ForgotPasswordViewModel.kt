@@ -13,7 +13,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -63,7 +62,6 @@ class ForgotPasswordViewModel(private val forgotPasswordRepository: ForgotPasswo
     private var _hasGetCodeSuccess = MutableStateFlow(false)
     val hasGetCodeSuccess = _hasGetCodeSuccess.asStateFlow()
 
-
     val enableDoneButton = combine(
         _hasPasswordError,
         _hasRepeatPasswordError
@@ -71,6 +69,11 @@ class ForgotPasswordViewModel(private val forgotPasswordRepository: ForgotPasswo
         _password.value.isNotEmpty()
                 && _repeatPassword.value.isNotEmpty()
                 && !passwordError && !repeatPasswordError
+    }.stateIn(
+        viewModelScope, SharingStarted.WhileSubscribed(), false
+    )
+    val enabledGetCodeButton = _email.combine(_hasEmailError) { emailValue, emailErrorValue ->
+        emailValue.isNotEmpty() && !emailErrorValue
     }.stateIn(
         viewModelScope, SharingStarted.WhileSubscribed(), false
     )
@@ -88,7 +91,7 @@ class ForgotPasswordViewModel(private val forgotPasswordRepository: ForgotPasswo
                 }
             }.catch {
                 _getCodeErrorState.value = true
-            }.flowOn(Dispatchers.Main).collect()
+            }.collect()
         }
     }
 
@@ -109,8 +112,7 @@ class ForgotPasswordViewModel(private val forgotPasswordRepository: ForgotPasswo
                 clearForm()
             }.catch {
                 _resetPasswordErrorState.value = true
-            }.flowOn(Dispatchers.Main)
-                .collect()
+            }.collect()
         }
     }
 

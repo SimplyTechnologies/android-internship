@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 interface RegisterRepository {
-    suspend fun createAccount(registerInputEntity: RegisterInputEntity): Flow<Result<Unit?>>
+    suspend fun createAccount(registerInputEntity: RegisterInputEntity): Flow<Result<Unit>>
     suspend fun setEmail(email: String)
 }
 
