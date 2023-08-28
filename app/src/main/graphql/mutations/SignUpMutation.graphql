@@ -6,6 +6,3 @@ mutation SignUp ($signUpInput: SignUpInput!){
         lastName
     }
 }
-
-
-

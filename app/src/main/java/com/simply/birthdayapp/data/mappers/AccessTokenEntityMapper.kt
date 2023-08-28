@@ -1,4 +1,4 @@
-package com.simply.birthdayapp.data.mapper
+package com.simply.birthdayapp.data.mappers
 
 import com.simply.birthdayapp.LoginMutation
 import com.simply.birthdayapp.data.entity.LoginAccessTokenEntity

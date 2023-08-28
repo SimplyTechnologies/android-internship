@@ -4,8 +4,8 @@ import com.apollographql.apollo3.ApolloClient
 import com.simply.birthdayapp.ResetPasswordEmailMutation
 import com.simply.birthdayapp.ResetPasswordMutation
 import com.simply.birthdayapp.data.entity.ForgotPasswordEntity
-import com.simply.birthdayapp.data.mapper.toGetCode
-import com.simply.birthdayapp.data.mapper.toPasswordInput
+import com.simply.birthdayapp.data.mappers.toGetCode
+import com.simply.birthdayapp.data.mappers.toPasswordInput
 import com.simply.birthdayapp.presentation.ui.models.GetCodeResponseModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow

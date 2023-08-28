@@ -4,8 +4,8 @@ import com.apollographql.apollo3.ApolloClient
 import com.simply.birthdayapp.LoginMutation
 import com.simply.birthdayapp.data.entity.LoginInputEntity
 import com.simply.birthdayapp.data.localdatastore.DataStoreManager
-import com.simply.birthdayapp.data.mapper.toLoginAccessToken
-import com.simply.birthdayapp.data.mapper.toLoginInput
+import com.simply.birthdayapp.data.mappers.toLoginAccessToken
+import com.simply.birthdayapp.data.mappers.toLoginInput
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
