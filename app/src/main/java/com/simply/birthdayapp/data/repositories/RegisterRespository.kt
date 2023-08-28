@@ -33,7 +33,6 @@ class RegisterRepositoryImpl(
     }
 
     override suspend fun setEmail(email: String) {
-        println("setEmail $email")
         dataStoreManager.setUserEmail(email)
     }
 }

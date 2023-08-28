@@ -79,7 +79,6 @@ fun SignInScreen(
             signInViewModel.resetLoginErrorMessage()
         }
     }
-
     if (loginErrorState) {
         AlertDialog(
             containerColor = AppTheme.colors.white,
@@ -87,7 +86,7 @@ fun SignInScreen(
             textContentColor = AppTheme.colors.black,
             onDismissRequest = { signInViewModel.loginErrorState() },
             title = { Text(text = stringResource(id = R.string.sign_in_error)) },
-            text = { Text(text = stringResource(R.string.network_error)) },
+            text = { Text(text = stringResource(R.string.sign_in_network_error)) },
             confirmButton = {
                 TextButton(
                     onClick = { signInViewModel.loginErrorState() }
@@ -139,9 +138,7 @@ fun SignInScreen(
                         errorText = stringResource(id = R.string.register_email_error),
                         hasError = hasEmailError,
                         imeAction = ImeAction.Next,
-                        onValueChange = { email ->
-                            signInViewModel.setEmail(email)
-                        },
+                        onValueChange = { email -> signInViewModel.setEmail(email) },
                     )
                     PasswordTextFiled(
                         modifier = Modifier.padding(top = 24.dp),
@@ -150,9 +147,7 @@ fun SignInScreen(
                         hasPasswordError = hasPasswordError,
                         imeAction = ImeAction.Done,
                         errorText = stringResource(id = R.string.password_error),
-                        onValueChange = { password ->
-                            signInViewModel.setPassword(password)
-                        },
+                        onValueChange = { password -> signInViewModel.setPassword(password) },
                     )
                     Row(
                         modifier = Modifier
@@ -163,9 +158,9 @@ fun SignInScreen(
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Checkbox(
                                 checked = checkedState.value,
-                                onCheckedChange = {
-                                    signInViewModel.changeRememberPasswordStat(it)
-                                    checkedState.value = it
+                                onCheckedChange = {isChecked ->
+                                    signInViewModel.changeRememberPasswordStat(isChecked)
+                                    checkedState.value = isChecked
                                 },
                                 colors = CheckboxDefaults.colors(checkedColor = AppTheme.colors.lightPink),
                             )
@@ -202,9 +197,7 @@ fun SignInScreen(
                         shape = RoundedCornerShape(24.dp),
                         buttonTitle = stringResource(id = R.string.sign_in),
                         enabled = loginButtonEnabled,
-                        onClick = {
-                            signInViewModel.loginAccount()
-                        },
+                        onClick = { signInViewModel.loginAccount() },
                     )
                 }
             }

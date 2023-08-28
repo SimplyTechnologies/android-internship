@@ -62,14 +62,12 @@ fun AuthMainScreen(
     ) {
         composable(AuthScreen.LandingScreen.route) {
             LandingScreen(
-
                 onSignInClick = { nestedNavController.navigate(AuthScreen.SignInScreen.route) },
                 onRegisterClick = { nestedNavController.navigate(AuthScreen.RegisterScreen.route) }
             )
         }
         composable(AuthScreen.RegisterScreen.route) {
             RegisterScreen(
-
                 onRegisterBackClick = { navigateToLandingScreen() },
                 onRegisterSuccess = { navigateToSignInScreen() },
                 onRegisterError = { navigateToSignInScreen() }
@@ -80,12 +78,12 @@ fun AuthMainScreen(
                 onSignInBackClick = { navigateToLandingScreen() },
                 onLoginSuccass = navigateToMainScreen,
                 onForgotPasswordClick = { navigateToForgotMainScreen() }
-
             )
         }
         composable(AuthScreen.ForgotPasswordMainScreen.route) {
             ForgotMainScreen(
-                onBack = { navigateToSignInScreen() }
+                onBack = { navigateToSignInScreen() },
+                navToSignInScreen = { navigateToSignInScreen() }
             )
         }
     }

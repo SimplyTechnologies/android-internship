@@ -25,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -50,11 +51,19 @@ fun ForgotPasswordScreen(
     val email by forgotPasswordViewModel.email.collectAsState()
     val code by forgotPasswordViewModel.code.collectAsState()
     val showPasswordCodeSection by forgotPasswordViewModel.hasGetCodeSuccess.collectAsState()
+    val hasGetCodeSuccess by forgotPasswordViewModel.hasGetCodeSuccess.collectAsState()
     val getCodeErrorState by forgotPasswordViewModel.getCodeErrorState.collectAsState()
     val emailMaxLength = 30
     val codeMaxLength = 6
     val enabledGetCodeButton: Boolean = email.isNotEmpty() && !hasEmailError
     val context = LocalContext.current
+
+    LaunchedEffect(hasGetCodeSuccess) {
+        if (hasGetCodeSuccess) {
+            Toast.makeText(context, R.string.get_code_success, Toast.LENGTH_SHORT).show()
+            forgotPasswordViewModel.resetSuccessState()
+        }
+    }
 
     LaunchedEffect(getCodeErrorMessage) {
         if (getCodeErrorMessage.isNotEmpty()) {
@@ -68,8 +77,8 @@ fun ForgotPasswordScreen(
             titleContentColor = AppTheme.colors.black,
             textContentColor = AppTheme.colors.black,
             onDismissRequest = { forgotPasswordViewModel.getCodeErrorState() },
-            title = { Text(text = stringResource(id = R.string.sign_in_error)) },
-            text = { Text(text = stringResource(R.string.network_error)) },
+            title = { Text(text = stringResource(id = R.string.reset_password_error)) },
+            text = { Text(text = stringResource(R.string.reser_password_network_error)) },
             confirmButton = {
                 TextButton(
                     onClick = { forgotPasswordViewModel.getCodeErrorState() }
@@ -79,8 +88,6 @@ fun ForgotPasswordScreen(
             },
         )
     }
-
-
     Scaffold(topBar = { AppBaseTopBar(onBackClick = onBackClick) }
     ) {
         Column(
@@ -129,6 +136,7 @@ fun ForgotPasswordScreen(
                 backgroundColor = AppTheme.colors.white,
                 shape = RoundedCornerShape(13.dp),
                 enabled = enabledGetCodeButton,
+                disabledContainerColor = AppTheme.colors.lightGray,
                 buttonTitle = stringResource(id = R.string.get_the_code),
                 onClick = { forgotPasswordViewModel.getCode() },
             )
@@ -153,15 +161,14 @@ fun ForgotPasswordScreen(
                             color = AppTheme.colors.darkPink,
                             fontWeight = FontWeight(700),
                             textAlign = TextAlign.Center,
-                            style = AppTheme.typography.bold
+                            style = AppTheme.typography.bold,
                         )
                         BaseTextField(
                             modifier = Modifier
                                 .padding(top = 20.dp)
-                                .height(48.dp)
                                 .width(140.dp),
                             textState = code,
-                            fontSize = 18.sp,
+                            textStyle = TextStyle(fontSize = 20.sp, textAlign = TextAlign.Center),
                             keyboardType = KeyboardType.Number,
                             focusedContainerColor = AppTheme.colors.backgroundPink,
                             unfocusedContainerColor = AppTheme.colors.backgroundPink,
@@ -169,7 +176,7 @@ fun ForgotPasswordScreen(
                             onValueChange = { code ->
                                 if (code.length <= codeMaxLength)
                                     forgotPasswordViewModel.setCode(code)
-                            }
+                            },
                         )
                     }
                 }

@@ -38,7 +38,6 @@ class SignInViewModel(private val loginRepository: LoginRepository) : ViewModel(
     private var _hasPasswordError = MutableStateFlow(false)
     val hasPasswordError = _hasPasswordError.asStateFlow()
 
-
     private var _hasEmailError = MutableStateFlow(false)
     val hasEmailError = _hasEmailError.asStateFlow()
 
@@ -61,6 +60,7 @@ class SignInViewModel(private val loginRepository: LoginRepository) : ViewModel(
                 }.onFailure { error ->
                     _loginErrorMessage.value = error.message ?: "Error"
                 }
+                clearForm()
             }.catch {
                 _loginErrorState.value = true
             }.flowOn(Dispatchers.Main)
@@ -105,5 +105,10 @@ class SignInViewModel(private val loginRepository: LoginRepository) : ViewModel(
     fun setEmail(email: String) {
         _email.value = email
         _hasEmailError.value = !email.isValidEmail()
+    }
+
+    private fun clearForm() {
+        _email.value = ""
+        _password.value = ""
     }
 }

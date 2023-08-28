@@ -15,12 +15,22 @@ sealed class ForgotScreen(val route: String) {
 @Composable
 fun ForgotMainScreen(
     forgotPasswordViewModel: ForgotPasswordViewModel = getViewModel(),
-    onBack: () -> Unit = {}
+    onBack: () -> Unit = {},
+    navToSignInScreen: () -> Unit = {}
+
 ) {
     val nestedNavController = rememberNavController()
     fun navigateToNewPasswordScreen() {
         nestedNavController.navigate(ForgotScreen.NewPasswordScreen.route) {
             popUpTo(ForgotScreen.NewPasswordScreen.route) {
+                inclusive = true
+            }
+        }
+    }
+
+    fun navigateToForgotPasswordScreen() {
+        nestedNavController.navigate(ForgotScreen.ForgotPasswordScreen.route) {
+            popUpTo(ForgotScreen.ForgotPasswordScreen.route) {
                 inclusive = true
             }
         }
@@ -35,16 +45,16 @@ fun ForgotMainScreen(
             ForgotPasswordScreen(
                 onNewPasswordButtonClick = { navigateToNewPasswordScreen() },
                 forgotPasswordViewModel = forgotPasswordViewModel,
-
-                onBackClick = onBack
+                onBackClick = onBack,
             )
         }
-
         composable(ForgotScreen.NewPasswordScreen.route) {
             NewPasswordScreen(
                 forgotPasswordViewModel = forgotPasswordViewModel,
+                onResetPasswordSuccess = navToSignInScreen,
+                onCodeInvalid = { navigateToForgotPasswordScreen() },
+                navToFprgotPasswordScreen = { navigateToForgotPasswordScreen() },
             )
         }
-
     }
 }

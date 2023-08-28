@@ -13,7 +13,6 @@ import kotlinx.coroutines.flow.flow
 interface LoginRepository {
     suspend fun signInAccount(loginInputEntity: LoginInputEntity): Flow<Result<Unit?>>
     suspend fun getEmail(): String
-
     suspend fun setRememberPassword(hasRememberPassword: Boolean)
 }
 
@@ -38,7 +37,6 @@ class LoginRepositoryImpl(
     }
 
     override suspend fun getEmail(): String {
-        println("getEmail ${dataStoreManager.getUserEmail().first()}")
         return dataStoreManager.getUserEmail().first()
     }
 

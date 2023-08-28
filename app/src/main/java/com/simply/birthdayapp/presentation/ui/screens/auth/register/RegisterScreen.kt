@@ -50,8 +50,6 @@ fun RegisterScreen(
     onRegisterSuccess: () -> Unit = {},
     onRegisterError: () -> Unit = {},
 ) {
-
-
     val name by registerViewModel.name.collectAsState()
     val surName by registerViewModel.surName.collectAsState()
     val email by registerViewModel.email.collectAsState()
@@ -64,7 +62,6 @@ fun RegisterScreen(
     val registrationErrorState by registerViewModel.registrationErrorState.collectAsState()
     val registrationErrorMessage by registerViewModel.registerErrorMessage.collectAsState()
     val registerButtonEnabled by registerViewModel.enableRegisterButton.collectAsState()
-
     val context = LocalContext.current
 
     LaunchedEffect(registrationSuccess) {
@@ -76,14 +73,12 @@ fun RegisterScreen(
     }
     LaunchedEffect(registrationErrorMessage) {
         if (registrationErrorMessage.isNotEmpty()) {
-
             Toast.makeText(context, registrationErrorMessage, Toast.LENGTH_SHORT).show()
             onRegisterError()
             registerViewModel.resetRegisterErrorMessage()
         }
     }
     if (registrationErrorState) {
-
         AlertDialog(
             containerColor = AppTheme.colors.white,
             titleContentColor = AppTheme.colors.black,
@@ -92,9 +87,7 @@ fun RegisterScreen(
             title = { Text(text = stringResource(id = R.string.registration_error)) },
             text = { Text(text = stringResource(R.string.network_error)) },
             confirmButton = {
-                TextButton(
-                    onClick = { registerViewModel.registerErrorState() }
-                ) {
+                TextButton(onClick = { registerViewModel.registerErrorState() }) {
                     Text(text = stringResource(id = R.string.ok), color = AppTheme.colors.black)
                 }
             },
@@ -112,7 +105,6 @@ fun RegisterScreen(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-
             Card(
                 modifier = Modifier
                     .width(317.dp)
@@ -139,18 +131,14 @@ fun RegisterScreen(
                         textState = name,
                         label = stringResource(id = R.string.name),
                         shape = AppTheme.shapes.smallRoundedCorners,
-                        onValueChange = { input ->
-                            registerViewModel.setName(input)
-                        },
+                        onValueChange = { input -> registerViewModel.setName(input) },
                     )
                     BaseTextField(
                         modifier = Modifier.padding(top = 24.dp),
                         textState = surName,
                         label = stringResource(id = R.string.surname),
                         shape = AppTheme.shapes.smallRoundedCorners,
-                        onValueChange = { surName ->
-                            registerViewModel.setSurName(surName)
-                        },
+                        onValueChange = { surName -> registerViewModel.setSurName(surName) },
                     )
                     BaseTextField(
                         modifier = Modifier.padding(top = 24.dp),
@@ -160,9 +148,7 @@ fun RegisterScreen(
                         keyboardType = KeyboardType.Email,
                         errorText = stringResource(id = R.string.register_email_error),
                         hasError = hasEmailError,
-                        onValueChange = { email ->
-                            registerViewModel.setEmail(email)
-                        },
+                        onValueChange = { email -> registerViewModel.setEmail(email) },
                     )
                     PasswordTextFiled(
                         modifier = Modifier.padding(top = 24.dp),
@@ -170,9 +156,7 @@ fun RegisterScreen(
                         label = stringResource(id = R.string.password),
                         hasPasswordError = hasPasswordError,
                         errorText = stringResource(id = R.string.password_error),
-                        onValueChange = { password ->
-                            registerViewModel.setPassword(password)
-                        },
+                        onValueChange = { password -> registerViewModel.setPassword(password) },
                     )
                     PasswordTextFiled(
                         modifier = Modifier.padding(top = 24.dp),
@@ -193,9 +177,7 @@ fun RegisterScreen(
                         shape = RoundedCornerShape(24.dp),
                         buttonTitle = stringResource(id = R.string.register),
                         enabled = registerButtonEnabled,
-                        onClick = {
-                            registerViewModel.registerAccount()
-                        },
+                        onClick = { registerViewModel.registerAccount() },
                     )
                 }
             }
