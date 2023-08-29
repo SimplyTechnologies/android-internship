@@ -28,11 +28,19 @@ import androidx.compose.ui.unit.dp
 import com.simply.birthdayapp.R
 import com.simply.birthdayapp.presentation.ui.components.BirthdayCard
 import com.simply.birthdayapp.presentation.ui.components.LogoTopBar
+import com.simply.birthdayapp.presentation.ui.screens.main.home.birthday.BirthdayViewModel
+import com.simply.birthdayapp.presentation.ui.screens.main.home.details.BirthdayDetailsViewModel
 import com.simply.birthdayapp.presentation.ui.theme.AppTheme
 import org.koin.androidx.compose.getViewModel
 
 @Composable
-fun HomeScreen(homeViewModel: HomeViewModel = getViewModel(), onFabClick: () -> Unit = {}) {
+fun HomeScreen(
+    homeViewModel: HomeViewModel,
+    birthdayViewModel: BirthdayViewModel,
+    birthdayDetailsViewModel: BirthdayDetailsViewModel,
+    navigateToBirthdayScreen: () -> Unit = {},
+    navigateToBirthdayDetailsScreen: () -> Unit = {},
+) {
     val birthdayList by homeViewModel.birthdayList.collectAsState()
     val scrollPosition by homeViewModel.scrollPosition.collectAsState()
     val errorState by homeViewModel.errorState.collectAsState()
@@ -42,7 +50,6 @@ fun HomeScreen(homeViewModel: HomeViewModel = getViewModel(), onFabClick: () -> 
     DisposableEffect(Unit) {
         onDispose { homeViewModel.setScrollPosition(birthdaysLazyListState.firstVisibleItemIndex) }
     }
-
     LaunchedEffect(errorState) {
         if (errorState) {
             Toast.makeText(context, R.string.failed_birthdays_loading, Toast.LENGTH_SHORT).show()
@@ -50,7 +57,6 @@ fun HomeScreen(homeViewModel: HomeViewModel = getViewModel(), onFabClick: () -> 
         }
     }
     Box {
-        Toast(context)
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -63,8 +69,14 @@ fun HomeScreen(homeViewModel: HomeViewModel = getViewModel(), onFabClick: () -> 
                 state = birthdaysLazyListState,
                 contentPadding = PaddingValues(start = 24.dp, end = 24.dp, bottom = 16.dp),
             ) {
-                items(birthdayList) {
-                    BirthdayCard(birthday = it)
+                items(birthdayList) { birthday ->
+                    BirthdayCard(
+                        birthday = birthday,
+                        onCardClick = {
+                            birthdayDetailsViewModel.setBirthday(birthday = birthday)
+                            navigateToBirthdayDetailsScreen()
+                        },
+                    )
                 }
             }
         }
@@ -72,7 +84,10 @@ fun HomeScreen(homeViewModel: HomeViewModel = getViewModel(), onFabClick: () -> 
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(bottom = 16.dp, end = 16.dp),
-            onClick = { onFabClick() },
+            onClick = {
+                birthdayViewModel.setBirthday(null)
+                navigateToBirthdayScreen()
+            },
             shape = AppTheme.shapes.circle,
             containerColor = AppTheme.colors.lightPink,
         ) {
@@ -87,5 +102,5 @@ fun HomeScreen(homeViewModel: HomeViewModel = getViewModel(), onFabClick: () -> 
 @Composable
 @Preview
 private fun HomeScreenPreview() {
-    HomeScreen()
+    HomeScreen(getViewModel(), getViewModel(), getViewModel())
 }

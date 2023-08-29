@@ -24,7 +24,11 @@ fun MainScreen(shopsViewModel: ShopsViewModel = getViewModel()) {
             navController = bottomBarNavController,
             startDestination = BottomBarDestination.HomeMainScreen.route,
         ) {
-            composable(BottomBarDestination.HomeMainScreen.route) { HomeMainScreen() }
+            composable(BottomBarDestination.HomeMainScreen.route) {
+                HomeMainScreen(
+                    onNavigateToShops = { bottomBarNavController.navigate(BottomBarDestination.ShopsMainScreen.route) }
+                )
+            }
 
             composable(BottomBarDestination.ShopsMainScreen.route) {
                 ShopsMainScreen(shopsViewModel = shopsViewModel)

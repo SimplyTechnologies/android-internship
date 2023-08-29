@@ -40,7 +40,7 @@ class HomeViewModel(
         _errorState.update { false }
     }
 
-    private fun fetchBirthdays() {
+    fun fetchBirthdays() {
         viewModelScope.launch(Dispatchers.IO) {
             homeRepository.getBirthdays().onEach {
                 it.onSuccess { birthdayList ->

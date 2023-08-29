@@ -26,6 +26,8 @@
     <string name="sister">Sister</string>
     <string name="uncle">Uncle</string>
     <string name="fail_to_create_birthday">Fail to create birthday</string>
+    <string name="fail_to_update_birthday">Fail to update birthday</string>
+    <string name="fail_to_delete_birthday">Fail to delete birthday</string>
     <string name="name">Name</string>
     <string name="surname">Surname</string>
     <string name="email">Email</string>
@@ -41,4 +43,6 @@
     <string name="ok">OK</string>
     <string name="registration_error">Registration Error</string>
     <string name="network_error">Sorry, an error occurred registering your account, please try again.</string>
+    <string name="generate_message">Generate message</string>
+    <string name="find_gift">Find gift</string>
 </resources>

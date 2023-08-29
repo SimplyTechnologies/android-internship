@@ -1,5 +1,6 @@
 mutation CreateBirthdayMutation($createBirthdayInput: CreateBirthdayInput!) {
     createBirthday(createBirthdayInput: $createBirthdayInput) {
+        id
         image
         name
         relation

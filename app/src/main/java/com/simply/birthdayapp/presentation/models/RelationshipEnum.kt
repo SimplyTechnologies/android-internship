@@ -7,7 +7,7 @@ enum class RelationshipEnum(val resId: Int) {
     MOTHER(R.string.mother),
     FATHER(R.string.father),
     GRANDMOTHER(R.string.grandmother),
-    GRANDFATHER(R.string.father),
+    GRANDFATHER(R.string.grandfather),
     BROTHER(R.string.brother),
     SISTER(R.string.sister),
     UNCLE(R.string.uncle)

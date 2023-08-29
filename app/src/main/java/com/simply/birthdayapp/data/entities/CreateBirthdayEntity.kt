@@ -4,5 +4,5 @@ data class CreateBirthdayEntity(
     val name: String,
     val imageBase64: String?,
     val relation: String,
-    val date: Any,
+    val dateUtc: String,
 )
