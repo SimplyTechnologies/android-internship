@@ -24,6 +24,11 @@ android {
             "SERVER_URL",
             gradleLocalProperties(rootDir).getProperty("SERVER_URL", "\"\"")
         )
+        buildConfigField(
+            "String",
+            "GOOGLE_MAPS_SEARCH_URL",
+            gradleLocalProperties(rootDir).getProperty("GOOGLE_MAPS_SEARCH_URL", "\"\"")
+        )
     }
 
     buildTypes {

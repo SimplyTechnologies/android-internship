@@ -20,6 +20,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.simply.birthdayapp.BuildConfig
 import com.simply.birthdayapp.R
 import com.simply.birthdayapp.presentation.models.Shop
 import com.simply.birthdayapp.presentation.ui.components.RoundAsyncImage
@@ -47,7 +48,7 @@ fun ShopDetailsComponent(shop: Shop) {
         withStyle(AppTheme.typography.urlPrefix) { append(stringResource(R.string.shop_address)) }
         pushStringAnnotation(
             tag = stringResource(R.string.url_annotated_string_tag),
-            annotation = stringResource(id = R.string.google_maps_search_url, shop.addressQuery),
+            annotation = BuildConfig.GOOGLE_MAPS_SEARCH_URL + shop.addressQuery,
         )
         withStyle(AppTheme.typography.url) { append(shop.address) }
         pop()
