@@ -49,6 +49,9 @@
     <string name="ok">OK</string>
     <string name="registration_error">Registration Error</string>
     <string name="network_error">Sorry, an error occurred registering your account, please try again.</string>
+    <string name="no_network_connection">No network connection</string>
+    <string name="do_not_show">"Don't show"</string>
+    <string name="network_status">Network status</string>
     <string name="shop_website">Shop website</string>
     <string name="shop_phone_number">"Phone: "</string>
     <string name="shop_phone_number_not_specified">Phone: not specified</string>
