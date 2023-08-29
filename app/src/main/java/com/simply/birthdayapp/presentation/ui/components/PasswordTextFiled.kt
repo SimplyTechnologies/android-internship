@@ -20,6 +20,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -37,10 +38,13 @@ import com.simply.birthdayapp.presentation.ui.theme.AppTheme
 @Composable
 fun PasswordTextFiled(
     modifier: Modifier = Modifier,
-    textState: String,
+    textState: String = "",
     label: String = "",
     imeAction: ImeAction = ImeAction.Next,
     hasPasswordError: Boolean = false,
+    shape: Shape = AppTheme.shapes.smallRoundedCorners,
+    focusedContainerColor: Color = AppTheme.colors.backgroundPink,
+    unfocusedContainerColor: Color = AppTheme.colors.backgroundPink,
     errorText: String = "",
     onValueChange: (String) -> Unit = {}
 ) {
@@ -50,12 +54,12 @@ fun PasswordTextFiled(
         value = textState,
         onValueChange = onValueChange,
         modifier = modifier,
-        shape = AppTheme.shapes.smallRoundedCorners,
+        shape = shape,
         colors = TextFieldDefaults.colors(
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
-            unfocusedContainerColor = AppTheme.colors.backgroundPink,
-            focusedContainerColor = AppTheme.colors.backgroundPink,
+            unfocusedContainerColor = unfocusedContainerColor,
+            focusedContainerColor = focusedContainerColor,
             cursorColor = Color.Gray,
         ),
         singleLine = true,

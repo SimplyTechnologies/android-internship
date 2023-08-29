@@ -24,6 +24,11 @@ android {
             "SERVER_URL",
             gradleLocalProperties(rootDir).getProperty("SERVER_URL", "\"\"")
         )
+        buildConfigField(
+            "String",
+            "GOOGLE_MAPS_SEARCH_URL",
+            gradleLocalProperties(rootDir).getProperty("GOOGLE_MAPS_SEARCH_URL", "\"\"")
+        )
     }
 
     buildTypes {
@@ -74,6 +79,7 @@ dependencies {
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
     debugImplementation("androidx.compose.ui:ui-tooling")
+    implementation("androidx.compose.material:material")
     // apollo
     implementation("com.apollographql.apollo3:apollo-adapters:3.8.2")
     implementation("com.apollographql.apollo3:apollo-runtime:3.8.2")
@@ -85,10 +91,14 @@ dependencies {
     implementation("io.insert-koin:koin-android:3.4.3")
     implementation("io.insert-koin:koin-androidx-compose:3.4.6")
     // navigation
-    implementation("androidx.navigation:navigation-compose:2.7.0")
+    implementation("androidx.navigation:navigation-compose:2.7.1")
     // lifecycle
-     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.1")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.1")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
     // material icons
     implementation("androidx.compose.material:material-icons-extended:1.5.0")
+
+    //datastore
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
+    implementation("androidx.datastore:datastore-core:1.0.0")
 }

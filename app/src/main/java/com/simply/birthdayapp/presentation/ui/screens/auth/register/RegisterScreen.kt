@@ -5,6 +5,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -22,7 +24,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
@@ -44,7 +45,7 @@ import org.koin.androidx.compose.getViewModel
 
 @Composable
 fun RegisterScreen(
-    registerViewModel: RegisterViewModel,
+    registerViewModel: RegisterViewModel = getViewModel(),
     onRegisterBackClick: () -> Unit = {},
     onRegisterSuccess: () -> Unit = {},
     onRegisterError: () -> Unit = {},
@@ -86,9 +87,7 @@ fun RegisterScreen(
             title = { Text(text = stringResource(id = R.string.registration_error)) },
             text = { Text(text = stringResource(R.string.network_error)) },
             confirmButton = {
-                TextButton(
-                    onClick = { registerViewModel.registerErrorState() }
-                ) {
+                TextButton(onClick = { registerViewModel.registerErrorState() }) {
                     Text(text = stringResource(id = R.string.ok), color = AppTheme.colors.black)
                 }
             },
@@ -99,14 +98,13 @@ fun RegisterScreen(
     ) {
         Column(
             modifier = Modifier
-                .padding(it)
                 .fillMaxSize()
+                .padding(it)
                 .background(color = AppTheme.colors.backgroundPink)
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-
             Card(
                 modifier = Modifier
                     .width(317.dp)
@@ -133,18 +131,14 @@ fun RegisterScreen(
                         textState = name,
                         label = stringResource(id = R.string.name),
                         shape = AppTheme.shapes.smallRoundedCorners,
-                        onValueChange = { input ->
-                            registerViewModel.setName(input)
-                        },
+                        onValueChange = { input -> registerViewModel.setName(input) },
                     )
                     BaseTextField(
                         modifier = Modifier.padding(top = 24.dp),
                         textState = surName,
                         label = stringResource(id = R.string.surname),
                         shape = AppTheme.shapes.smallRoundedCorners,
-                        onValueChange = { surName ->
-                            registerViewModel.setSurName(surName)
-                        },
+                        onValueChange = { surName -> registerViewModel.setSurName(surName) },
                     )
                     BaseTextField(
                         modifier = Modifier.padding(top = 24.dp),
@@ -154,9 +148,7 @@ fun RegisterScreen(
                         keyboardType = KeyboardType.Email,
                         errorText = stringResource(id = R.string.register_email_error),
                         hasError = hasEmailError,
-                        onValueChange = { email ->
-                            registerViewModel.setEmail(email)
-                        },
+                        onValueChange = { email -> registerViewModel.setEmail(email) },
                     )
                     PasswordTextFiled(
                         modifier = Modifier.padding(top = 24.dp),
@@ -164,9 +156,7 @@ fun RegisterScreen(
                         label = stringResource(id = R.string.password),
                         hasPasswordError = hasPasswordError,
                         errorText = stringResource(id = R.string.password_error),
-                        onValueChange = { password ->
-                            registerViewModel.setPassword(password)
-                        },
+                        onValueChange = { password -> registerViewModel.setPassword(password) },
                     )
                     PasswordTextFiled(
                         modifier = Modifier.padding(top = 24.dp),
@@ -180,12 +170,14 @@ fun RegisterScreen(
                         },
                     )
                     AuthButton(
+                        modifier = Modifier
+                            .padding(horizontal = 32.dp, vertical = 16.dp)
+                            .height(51.dp)
+                            .fillMaxWidth(),
                         shape = RoundedCornerShape(24.dp),
                         buttonTitle = stringResource(id = R.string.register),
                         enabled = registerButtonEnabled,
-                        onClick = {
-                            registerViewModel.registerAccount()
-                        },
+                        onClick = { registerViewModel.registerAccount() },
                     )
                 }
             }

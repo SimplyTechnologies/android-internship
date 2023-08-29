@@ -16,7 +16,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -93,8 +92,9 @@ class BirthdayViewModel(
             ).onEach {
                 it.onSuccess { navigateToHomeScreen() }
                 it.onFailure { _createBirthdayError.update { true } }
-            }.catch { _createBirthdayError.update { true } }
-                .flowOn(Dispatchers.Main).collect()
+            }.catch {
+                _createBirthdayError.update { true }
+            }.collect()
         }
     }
 }

@@ -14,9 +14,9 @@ fun BirthdayAppTheme(
     isStatusBarAppearanceLight: Boolean = true,
     content: @Composable () -> Unit,
 ) {
-    val appColors = AppColors()
-    val appTypography = AppTypography()
-    val appShapes = AppShapes()
+    val appColors = LocalAppColors.current
+    val appTypography = LocalAppTypography.current
+    val appShapes = LocalAppShapes.current
 
     val view = LocalView.current
     if (!view.isInEditMode) {

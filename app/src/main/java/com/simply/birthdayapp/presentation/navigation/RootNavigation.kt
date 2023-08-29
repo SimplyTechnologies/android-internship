@@ -16,6 +16,14 @@ sealed class RootDestination(val route: String) {
 fun RootNavigation() {
     val rootNavController = rememberNavController()
 
+    fun navigateToMainScreen() {
+        rootNavController.navigate(RootDestination.MainScreen.route) {
+            popUpTo(RootDestination.MainScreen.route) {
+                inclusive = true
+            }
+        }
+    }
+
     NavHost(
         navController = rootNavController,
         startDestination = RootDestination.AuthMainScreen.route,
@@ -24,7 +32,9 @@ fun RootNavigation() {
             MainScreen()
         }
         composable(RootDestination.AuthMainScreen.route) {
-            AuthMainScreen()
+            AuthMainScreen(
+                navigateToMainScreen = { navigateToMainScreen() }
+            )
         }
     }
 }
