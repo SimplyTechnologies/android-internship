@@ -10,8 +10,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.PullRefreshState
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.SnackbarDuration
@@ -34,6 +39,7 @@ import com.simply.birthdayapp.presentation.ui.screens.main.home.details.Birthday
 import com.simply.birthdayapp.presentation.ui.theme.AppTheme
 import org.koin.androidx.compose.getViewModel
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun HomeScreen(
     homeViewModel: HomeViewModel,
@@ -45,9 +51,14 @@ fun HomeScreen(
     val birthdayList by homeViewModel.birthdayList.collectAsState()
     val scrollPosition by homeViewModel.scrollPosition.collectAsState()
     val errorState by homeViewModel.errorState.collectAsState()
+    val isRefreshing by homeViewModel.isRefreshing.collectAsState()
     val birthdaysLazyListState = rememberLazyListState(initialFirstVisibleItemIndex = scrollPosition)
     val context = LocalContext.current
     val snackbarHostState = LocalSnackbarHostState.current
+    val pullRefreshState: PullRefreshState = rememberPullRefreshState(
+        refreshing = isRefreshing,
+        onRefresh = { homeViewModel.fetchBirthdays() },
+    )
 
     DisposableEffect(Unit) {
         onDispose { homeViewModel.setScrollPosition(birthdaysLazyListState.firstVisibleItemIndex) }
@@ -61,7 +72,7 @@ fun HomeScreen(
             homeViewModel.setErrorStateFalse()
         }
     }
-    Box {
+    Box(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -69,20 +80,38 @@ fun HomeScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             LogoTopBar()
-            LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                state = birthdaysLazyListState,
-                contentPadding = PaddingValues(start = 24.dp, end = 24.dp, bottom = 16.dp),
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .pullRefresh(pullRefreshState),
             ) {
-                items(birthdayList) { birthday ->
-                    BirthdayCard(
-                        birthday = birthday,
-                        onCardClick = {
-                            birthdayDetailsViewModel.setBirthday(birthday = birthday)
-                            navigateToBirthdayDetailsScreen()
-                        },
-                    )
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    state = birthdaysLazyListState,
+                    contentPadding = PaddingValues(start = 24.dp, end = 24.dp, bottom = 16.dp),
+                ) {
+                    when {
+                        birthdayList.isNotEmpty() -> items(birthdayList) { birthday ->
+                            BirthdayCard(
+                                birthday = birthday,
+                                onCardClick = {
+                                    birthdayDetailsViewModel.setBirthday(birthday = birthday)
+                                    navigateToBirthdayDetailsScreen()
+                                },
+                            )
+                        }
+
+                        else -> item { Box(modifier = Modifier.fillMaxSize()) }
+                    }
                 }
+                PullRefreshIndicator(
+                    modifier = Modifier.align(Alignment.TopCenter),
+                    refreshing = isRefreshing,
+                    state = pullRefreshState,
+                    backgroundColor = AppTheme.colors.backgroundPink,
+                    contentColor = AppTheme.colors.lightPink,
+                )
             }
         }
         FloatingActionButton(
