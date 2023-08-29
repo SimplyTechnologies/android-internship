@@ -9,13 +9,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.lifecycleScope
 import com.simply.birthdayapp.data.NetworkMonitor
 import com.simply.birthdayapp.presentation.navigation.RootNavigation
 import com.simply.birthdayapp.presentation.ui.components.NoNetworkConnectionDialog
 import com.simply.birthdayapp.presentation.ui.theme.BirthdayAppTheme
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 
 class MainActivity : ComponentActivity() {
@@ -35,10 +33,8 @@ class MainActivity : ComponentActivity() {
 
                 LaunchedEffect(showNetworkDialog) {
                     if (keepShowingNetworkDialog && showNetworkDialog.not()) {
-                        lifecycleScope.launch {
-                            delay(networkDialogRepeatDelayMillis)
-                            showNetworkDialog = true
-                        }
+                        delay(networkDialogRepeatDelayMillis)
+                        showNetworkDialog = true
                     }
                 }
 
