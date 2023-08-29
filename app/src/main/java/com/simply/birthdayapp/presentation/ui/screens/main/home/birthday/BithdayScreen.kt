@@ -2,7 +2,6 @@ package com.simply.birthdayapp.presentation.ui.screens.main.home.birthday
 
 import android.annotation.SuppressLint
 import android.net.Uri
-import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -31,6 +30,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -63,6 +63,7 @@ import com.simply.birthdayapp.presentation.models.RelationshipEnum
 import com.simply.birthdayapp.presentation.ui.components.AppBaseTopBar
 import com.simply.birthdayapp.presentation.ui.components.DatePickerComponent
 import com.simply.birthdayapp.presentation.ui.components.RoundAsyncImage
+import com.simply.birthdayapp.presentation.ui.screens.main.LocalSnackbarHostState
 import com.simply.birthdayapp.presentation.ui.screens.main.home.HomeViewModel
 import com.simply.birthdayapp.presentation.ui.theme.AppTheme
 import org.koin.androidx.compose.getViewModel
@@ -90,6 +91,7 @@ fun BirthdayScreen(
 
     val focusManager = LocalFocusManager.current
     val context = LocalContext.current
+    val snackbarHostState = LocalSnackbarHostState.current
     val calendar = Calendar.getInstance()
     val datePickerState = rememberDatePickerState(initialSelectedDateMillis = Calendar.getInstance().timeInMillis)
     var showDatePicker by rememberSaveable { mutableStateOf(false) }
@@ -105,19 +107,28 @@ fun BirthdayScreen(
 
     LaunchedEffect(createBirthdayError) {
         if (createBirthdayError) {
-            Toast.makeText(context, R.string.fail_to_create_birthday, Toast.LENGTH_SHORT).show()
+            snackbarHostState.showSnackbar(
+                message = context.getString(R.string.fail_to_create_birthday),
+                duration = SnackbarDuration.Short,
+            )
             birthdayViewModel.setCreateBirthdayErrorFalse()
         }
     }
     LaunchedEffect(updateBirthdayError) {
         if (updateBirthdayError) {
-            Toast.makeText(context, R.string.fail_to_update_birthday, Toast.LENGTH_SHORT).show()
+            snackbarHostState.showSnackbar(
+                message = context.getString(R.string.fail_to_update_birthday),
+                duration = SnackbarDuration.Short,
+            )
             birthdayViewModel.setUpdateBirthdayErrorFalse()
         }
     }
     LaunchedEffect(deleteBirthdayError) {
         if (deleteBirthdayError) {
-            Toast.makeText(context, R.string.fail_to_delete_birthday, Toast.LENGTH_SHORT).show()
+            snackbarHostState.showSnackbar(
+                message = context.getString(R.string.fail_to_delete_birthday),
+                duration = SnackbarDuration.Short,
+            )
             birthdayViewModel.setDeleteBirthdayErrorFalse()
         }
     }

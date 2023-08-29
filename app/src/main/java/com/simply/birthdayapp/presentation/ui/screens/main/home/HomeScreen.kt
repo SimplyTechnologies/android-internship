@@ -1,6 +1,5 @@
 package com.simply.birthdayapp.presentation.ui.screens.main.home
 
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,6 +14,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import com.simply.birthdayapp.R
 import com.simply.birthdayapp.presentation.ui.components.BirthdayCard
 import com.simply.birthdayapp.presentation.ui.components.LogoTopBar
+import com.simply.birthdayapp.presentation.ui.screens.main.LocalSnackbarHostState
 import com.simply.birthdayapp.presentation.ui.screens.main.home.birthday.BirthdayViewModel
 import com.simply.birthdayapp.presentation.ui.screens.main.home.details.BirthdayDetailsViewModel
 import com.simply.birthdayapp.presentation.ui.theme.AppTheme
@@ -46,13 +47,17 @@ fun HomeScreen(
     val errorState by homeViewModel.errorState.collectAsState()
     val birthdaysLazyListState = rememberLazyListState(initialFirstVisibleItemIndex = scrollPosition)
     val context = LocalContext.current
+    val snackbarHostState = LocalSnackbarHostState.current
 
     DisposableEffect(Unit) {
         onDispose { homeViewModel.setScrollPosition(birthdaysLazyListState.firstVisibleItemIndex) }
     }
     LaunchedEffect(errorState) {
         if (errorState) {
-            Toast.makeText(context, R.string.failed_birthdays_loading, Toast.LENGTH_SHORT).show()
+            snackbarHostState.showSnackbar(
+                message = context.getString(R.string.failed_birthdays_loading),
+                duration = SnackbarDuration.Short,
+            )
             homeViewModel.setErrorStateFalse()
         }
     }
