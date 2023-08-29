@@ -46,8 +46,8 @@ class ShopsViewModel(
     private val _lastFavouredShopName: MutableStateFlow<String?> = MutableStateFlow(null)
     val lastFavouredShopName: StateFlow<String?> = _lastFavouredShopName.asStateFlow()
 
-    private val _lastNetworkErrorMessage: MutableStateFlow<String?> = MutableStateFlow(null)
-    val lastNetworkErrorMessage: StateFlow<String?> = _lastNetworkErrorMessage.asStateFlow()
+    private val _lastServerErrorMessage: MutableStateFlow<String?> = MutableStateFlow(null)
+    val lastServerErrorMessage: StateFlow<String?> = _lastServerErrorMessage.asStateFlow()
 
     private val _lastGeneralError: MutableStateFlow<ShopsGeneralError?> = MutableStateFlow(null)
     val lastGeneralError: StateFlow<ShopsGeneralError?> = _lastGeneralError.asStateFlow()
@@ -78,8 +78,8 @@ class ShopsViewModel(
         _lastFavouredShopName.update { null }
     }
 
-    fun clearLastNetworkErrorMessage() {
-        _lastNetworkErrorMessage.update { null }
+    fun clearLastServerErrorMessage() {
+        _lastServerErrorMessage.update { null }
     }
 
     fun clearLastGeneralError() {
@@ -108,7 +108,7 @@ class ShopsViewModel(
                     _cachedShops = it.toMutableList()
                     filterShops()
                 }
-                result.onFailure { cause -> _lastNetworkErrorMessage.update { cause.message } }
+                result.onFailure { cause -> _lastServerErrorMessage.update { cause.message } }
             }
             .catch { _lastGeneralError.update { ShopsGeneralError.FailedToLoadShops } }
             .flowOn(Dispatchers.IO)
@@ -127,7 +127,7 @@ class ShopsViewModel(
                     setCachedShopIsFavourite(cachedShopIndex, true)
                     _lastFavouredShopName.update { shop.name }
                 }
-                result.onFailure { cause -> _lastNetworkErrorMessage.update { cause.message } }
+                result.onFailure { cause -> _lastServerErrorMessage.update { cause.message } }
             }
             .catch { _lastGeneralError.update { ShopsGeneralError.FailedToAddShopToFavourites } }
             .flowOn(Dispatchers.IO)
@@ -143,7 +143,7 @@ class ShopsViewModel(
             .onCompletion { setCachedShopIsLoadingFavourite(cachedShopIndex, false) }
             .onEach { result ->
                 result.onSuccess { setCachedShopIsFavourite(cachedShopIndex, false) }
-                result.onFailure { cause -> _lastNetworkErrorMessage.update { cause.message } }
+                result.onFailure { cause -> _lastServerErrorMessage.update { cause.message } }
             }
             .catch { _lastGeneralError.update { ShopsGeneralError.FailedToRemoveShopFromFavourites } }
             .flowOn(Dispatchers.IO)

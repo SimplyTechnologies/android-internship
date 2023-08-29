@@ -12,7 +12,7 @@ import com.simply.birthdayapp.presentation.models.ShopsGeneralError
 import com.simply.birthdayapp.presentation.ui.theme.AppTheme
 
 @Composable
-fun ShopsRelatedErrorAlertDialog(
+fun ShopsGeneralErrorDialog(
     error: ShopsGeneralError,
     onDismiss: () -> Unit = {},
 ) {
@@ -49,6 +49,6 @@ fun ShopsRelatedErrorAlertDialog(
 
 @Preview
 @Composable
-private fun ShopsRelatedErrorAlertDialogPreview() {
-    ShopsRelatedErrorAlertDialog(error = ShopsGeneralError.FailedToLoadShops)
+private fun ShopsGeneralErrorDialogPreview() {
+    ShopsGeneralErrorDialog(error = ShopsGeneralError.FailedToLoadShops)
 }
