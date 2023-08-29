@@ -1,5 +1,6 @@
 package com.simply.birthdayapp.data.entities
 
-class RegisteredUserEntity(
+class LoginInputEntity(
     val email: String,
+    val password: String,
 )
