@@ -3,7 +3,7 @@ package com.simply.birthdayapp.data.repositories
 import com.apollographql.apollo3.ApolloClient
 import com.simply.birthdayapp.ResetPasswordEmailMutation
 import com.simply.birthdayapp.ResetPasswordMutation
-import com.simply.birthdayapp.data.entity.ForgotPasswordEntity
+import com.simply.birthdayapp.data.entities.ForgotPasswordEntity
 import com.simply.birthdayapp.data.mappers.toGetCode
 import com.simply.birthdayapp.data.mappers.toPasswordInput
 import com.simply.birthdayapp.presentation.ui.models.GetCodeResponseModel

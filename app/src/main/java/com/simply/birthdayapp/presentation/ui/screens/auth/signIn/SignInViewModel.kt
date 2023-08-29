@@ -2,7 +2,7 @@ package com.simply.birthdayapp.presentation.ui.screens.auth.signIn
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.simply.birthdayapp.data.entity.LoginInputEntity
+import com.simply.birthdayapp.data.entities.LoginInputEntity
 import com.simply.birthdayapp.data.repositories.LoginRepository
 import com.simply.birthdayapp.presentation.ui.extenstions.isPasswordValid
 import com.simply.birthdayapp.presentation.ui.extenstions.isValidEmail

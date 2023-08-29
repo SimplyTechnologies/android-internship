@@ -2,7 +2,7 @@ package com.simply.birthdayapp.data.repositories
 
 import com.apollographql.apollo3.ApolloClient
 import com.simply.birthdayapp.LoginMutation
-import com.simply.birthdayapp.data.entity.LoginInputEntity
+import com.simply.birthdayapp.data.entities.LoginInputEntity
 import com.simply.birthdayapp.data.localdatastore.DataStoreManager
 import com.simply.birthdayapp.data.mappers.toLoginAccessToken
 import com.simply.birthdayapp.data.mappers.toLoginInput

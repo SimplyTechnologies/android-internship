@@ -1,4 +1,4 @@
-package com.simply.birthdayapp.data.entity
+package com.simply.birthdayapp.data.entities
 
 class ForgotPasswordEntity (
    val hash:String,
