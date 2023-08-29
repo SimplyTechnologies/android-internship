@@ -2,6 +2,7 @@ package com.simply.birthdayapp.presentation.ui.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -20,6 +21,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.simply.birthdayapp.R
 import com.simply.birthdayapp.presentation.ui.theme.AppTheme
 
@@ -39,13 +41,16 @@ fun SearchBarComponent(
         placeholder = {
             Text(
                 text = stringResource(R.string.search),
-                color = AppTheme.colors.gray,
-                style = AppTheme.typography.medium,
+                fontSize = 14.sp,
+                style = AppTheme.typography.mediumKarmaGray,
             )
         },
         trailingIcon = {
             if (shouldShowClear && query.isNotEmpty()) {
-                IconButton(onClick = { onQueryChange("") }) {
+                IconButton(
+                    modifier = Modifier.size(20.dp),
+                    onClick = { onQueryChange("") },
+                ) {
                     Icon(
                         imageVector = Icons.Outlined.Clear,
                         contentDescription = stringResource(R.string.clear),
@@ -53,7 +58,10 @@ fun SearchBarComponent(
                     )
                 }
             } else {
-                IconButton(onClick = onSearch) {
+                IconButton(
+                    modifier = Modifier.size(20.dp),
+                    onClick = onSearch,
+                ) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_search),
                         contentDescription = stringResource(R.string.search),
@@ -70,6 +78,8 @@ fun SearchBarComponent(
         singleLine = true,
         shape = AppTheme.shapes.circle,
         colors = TextFieldDefaults.colors(
+            focusedTextColor = AppTheme.colors.black,
+            unfocusedTextColor = AppTheme.colors.black,
             focusedContainerColor = AppTheme.colors.white,
             unfocusedContainerColor = AppTheme.colors.white,
             focusedIndicatorColor = Color.Transparent,

@@ -2,7 +2,7 @@ package com.simply.birthdayapp.presentation.ui.screens.auth.register
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.simply.birthdayapp.data.entity.RegisterInputEntity
+import com.simply.birthdayapp.data.entities.RegisterInputEntity
 import com.simply.birthdayapp.data.repositories.RegisterRepository
 import com.simply.birthdayapp.presentation.extensions.isPasswordValid
 import com.simply.birthdayapp.presentation.extensions.isValidEmail
@@ -13,7 +13,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -47,9 +46,6 @@ class RegisterViewModel(private val repository: RegisterRepository) : ViewModel(
     private var _registrationSuccessState = MutableStateFlow(false)
     val registrationSuccessState = _registrationSuccessState.asStateFlow()
 
-    private var _registeredEmail = MutableStateFlow("")
-    val registeredEmail = _registeredEmail.asStateFlow()
-
     private var _registrationErrorState = MutableStateFlow(false)
     val registrationErrorState = _registrationErrorState.asStateFlow()
 
@@ -81,19 +77,15 @@ class RegisterViewModel(private val repository: RegisterRepository) : ViewModel(
                     password = _password.value
                 )
             ).onEach {
-                it.onSuccess { userEntity ->
+                it.onSuccess { _ ->
                     _registrationSuccessState.value = true
-                    _registeredEmail.value = userEntity?.email ?: _email.value
-                    clearForm()
                 }.onFailure { error ->
                     _registerErrorMessage.value = error.message ?: "Error"
-                    _registeredEmail.value = _email.value
-                    clearForm()
                 }
+                clearForm()
             }.catch {
                 _registrationErrorState.value = true
-            }.flowOn(Dispatchers.Main)
-                .collect()
+            }.collect()
         }
     }
 

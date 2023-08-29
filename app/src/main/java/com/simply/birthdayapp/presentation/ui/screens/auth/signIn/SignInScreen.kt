@@ -1,5 +1,6 @@
 package com.simply.birthdayapp.presentation.ui.screens.auth.signIn
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
@@ -20,14 +22,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -51,24 +51,59 @@ import org.koin.androidx.compose.getViewModel
 
 @Composable
 fun SignInScreen(
-    registerViewModel: RegisterViewModel,
+    signInViewModel: SignInViewModel = getViewModel(),
     onSignInBackClick: () -> Unit = {},
+    onLoginSuccess: () -> Unit = {},
     onForgotPasswordClick: () -> Unit = {}
 ) {
-    val registeredEmail by registerViewModel.registeredEmail.collectAsState()
-    var email by remember { mutableStateOf(registeredEmail) }
-    var password by remember { mutableStateOf("") }
-    val checkedState = remember { mutableStateOf(false) }
-    var hasEmailError by remember { mutableStateOf(false) }
-    var hasPasswordError by remember { mutableStateOf(false) }
+    val loginSuccess by signInViewModel.loginSuccessState.collectAsState()
+    val loginErrorState by signInViewModel.loginErrorState.collectAsState()
+    val loginErrorMessage by signInViewModel.loginErrorMessage.collectAsState()
+    val hasPasswordError by signInViewModel.hasPasswordError.collectAsState()
+    val hasEmailError by signInViewModel.hasEmailError.collectAsState()
+    val email by signInViewModel.email.collectAsState()
+    val password by signInViewModel.password.collectAsState()
+    val checkedState by signInViewModel.checkedState.collectAsState()
+    val loginButtonEnabled by signInViewModel.enableLoginButton.collectAsState()
+    val context = LocalContext.current
 
+    LaunchedEffect(loginSuccess) {
+        if (loginSuccess) {
+            Toast.makeText(context, R.string.login_success, Toast.LENGTH_SHORT).show()
+            onLoginSuccess()
+            signInViewModel.loginSuccessState()
+        }
+    }
+    LaunchedEffect(loginErrorMessage) {
+        if (loginErrorMessage.isNotEmpty()) {
+            Toast.makeText(context, loginErrorMessage, Toast.LENGTH_SHORT).show()
+            signInViewModel.resetLoginErrorMessage()
+        }
+    }
+    if (loginErrorState) {
+        AlertDialog(
+            containerColor = AppTheme.colors.white,
+            titleContentColor = AppTheme.colors.black,
+            textContentColor = AppTheme.colors.black,
+            onDismissRequest = { signInViewModel.loginErrorState() },
+            title = { Text(text = stringResource(id = R.string.sign_in_error)) },
+            text = { Text(text = stringResource(R.string.sign_in_network_error)) },
+            confirmButton = {
+                TextButton(
+                    onClick = { signInViewModel.loginErrorState() }
+                ) {
+                    Text(text = stringResource(id = R.string.ok), color = AppTheme.colors.black)
+                }
+            },
+        )
+    }
     Scaffold(
         topBar = { AppBaseTopBar(onBackClick = onSignInBackClick) }
     ) {
         Column(
             modifier = Modifier
-                .padding(it)
                 .fillMaxSize()
+                .padding(it)
                 .background(color = AppTheme.colors.backgroundPink)
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.Center,
@@ -96,42 +131,24 @@ fun SignInScreen(
                         fontFamily = FontFamily(Font(R.font.karm_light)),
                     )
                     BaseTextField(
+                        modifier = Modifier.padding(top = 24.dp),
                         textState = email,
                         label = stringResource(id = R.string.email),
-                        shape = RoundedCornerShape(13.dp),
-                        onValueChange = { input ->
-                            email = input
-                            hasEmailError = !input.isValidEmail()
-                        },
+                        shape = AppTheme.shapes.smallRoundedCorners,
                         keyboardType = KeyboardType.Email,
+                        errorText = stringResource(id = R.string.register_email_error),
+                        hasError = hasEmailError,
+                        imeAction = ImeAction.Next,
+                        onValueChange = { email -> signInViewModel.setEmail(email) },
                     )
-                    if (hasEmailError) {
-                        Row(
-                            modifier = Modifier
-                                .padding(2.dp)
-                                .fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                        ) {
-                            Text(
-                                modifier = Modifier.padding(start = 4.dp),
-                                textAlign = TextAlign.Start,
-                                text = stringResource(id = R.string.register_email_error),
-                                color = Color.Red,
-                                fontFamily = FontFamily(Font(R.font.karm_light)),
-                                fontSize = 16.sp,
-                            )
-                        }
-                    }
                     PasswordTextFiled(
+                        modifier = Modifier.padding(top = 24.dp),
                         textState = password,
                         label = stringResource(id = R.string.password),
-                        imeAction = ImeAction.Done,
                         hasPasswordError = hasPasswordError,
+                        imeAction = ImeAction.Done,
                         errorText = stringResource(id = R.string.password_error),
-                        onValueChange = { input ->
-                            password = input
-                            hasPasswordError = password.isPasswordValid()
-                        }
+                        onValueChange = { password -> signInViewModel.setPassword(password) },
                     )
                     Row(
                         modifier = Modifier
@@ -141,8 +158,10 @@ fun SignInScreen(
                     ) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Checkbox(
-                                checked = checkedState.value,
-                                onCheckedChange = { checkedState.value = it },
+                                checked = checkedState,
+                                onCheckedChange = { isChecked ->
+                                    signInViewModel.changeRememberPasswordState(isChecked)
+                                },
                                 colors = CheckboxDefaults.colors(checkedColor = AppTheme.colors.lightPink),
                             )
                             Text(
@@ -171,8 +190,14 @@ fun SignInScreen(
                         }
                     }
                     AuthButton(
+                        modifier = Modifier
+                            .padding(horizontal = 32.dp, vertical = 16.dp)
+                            .height(51.dp)
+                            .fillMaxWidth(),
                         shape = RoundedCornerShape(24.dp),
-                        buttonTitle = stringResource(id = R.string.register),
+                        buttonTitle = stringResource(id = R.string.sign_in),
+                        enabled = loginButtonEnabled,
+                        onClick = { signInViewModel.loginAccount() },
                     )
                 }
             }
@@ -183,5 +208,5 @@ fun SignInScreen(
 @Preview(showBackground = true)
 @Composable
 private fun SignInScreenPreview() {
-    SignInScreen(registerViewModel = getViewModel())
+    SignInScreen(signInViewModel = getViewModel())
 }
