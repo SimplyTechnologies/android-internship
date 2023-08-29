@@ -27,21 +27,21 @@ class MainActivity : ComponentActivity() {
                     initialValue = networkMonitor.isCurrentlyConnected(),
                     lifecycleOwner = this,
                 )
-                var keepShowingNetworkDialog by rememberSaveable { mutableStateOf(true) }
-                var showNetworkDialog by rememberSaveable { mutableStateOf(true) }
-                val networkDialogRepeatDelayMillis = 10_000L
+                var doNotShowNetworkDialogAnymore by rememberSaveable { mutableStateOf(false) }
+                var dismissedNetworkDialogRecently by rememberSaveable { mutableStateOf(false) }
+                val networkDialogDismissTimeoutMillis = 10_000L
 
-                LaunchedEffect(showNetworkDialog) {
-                    if (keepShowingNetworkDialog && showNetworkDialog.not()) {
-                        delay(networkDialogRepeatDelayMillis)
-                        showNetworkDialog = true
+                LaunchedEffect(dismissedNetworkDialogRecently) {
+                    if (doNotShowNetworkDialogAnymore.not() && dismissedNetworkDialogRecently) {
+                        delay(networkDialogDismissTimeoutMillis)
+                        dismissedNetworkDialogRecently = false
                     }
                 }
 
-                if (keepShowingNetworkDialog && showNetworkDialog && connectedToNetwork.not()) {
+                if (doNotShowNetworkDialogAnymore.not() && dismissedNetworkDialogRecently.not() && connectedToNetwork.not()) {
                     NoNetworkConnectionDialog(
-                        onDoNotShow = { keepShowingNetworkDialog = false },
-                        onDismiss = { showNetworkDialog = false },
+                        onDoNotShow = { doNotShowNetworkDialogAnymore = true },
+                        onDismiss = { dismissedNetworkDialogRecently = true },
                     )
                 }
 
