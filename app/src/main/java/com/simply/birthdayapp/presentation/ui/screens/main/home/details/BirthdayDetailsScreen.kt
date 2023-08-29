@@ -1,5 +1,6 @@
 package com.simply.birthdayapp.presentation.ui.screens.main.home.details
 
+import android.content.Intent
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -20,6 +21,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -28,10 +32,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import com.simply.birthdayapp.R
 import com.simply.birthdayapp.presentation.extensions.fromUtcToDayMonthYearDate
 import com.simply.birthdayapp.presentation.models.RelationshipEnum
 import com.simply.birthdayapp.presentation.ui.components.AppBaseTopBar
+import com.simply.birthdayapp.presentation.ui.components.GenerateMessageDialog
 import com.simply.birthdayapp.presentation.ui.components.RoundAsyncImage
 import com.simply.birthdayapp.presentation.ui.screens.main.home.birthday.BirthdayViewModel
 import com.simply.birthdayapp.presentation.ui.theme.AppTheme
@@ -46,6 +52,8 @@ fun BirthdayDetailsScreen(
     onBackClick: () -> Unit = {},
 ) {
     val birthday by birthdayDetailsViewModel.birthday.collectAsState()
+    val birthdayMessage by birthdayDetailsViewModel.birthdayMessage.collectAsState()
+    var showGenerateMessageDialog by rememberSaveable { mutableStateOf(false) }
     val context = LocalContext.current
 
     BackHandler { onBackClick() }
@@ -135,7 +143,7 @@ fun BirthdayDetailsScreen(
                     modifier = Modifier
                         .height(41.dp),
                     shape = AppTheme.shapes.smallRoundedCorners,
-                    onClick = { },
+                    onClick = { showGenerateMessageDialog = true },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = AppTheme.colors.lightPink,
                     ),
@@ -164,6 +172,23 @@ fun BirthdayDetailsScreen(
                         fontSize = 18.sp,
                     )
                 }
+            }
+            if (showGenerateMessageDialog) {
+                GenerateMessageDialog(
+                    message = birthdayMessage,
+                    onValueChange = { message -> birthdayDetailsViewModel.setBirthdayMessage(message) },
+                    onDismissRequest = { showGenerateMessageDialog = false },
+                    onConfirmButtonClick = {
+                        val sendIntent = Intent().apply {
+                            action = Intent.ACTION_SEND
+                            putExtra(Intent.EXTRA_TEXT, birthdayMessage)
+                            type = "text/plain"
+                        }
+                        val shareIntent = Intent.createChooser(sendIntent, null)
+                        ContextCompat.startActivity(context, shareIntent, null)
+                        showGenerateMessageDialog = false
+                    },
+                )
             }
         }
     }
