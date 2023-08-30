@@ -53,6 +53,9 @@
     <string name="sign_in_error">Sign in Error</string>
     <string name="reset_password_error">Reset PAssword Error</string>
     <string name="network_error">Sorry, an error occurred registering your account, please try again.</string>
+    <string name="no_network_connection">No network connection</string>
+    <string name="do_not_show">"Don't show"</string>
+    <string name="network_status">Network status</string>
     <string name="reser_password_network_error">Sorry, an error occurred reseting your password, please try again.</string>
     <string name="sign_in_network_error">Sorry, an error occurred sign in your account, please try again.</string>
     <string name="get_the_code">Get The Code</string>
