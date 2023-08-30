@@ -3,6 +3,7 @@ package com.simply.birthdayapp.presentation.ui.screens.auth.signIn.forgotpasswor
 
 import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -37,8 +38,11 @@ import com.simply.birthdayapp.R
 import com.simply.birthdayapp.presentation.ui.components.AppBaseTopBar
 import com.simply.birthdayapp.presentation.ui.components.AuthButton
 import com.simply.birthdayapp.presentation.ui.components.BaseTextField
+import com.simply.birthdayapp.presentation.ui.components.CircularProgress
 import com.simply.birthdayapp.presentation.ui.theme.AppTheme
 import org.koin.androidx.compose.getViewModel
+
+const val CODE_MAX_LENGTH = 6
 
 @Composable
 fun ForgotPasswordScreen(
@@ -51,19 +55,11 @@ fun ForgotPasswordScreen(
     val email by forgotPasswordViewModel.email.collectAsState()
     val code by forgotPasswordViewModel.code.collectAsState()
     val showPasswordCodeSection by forgotPasswordViewModel.hasGetCodeSuccess.collectAsState()
-    val hasGetCodeSuccess by forgotPasswordViewModel.hasGetCodeSuccess.collectAsState()
     val getCodeErrorState by forgotPasswordViewModel.getCodeErrorState.collectAsState()
     val enabledGetCodeButton by forgotPasswordViewModel.enabledGetCodeButton.collectAsState()
-    val emailMaxLength = 30
-    val codeMaxLength = 6
+    val showLoading by forgotPasswordViewModel.isOnLoadingState.collectAsState()
     val context = LocalContext.current
 
-    LaunchedEffect(hasGetCodeSuccess) {
-        if (hasGetCodeSuccess) {
-            Toast.makeText(context, R.string.get_code_success, Toast.LENGTH_SHORT).show()
-            forgotPasswordViewModel.resetSuccessState()
-        }
-    }
     LaunchedEffect(getCodeErrorMessage) {
         if (getCodeErrorMessage.isNotEmpty()) {
             Toast.makeText(context, getCodeErrorMessage, Toast.LENGTH_SHORT).show()
@@ -77,7 +73,7 @@ fun ForgotPasswordScreen(
             textContentColor = AppTheme.colors.black,
             onDismissRequest = { forgotPasswordViewModel.getCodeErrorState() },
             title = { Text(text = stringResource(id = R.string.reset_password_error)) },
-            text = { Text(text = stringResource(R.string.reser_password_network_error)) },
+            text = { Text(text = stringResource(R.string.reset_password_network_error)) },
             confirmButton = {
                 TextButton(
                     onClick = { forgotPasswordViewModel.getCodeErrorState() }
@@ -87,111 +83,124 @@ fun ForgotPasswordScreen(
             },
         )
     }
-    Scaffold(topBar = { AppBaseTopBar(onBackClick = onBackClick) }
-    ) {
-        Column(
-            modifier = Modifier
-                .padding(it)
-                .fillMaxSize()
-                .background(color = AppTheme.colors.backgroundPink)
-                .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Text(
-                modifier = Modifier
-                    .padding(top = 100.dp),
-                text = stringResource(id = R.string.email),
-                color = AppTheme.colors.darkPink,
-                style = AppTheme.typography.bold,
-                fontSize = 18.sp,
-            )
+    Scaffold(topBar = { AppBaseTopBar(onBackClick = onBackClick) }) {
+        Box {
             Column(
                 modifier = Modifier
-                    .width(300.dp)
-                    .fillMaxSize(),
+                    .fillMaxSize()
+                    .background(color = AppTheme.colors.backgroundPink),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                BaseTextField(
-                    modifier = Modifier.padding(top = 2.dp),
-                    textState = email,
-                    label = stringResource(id = R.string.email),
-                    focusedContainerColor = AppTheme.colors.white,
-                    unfocusedContainerColor = AppTheme.colors.white,
-                    shape = AppTheme.shapes.smallRoundedCorners,
-                    keyboardType = KeyboardType.Email,
-                    imeAction = ImeAction.Done,
-                    errorText = stringResource(id = R.string.register_email_error),
-                    hasError = hasEmailError,
-                    onValueChange = { email ->
-                        if (email.length <= emailMaxLength) forgotPasswordViewModel.setEmail(email)
-                    },
-                )
-            }
-            AuthButton(
-                modifier = Modifier
-                    .padding(horizontal = 32.dp, vertical = 24.dp)
-                    .height(41.dp)
-                    .width(200.dp),
-                backgroundColor = AppTheme.colors.white,
-                shape = RoundedCornerShape(13.dp),
-                enabled = enabledGetCodeButton,
-                disabledContainerColor = AppTheme.colors.lightGray,
-                buttonTitle = stringResource(id = R.string.get_the_code),
-                onClick = { forgotPasswordViewModel.getCode() },
-            )
-            if (showPasswordCodeSection) {
-                Card(
+                Column(
                     modifier = Modifier
-                        .padding(top = 50.dp)
-                        .width(273.dp)
-                        .height(143.dp)
+                        .padding(it)
+                        .fillMaxSize()
+                        .background(color = AppTheme.colors.backgroundPink)
+                        .verticalScroll(rememberScrollState()),
+                    horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
+                    Text(
+                        modifier = Modifier
+                            .padding(top = 100.dp),
+                        text = stringResource(id = R.string.email),
+                        color = AppTheme.colors.darkPink,
+                        style = AppTheme.typography.bold,
+                        fontSize = 18.sp,
+                    )
                     Column(
                         modifier = Modifier
-                            .wrapContentHeight()
-                            .fillMaxSize()
-                            .background(AppTheme.colors.white),
+                            .width(300.dp)
+                            .fillMaxSize(),
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
-                        Text(
-                            modifier = Modifier.padding(top = 16.dp),
-                            text = "Password Code",
-                            fontSize = 20.sp,
-                            color = AppTheme.colors.darkPink,
-                            fontWeight = FontWeight(700),
-                            textAlign = TextAlign.Center,
-                            style = AppTheme.typography.bold,
-                        )
                         BaseTextField(
-                            modifier = Modifier
-                                .padding(top = 20.dp)
-                                .width(140.dp),
-                            textState = code,
-                            textStyle = TextStyle(fontSize = 20.sp, textAlign = TextAlign.Center),
-                            keyboardType = KeyboardType.Number,
-                            focusedContainerColor = AppTheme.colors.backgroundPink,
-                            unfocusedContainerColor = AppTheme.colors.backgroundPink,
+                            modifier = Modifier.padding(top = 2.dp),
+                            textState = email,
+                            label = stringResource(id = R.string.email),
+                            focusedContainerColor = AppTheme.colors.white,
+                            unfocusedContainerColor = AppTheme.colors.white,
                             shape = AppTheme.shapes.smallRoundedCorners,
-                            onValueChange = { code ->
-                                if (code.length <= codeMaxLength)
-                                    forgotPasswordViewModel.setCode(code)
+                            keyboardType = KeyboardType.Email,
+                            imeAction = ImeAction.Done,
+                            errorText = stringResource(id = R.string.register_email_error),
+                            hasError = hasEmailError,
+                            onValueChange = { email ->
+                                forgotPasswordViewModel.setEmail(email)
                             },
                         )
                     }
+                    AuthButton(
+                        modifier = Modifier
+                            .padding(horizontal = 32.dp, vertical = 24.dp)
+                            .height(41.dp)
+                            .width(200.dp),
+                        backgroundColor = AppTheme.colors.white,
+                        shape = RoundedCornerShape(13.dp),
+                        enabled = enabledGetCodeButton,
+                        disabledContainerColor = AppTheme.colors.lightGray,
+                        buttonTitle = stringResource(id = R.string.get_the_code),
+                        onClick = { forgotPasswordViewModel.getCode() },
+                    )
+                    if (showPasswordCodeSection) {
+                        Card(
+                            modifier = Modifier
+                                .padding(top = 50.dp)
+                                .width(273.dp)
+                                .height(143.dp)
+                        ) {
+                            Column(
+                                modifier = Modifier
+                                    .wrapContentHeight()
+                                    .fillMaxSize()
+                                    .background(AppTheme.colors.white),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                            ) {
+                                Text(
+                                    modifier = Modifier.padding(top = 16.dp),
+                                    text = stringResource(id = R.string.password_code),
+                                    fontSize = 20.sp,
+                                    color = AppTheme.colors.darkPink,
+                                    fontWeight = FontWeight(700),
+                                    textAlign = TextAlign.Center,
+                                    style = AppTheme.typography.bold,
+                                )
+                                BaseTextField(
+                                    modifier = Modifier
+                                        .padding(top = 20.dp)
+                                        .width(140.dp),
+                                    textState = code,
+                                    textStyle = TextStyle(
+                                        fontSize = 20.sp,
+                                        textAlign = TextAlign.Center
+                                    ),
+                                    keyboardType = KeyboardType.Number,
+                                    imeAction = ImeAction.Done,
+                                    focusedContainerColor = AppTheme.colors.backgroundPink,
+                                    unfocusedContainerColor = AppTheme.colors.backgroundPink,
+                                    shape = AppTheme.shapes.smallRoundedCorners,
+                                    inputMaxLength = CODE_MAX_LENGTH,
+                                    onValueChange = { code ->
+                                        forgotPasswordViewModel.setCode(code)
+                                    },
+                                )
+                            }
+                        }
+                        AuthButton(
+                            modifier = Modifier
+                                .padding(horizontal = 32.dp)
+                                .padding(top = 100.dp)
+                                .width(200.dp),
+                            backgroundColor = AppTheme.colors.lightPink,
+                            shape = RoundedCornerShape(13.dp),
+                            buttonTitle = stringResource(id = R.string.set_new_password),
+                            enabled = code.isNotEmpty() && code.length == CODE_MAX_LENGTH,
+                            onClick = onNewPasswordButtonClick,
+                        )
+                    }
                 }
-                AuthButton(
-                    modifier = Modifier
-                        .padding(horizontal = 32.dp, vertical = 24.dp)
-                        .padding(top = 100.dp)
-                        .height(41.dp)
-                        .width(200.dp),
-                    backgroundColor = AppTheme.colors.lightPink,
-                    shape = RoundedCornerShape(13.dp),
-                    buttonTitle = stringResource(id = R.string.set_new_password),
-                    enabled = code.isNotEmpty() && code.length == codeMaxLength,
-                    onClick = onNewPasswordButtonClick,
-                )
             }
+            if (showLoading)
+                CircularProgress()
         }
     }
 }

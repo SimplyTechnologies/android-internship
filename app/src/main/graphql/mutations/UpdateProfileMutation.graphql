@@ -1,0 +1,7 @@
+mutation UpdateProfile ($updateProfileInput: UpdateProfileInput!){
+    updateProfile(updateProfileInput: $updateProfileInput){
+        firstName
+        lastName
+        image
+    }
+}

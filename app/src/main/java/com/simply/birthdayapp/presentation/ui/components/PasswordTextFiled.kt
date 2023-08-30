@@ -42,17 +42,21 @@ fun PasswordTextFiled(
     label: String = "",
     imeAction: ImeAction = ImeAction.Next,
     hasPasswordError: Boolean = false,
+    inputMaxLength: Int = 30,
     shape: Shape = AppTheme.shapes.smallRoundedCorners,
     focusedContainerColor: Color = AppTheme.colors.backgroundPink,
     unfocusedContainerColor: Color = AppTheme.colors.backgroundPink,
     errorText: String = "",
-    onValueChange: (String) -> Unit = {}
+    onValueChange: (String) -> Unit = {},
 ) {
     var isPasswordVisible by rememberSaveable { mutableStateOf(false) }
 
     TextField(
         value = textState,
-        onValueChange = onValueChange,
+        onValueChange = {
+            if (it.length <= inputMaxLength)
+                onValueChange(it)
+        },
         modifier = modifier,
         shape = shape,
         colors = TextFieldDefaults.colors(
@@ -87,7 +91,7 @@ fun PasswordTextFiled(
                 color = AppTheme.colors.darkPink,
                 fontFamily = FontFamily(Font(R.font.karm_light)),
             )
-        }
+        },
     )
     if (hasPasswordError) {
         Row(
