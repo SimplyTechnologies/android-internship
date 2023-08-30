@@ -80,9 +80,9 @@ import com.simply.birthdayapp.presentation.ui.components.RoundAsyncImage
 import com.simply.birthdayapp.presentation.ui.screens.main.LocalSnackbarHostState
 import com.simply.birthdayapp.presentation.ui.screens.main.home.HomeViewModel
 import com.simply.birthdayapp.presentation.ui.theme.AppTheme
-import org.koin.androidx.compose.getViewModel
 import java.util.Calendar
 import java.util.TimeZone
+import org.koin.androidx.compose.getViewModel
 
 @SuppressLint("SimpleDateFormat")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -111,11 +111,10 @@ fun BirthdayScreen(
     val calendar = Calendar.getInstance()
     val datePickerState = rememberDatePickerState(initialSelectedDateMillis = calendar.timeInMillis)
     var showDatePickerDialog by rememberSaveable { mutableStateOf(false) }
-    var calendarPermissionGranted by rememberSaveable { mutableStateOf(false) }
     var showCalendarPermissionExplanationDialog by rememberSaveable { mutableStateOf(false) }
     val doneButtonEnable by birthdayViewModel.combine.collectAsState()
     val relationshipList = RelationshipEnum.values()
-
+    var showNeedCalendarPermissionMessage by rememberSaveable { mutableStateOf(false) }
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
@@ -126,8 +125,10 @@ fun BirthdayScreen(
     val requestPermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
     ) { isGranted ->
-        calendarPermissionGranted = isGranted
-        if (isGranted.not()) birthdayViewModel.setAddToCalendarCheck(false)
+        if (isGranted.not()) {
+            if (context.shouldShowCalendarPermissionRationale().not()) showNeedCalendarPermissionMessage = true
+            birthdayViewModel.setAddToCalendarCheck(false)
+        }
     }
 
     LaunchedEffect(createBirthdayError) {
@@ -155,6 +156,24 @@ fun BirthdayScreen(
                 duration = SnackbarDuration.Short,
             )
             birthdayViewModel.setDeleteBirthdayErrorFalse()
+        }
+    }
+    LaunchedEffect(addToCalendarCheck) {
+        if (addToCalendarCheck) {
+            checkCalendarPermission(
+                context = context,
+                requestPermissionLauncher = requestPermissionLauncher,
+                onShowRationale = { showCalendarPermissionExplanationDialog = true },
+            )
+        }
+    }
+    LaunchedEffect(showNeedCalendarPermissionMessage) {
+        if (showNeedCalendarPermissionMessage) {
+            snackbarHostState.showSnackbar(
+                message = context.getString(R.string.app_needs_calendar_permission_to_add_birthdays),
+                duration = SnackbarDuration.Short,
+            )
+            showNeedCalendarPermissionMessage = false
         }
     }
     Column {
@@ -322,7 +341,7 @@ fun BirthdayScreen(
             Button(
                 enabled = doneButtonEnable,
                 onClick = {
-                    if (calendarPermissionGranted) {
+                    if (context.calendarPermissionGranted()) {
                         addEventToCalendar(context, datePickerState.selectedDateMillis ?: calendar.timeInMillis)
                     }
                     editModeBirthday?.let { birthday ->
@@ -354,32 +373,28 @@ fun BirthdayScreen(
                     onDismissRequest = { showDatePickerDialog = false },
                     onConfirmButtonClick = {
                         showDatePickerDialog = false
-                        birthdayViewModel.setDate((datePickerState.selectedDateMillis ?: calendar.timeInMillis).fromMillisToUtcDate())
+                        birthdayViewModel.setDate(
+                            (datePickerState.selectedDateMillis ?: calendar.timeInMillis).fromMillisToUtcDate()
+                        )
                     },
-                    onDismissButtonClick = {
-                        showDatePickerDialog = false
-                    },
+                    onDismissButtonClick = { showDatePickerDialog = false },
                 )
             }
 
             if (showCalendarPermissionExplanationDialog) {
                 CalendarPermissionDialog(
-                    onDismissRequest = { showCalendarPermissionExplanationDialog = false },
+                    onDismissRequest = {
+                        birthdayViewModel.setAddToCalendarCheck(false)
+                        showCalendarPermissionExplanationDialog = false
+                    },
                     onConfirmButtonClick = {
                         showCalendarPermissionExplanationDialog = false
-                        requestPermissionLauncher.launch(Manifest.permission.WRITE_CALENDAR)
+                        requestPermissionLauncher.requestCalendarPermission()
                     },
                     onDismissButtonClick = {
+                        birthdayViewModel.setAddToCalendarCheck(false)
                         showCalendarPermissionExplanationDialog = false
                     },
-                )
-            }
-
-            if (addToCalendarCheck) {
-                checkCalendarPermission(
-                    context = context,
-                    requestPermissionLauncher = requestPermissionLauncher,
-                    onShowRationale = { showCalendarPermissionExplanationDialog = true },
                 )
             }
         }
@@ -391,25 +406,13 @@ private fun checkCalendarPermission(
     requestPermissionLauncher: ActivityResultLauncher<String>,
     onShowRationale: () -> Unit,
 ) {
-    if (ContextCompat.checkSelfPermission(
-            context,
-            Manifest.permission.WRITE_CALENDAR
-        ) != PackageManager.PERMISSION_GRANTED
-    ) {
-        if (ActivityCompat.shouldShowRequestPermissionRationale(
-                context as Activity,
-                Manifest.permission.WRITE_CALENDAR
-            )
-        ) {
-            onShowRationale()
-        } else {
-            requestPermissionLauncher.launch(Manifest.permission.WRITE_CALENDAR)
-        }
+    if (context.calendarPermissionGranted().not()) {
+        if (context.shouldShowCalendarPermissionRationale()) onShowRationale()
+        else requestPermissionLauncher.requestCalendarPermission()
     }
 }
 
 private fun addEventToCalendar(context: Context, date: Long) {
-    val contentResolver = context.contentResolver
     val values = ContentValues().apply {
         put(CalendarContract.Events.DTSTART, date)
         put(CalendarContract.Events.DTEND, date)
@@ -417,9 +420,17 @@ private fun addEventToCalendar(context: Context, date: Long) {
         put(CalendarContract.Events.CALENDAR_ID, 1)
         put(CalendarContract.Events.EVENT_TIMEZONE, TimeZone.getDefault().id)
     }
-
-    val uri = contentResolver.insert(CalendarContract.Events.CONTENT_URI, values)
+    context.contentResolver.insert(CalendarContract.Events.CONTENT_URI, values)
 }
+
+private fun Context.calendarPermissionGranted(): Boolean =
+    ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_CALENDAR) ==
+            PackageManager.PERMISSION_GRANTED
+
+private fun Context.shouldShowCalendarPermissionRationale(): Boolean =
+    ActivityCompat.shouldShowRequestPermissionRationale(this as Activity, Manifest.permission.WRITE_CALENDAR)
+
+private fun ActivityResultLauncher<String>.requestCalendarPermission() = launch(Manifest.permission.WRITE_CALENDAR)
 
 @Composable
 @Preview(showBackground = true)

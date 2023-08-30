@@ -80,4 +80,5 @@
     <string name="birthday_created_successfully">Birthday created successfully</string>
     <string name="birthday_updated_successfully">Birthday updated successfully</string>
     <string name="birthday_deleted_successfully">Birthday deleted successfully</string>
+    <string name="app_needs_calendar_permission_to_add_birthdays">App needs Calendar permission to add birthdays</string>
 </resources>

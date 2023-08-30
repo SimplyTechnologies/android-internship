@@ -161,6 +161,7 @@ class BirthdayViewModel(
                 it.onSuccess {
                     navigateToHomeScreen()
                     _createBirthdaySuccess.update { true }
+                    _addToCalendarCheck.update { false }
                 }
                 it.onFailure { _createBirthdayError.update { true } }
             }.onCompletion { onCompletion() }
@@ -189,6 +190,7 @@ class BirthdayViewModel(
                 it.onSuccess {
                     navigateToHomeScreen()
                     _updateBirthdaySuccess.update { true }
+                    _addToCalendarCheck.update { false }
                 }
                 it.onFailure { _updateBirthdayError.update { true } }
             }.onCompletion { onCompletion() }
