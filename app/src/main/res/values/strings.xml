@@ -78,4 +78,6 @@
     <string name="calendar_access_needed">Calendar Access Needed</string>
     <string name="calendar_permission_explanation">To add events to your calendar, the app requires permission to write to your calendar.</string>
     <string name="birthday_created_successfully">Birthday created successfully</string>
+    <string name="birthday_updated_successfully">Birthday updated successfully</string>
+    <string name="birthday_deleted_successfully">Birthday deleted successfully</string>
 </resources>
