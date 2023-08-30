@@ -103,101 +103,94 @@ fun RegisterScreen(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(color = AppTheme.colors.backgroundPink),
+                    .padding(it)
+                    .background(color = AppTheme.colors.backgroundPink)
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Column(
+                Card(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .padding(it)
-                        .background(color = AppTheme.colors.backgroundPink)
-                        .verticalScroll(rememberScrollState()),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally,
+                        .width(317.dp)
+                        .wrapContentHeight()
                 ) {
-                    Card(
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier
-                            .width(317.dp)
                             .wrapContentHeight()
+                            .background(AppTheme.colors.white)
+                            .padding(horizontal = 24.dp)
                     ) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
+                        Text(
+                            modifier = Modifier.padding(top = 16.dp),
+                            text = stringResource(id = R.string.register),
+                            fontSize = 20.sp,
+                            color = AppTheme.colors.darkPink,
+                            fontWeight = FontWeight(700),
+                            textAlign = TextAlign.Center,
+                            fontFamily = FontFamily(Font(R.font.karm_light)),
+                        )
+                        BaseTextField(
+                            modifier = Modifier.padding(top = 24.dp),
+                            textState = name,
+                            label = stringResource(id = R.string.name),
+                            shape = AppTheme.shapes.smallRoundedCorners,
+                            onValueChange = { input ->
+                                if (name.length <= inputMaxLength)
+                                    registerViewModel.setName(name = input)
+                            },
+                        )
+                        BaseTextField(
+                            modifier = Modifier.padding(top = 24.dp),
+                            textState = surName,
+                            label = stringResource(id = R.string.surname),
+                            shape = AppTheme.shapes.smallRoundedCorners,
+                            onValueChange = { surName ->
+                                registerViewModel.setSurName(surName = surName)
+                            },
+                        )
+                        BaseTextField(
+                            modifier = Modifier.padding(top = 24.dp),
+                            textState = email,
+                            label = stringResource(id = R.string.email),
+                            shape = AppTheme.shapes.smallRoundedCorners,
+                            keyboardType = KeyboardType.Email,
+                            errorText = stringResource(id = R.string.register_email_error),
+                            hasError = hasEmailError,
+                            onValueChange = { email ->
+                                registerViewModel.setEmail(email = email)
+                            },
+                        )
+                        PasswordTextFiled(
+                            modifier = Modifier.padding(top = 24.dp),
+                            textState = password,
+                            label = stringResource(id = R.string.password),
+                            hasPasswordError = hasPasswordError,
+                            errorText = stringResource(id = R.string.password_error),
+                            onValueChange = { password ->
+                                registerViewModel.setPassword(password = password)
+                            },
+                        )
+                        PasswordTextFiled(
+                            modifier = Modifier.padding(top = 24.dp),
+                            textState = repeatPassword,
+                            label = stringResource(id = R.string.repeat_password),
+                            imeAction = ImeAction.Done,
+                            hasPasswordError = hasRepeatPasswordError,
+                            errorText = stringResource(id = R.string.repeat_password_error),
+                            onValueChange = { repeatPassword ->
+                                registerViewModel.setRepeatPassword(repeatPassword = repeatPassword)
+                            },
+                        )
+                        AuthButton(
                             modifier = Modifier
-                                .wrapContentHeight()
-                                .background(AppTheme.colors.white)
-                                .padding(horizontal = 24.dp)
-                        ) {
-                            Text(
-                                modifier = Modifier.padding(top = 16.dp),
-                                text = stringResource(id = R.string.register),
-                                fontSize = 20.sp,
-                                color = AppTheme.colors.darkPink,
-                                fontWeight = FontWeight(700),
-                                textAlign = TextAlign.Center,
-                                fontFamily = FontFamily(Font(R.font.karm_light)),
-                            )
-                            BaseTextField(
-                                modifier = Modifier.padding(top = 24.dp),
-                                textState = name,
-                                label = stringResource(id = R.string.name),
-                                shape = AppTheme.shapes.smallRoundedCorners,
-                                onValueChange = { input ->
-                                    if (name.length <= inputMaxLength)
-                                        registerViewModel.setName(name = input)
-                                },
-                            )
-                            BaseTextField(
-                                modifier = Modifier.padding(top = 24.dp),
-                                textState = surName,
-                                label = stringResource(id = R.string.surname),
-                                shape = AppTheme.shapes.smallRoundedCorners,
-                                onValueChange = { surName ->
-                                    registerViewModel.setSurName(surName = surName)
-                                },
-                            )
-                            BaseTextField(
-                                modifier = Modifier.padding(top = 24.dp),
-                                textState = email,
-                                label = stringResource(id = R.string.email),
-                                shape = AppTheme.shapes.smallRoundedCorners,
-                                keyboardType = KeyboardType.Email,
-                                errorText = stringResource(id = R.string.register_email_error),
-                                hasError = hasEmailError,
-                                onValueChange = { email ->
-                                    registerViewModel.setEmail(email = email)
-                                },
-                            )
-                            PasswordTextFiled(
-                                modifier = Modifier.padding(top = 24.dp),
-                                textState = password,
-                                label = stringResource(id = R.string.password),
-                                hasPasswordError = hasPasswordError,
-                                errorText = stringResource(id = R.string.password_error),
-                                onValueChange = { password ->
-                                    registerViewModel.setPassword(password = password)
-                                },
-                            )
-                            PasswordTextFiled(
-                                modifier = Modifier.padding(top = 24.dp),
-                                textState = repeatPassword,
-                                label = stringResource(id = R.string.repeat_password),
-                                imeAction = ImeAction.Done,
-                                hasPasswordError = hasRepeatPasswordError,
-                                errorText = stringResource(id = R.string.repeat_password_error),
-                                onValueChange = { repeatPassword ->
-                                    registerViewModel.setRepeatPassword(repeatPassword = repeatPassword)
-                                },
-                            )
-                            AuthButton(
-                                modifier = Modifier
-                                    .padding(horizontal = 32.dp, vertical = 16.dp)
-                                    .fillMaxWidth(),
-                                shape = RoundedCornerShape(24.dp),
-                                buttonTitle = stringResource(id = R.string.register),
-                                enabled = registerButtonEnabled,
-                                onClick = { registerViewModel.registerAccount() },
-                            )
-                        }
+                                .padding(horizontal = 32.dp, vertical = 16.dp)
+                                .fillMaxWidth(),
+                            shape = RoundedCornerShape(24.dp),
+                            buttonTitle = stringResource(id = R.string.register),
+                            enabled = registerButtonEnabled,
+                            onClick = { registerViewModel.registerAccount() },
+                        )
                     }
                 }
             }

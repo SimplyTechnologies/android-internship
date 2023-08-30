@@ -91,89 +91,82 @@ fun NewPasswordScreen(
         Box {
             Column(
                 modifier = Modifier
+                    .padding(it)
                     .fillMaxSize()
-                    .background(color = AppTheme.colors.backgroundPink),
+                    .background(color = AppTheme.colors.backgroundPink)
+                    .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
+                Text(
+                    modifier = Modifier
+                        .padding(top = 100.dp, start = 70.dp)
+                        .align(Alignment.Start),
+                    text = stringResource(R.string.new_password),
+                    color = AppTheme.colors.darkPink,
+                    style = AppTheme.typography.bold,
+                    fontSize = 18.sp,
+                )
                 Column(
                     modifier = Modifier
-                        .padding(it)
-                        .fillMaxSize()
-                        .background(color = AppTheme.colors.backgroundPink)
-                        .verticalScroll(rememberScrollState()),
+                        .width(300.dp)
+                        .fillMaxSize(),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    Text(
-                        modifier = Modifier
-                            .padding(top = 100.dp, start = 70.dp)
-                            .align(Alignment.Start),
-                        text = stringResource(R.string.new_password),
-                        color = AppTheme.colors.darkPink,
-                        style = AppTheme.typography.bold,
-                        fontSize = 18.sp,
-                    )
-                    Column(
-                        modifier = Modifier
-                            .width(300.dp)
-                            .fillMaxSize(),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                    ) {
-                        PasswordTextFiled(
-                            modifier = Modifier.padding(top = 2.dp),
-                            textState = password,
-                            label = stringResource(id = R.string.password),
-                            focusedContainerColor = AppTheme.colors.white,
-                            unfocusedContainerColor = AppTheme.colors.white,
-                            hasPasswordError = hasPasswordError,
-                            errorText = stringResource(id = R.string.password_error),
-                            onValueChange = { password ->
-                                forgotPasswordViewModel.setPassword(password = password)
-                            },
-                        )
-                    }
-                    Text(
-                        modifier = Modifier
-                            .padding(top = 24.dp, start = 70.dp)
-                            .align(Alignment.Start),
-                        text = stringResource(R.string.repeat_new_password),
-                        color = AppTheme.colors.darkPink,
-                        style = AppTheme.typography.bold,
-                        fontSize = 18.sp,
-                    )
-                    Column(
-                        modifier = Modifier
-                            .width(300.dp)
-                            .fillMaxSize(),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                    ) {
-                        PasswordTextFiled(
-                            modifier = Modifier.padding(top = 2.dp),
-                            label = stringResource(id = R.string.password),
-                            textState = repeatPassword,
-                            focusedContainerColor = AppTheme.colors.white,
-                            unfocusedContainerColor = AppTheme.colors.white,
-                            hasPasswordError = hasRepeatPasswordError,
-                            errorText = stringResource(id = R.string.repeat_password_error),
-                            onValueChange = { repeatPassword ->
-                                forgotPasswordViewModel.setRepeatPassword(
-                                    repeatPassword = repeatPassword
-                                )
-                            },
-                        )
-                    }
-                    AuthButton(
-                        modifier = Modifier
-                            .padding(horizontal = 32.dp)
-                            .padding(top = 200.dp)
-                            .width(150.dp),
-                        backgroundColor = AppTheme.colors.lightPink,
-                        shape = RoundedCornerShape(13.dp),
-                        buttonTitle = stringResource(id = R.string.done),
-                        enabled = doneButtonEnabled,
-                        fontSize = 20.sp,
-                        onClick = { forgotPasswordViewModel.resetPassword() },
+                    PasswordTextFiled(
+                        modifier = Modifier.padding(top = 2.dp),
+                        textState = password,
+                        label = stringResource(id = R.string.password),
+                        focusedContainerColor = AppTheme.colors.white,
+                        unfocusedContainerColor = AppTheme.colors.white,
+                        hasPasswordError = hasPasswordError,
+                        errorText = stringResource(id = R.string.password_error),
+                        onValueChange = { password ->
+                            forgotPasswordViewModel.setPassword(password = password)
+                        },
                     )
                 }
+                Text(
+                    modifier = Modifier
+                        .padding(top = 24.dp, start = 70.dp)
+                        .align(Alignment.Start),
+                    text = stringResource(R.string.repeat_new_password),
+                    color = AppTheme.colors.darkPink,
+                    style = AppTheme.typography.bold,
+                    fontSize = 18.sp,
+                )
+                Column(
+                    modifier = Modifier
+                        .width(300.dp)
+                        .fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    PasswordTextFiled(
+                        modifier = Modifier.padding(top = 2.dp),
+                        label = stringResource(id = R.string.password),
+                        textState = repeatPassword,
+                        focusedContainerColor = AppTheme.colors.white,
+                        unfocusedContainerColor = AppTheme.colors.white,
+                        hasPasswordError = hasRepeatPasswordError,
+                        errorText = stringResource(id = R.string.repeat_password_error),
+                        onValueChange = { repeatPassword ->
+                            forgotPasswordViewModel.setRepeatPassword(
+                                repeatPassword = repeatPassword
+                            )
+                        },
+                    )
+                }
+                AuthButton(
+                    modifier = Modifier
+                        .padding(horizontal = 32.dp)
+                        .padding(top = 200.dp)
+                        .width(150.dp),
+                    backgroundColor = AppTheme.colors.lightPink,
+                    shape = RoundedCornerShape(13.dp),
+                    buttonTitle = stringResource(id = R.string.done),
+                    enabled = doneButtonEnabled,
+                    fontSize = 20.sp,
+                    onClick = { forgotPasswordViewModel.resetPassword() },
+                )
             }
             if (showLoading)
                 CircularProgress()

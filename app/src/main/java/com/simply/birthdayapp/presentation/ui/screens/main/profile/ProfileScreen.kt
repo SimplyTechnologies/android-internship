@@ -83,80 +83,73 @@ fun ProfileScreen(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(color = AppTheme.colors.backgroundPink),
+                    .background(color = AppTheme.colors.backgroundPink)
+                    .padding(top = 24.dp),
+                verticalArrangement = Arrangement.spacedBy(15.dp, Alignment.Top),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
+                RoundAsyncImage(
+                    modifier = Modifier.size(100.dp),
+                    borderWidth = 1.dp,
+                    borderColor = AppTheme.colors.gray,
+                    placeholder = painterResource(id = R.drawable.placeholder_user_avatar),
+                    error = painterResource(id = R.drawable.placeholder_user_avatar),
+                    data = userProfile?.image
+                )
+                Text(
+                    text = "${userProfile?.firstName}  ${userProfile?.lastName}",
+                    fontSize = 20.sp,
+                    style = AppTheme.typography.boldKarmaDarkPink,
+                )
+                Text(
+                    text = userProfile?.email ?: "",
+                    fontSize = 20.sp,
+                    style = AppTheme.typography.boldKarmaDarkPink,
+                )
                 Column(
                     modifier = Modifier
                         .padding(top = 24.dp)
                         .fillMaxSize()
                         .background(color = AppTheme.colors.backgroundPink),
-                    verticalArrangement = Arrangement.spacedBy(15.dp, Alignment.Top),
+                    verticalArrangement = Arrangement.spacedBy(5.dp, Alignment.Top),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    RoundAsyncImage(
-                        modifier = Modifier.size(100.dp),
-                        borderWidth = 1.dp,
-                        borderColor = AppTheme.colors.gray,
-                        placeholder = painterResource(id = R.drawable.placeholder_user_avatar),
-                        error = painterResource(id = R.drawable.placeholder_user_avatar),
-                        data = userProfile?.image
-                    )
-                    Text(
-                        text = "${userProfile?.firstName}  ${userProfile?.lastName}",
-                        fontSize = 20.sp,
-                        style = AppTheme.typography.boldKarmaDarkPink,
-                    )
-                    Text(
-                        text = userProfile?.email ?: "",
-                        fontSize = 20.sp,
-                        style = AppTheme.typography.boldKarmaDarkPink,
-                    )
-                    Column(
+                    AuthButton(
                         modifier = Modifier
-                            .padding(top = 24.dp)
-                            .fillMaxSize()
-                            .background(color = AppTheme.colors.backgroundPink),
-                        verticalArrangement = Arrangement.spacedBy(5.dp, Alignment.Top),
-                        horizontalAlignment = Alignment.CenterHorizontally,
+                            .padding(horizontal = 16.dp, vertical = 6.dp)
+                            .fillMaxWidth(),
+                        textModifier = Modifier.fillMaxWidth(),
+                        shape = AppTheme.shapes.smallRoundedCorners,
+                        buttonTitle = stringResource(R.string.edit_account),
+                        fontSize = 20.sp,
+                        backgroundColor = AppTheme.colors.white,
                     ) {
-                        AuthButton(
-                            modifier = Modifier
-                                .padding(horizontal = 16.dp, vertical = 6.dp)
-                                .fillMaxWidth(),
-                            textModifier = Modifier.fillMaxWidth(),
-                            shape = AppTheme.shapes.smallRoundedCorners,
-                            buttonTitle = stringResource(R.string.edit_account),
-                            fontSize = 20.sp,
-                            backgroundColor = AppTheme.colors.white,
-                        ) {
-                            navToEditAccountScreen()
-                        }
-                        AuthButton(
-                            modifier = Modifier
-                                .padding(horizontal = 16.dp, vertical = 6.dp)
-                                .fillMaxWidth(),
-                            textModifier = Modifier.fillMaxWidth(),
-                            shape = AppTheme.shapes.smallRoundedCorners,
-                            fontSize = 20.sp,
-                            buttonTitle = stringResource(R.string.change_password),
-                            backgroundColor = AppTheme.colors.white
-                        ) {
-                            navToChangePasswordScreen()
-                        }
-                        AuthButton(
-                            modifier = Modifier
-                                .padding(horizontal = 16.dp, vertical = 6.dp)
-                                .fillMaxWidth(),
-                            textModifier = Modifier.fillMaxWidth(),
-                            shape = AppTheme.shapes.smallRoundedCorners,
-                            fontSize = 20.sp,
-                            buttonTitle = stringResource(R.string.sign_out),
-                            backgroundColor = AppTheme.colors.white,
-                        ) {
-                            profileViewModel.signOut()
-                            onSignOutClicked()
-                        }
+                        navToEditAccountScreen()
+                    }
+                    AuthButton(
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp, vertical = 6.dp)
+                            .fillMaxWidth(),
+                        textModifier = Modifier.fillMaxWidth(),
+                        shape = AppTheme.shapes.smallRoundedCorners,
+                        fontSize = 20.sp,
+                        buttonTitle = stringResource(R.string.change_password),
+                        backgroundColor = AppTheme.colors.white
+                    ) {
+                        navToChangePasswordScreen()
+                    }
+                    AuthButton(
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp, vertical = 6.dp)
+                            .fillMaxWidth(),
+                        textModifier = Modifier.fillMaxWidth(),
+                        shape = AppTheme.shapes.smallRoundedCorners,
+                        fontSize = 20.sp,
+                        buttonTitle = stringResource(R.string.sign_out),
+                        backgroundColor = AppTheme.colors.white,
+                    ) {
+                        profileViewModel.signOut()
+                        onSignOutClicked()
                     }
                 }
             }

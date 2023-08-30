@@ -108,93 +108,86 @@ fun EditAccountScreen(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(color = AppTheme.colors.backgroundPink),
+                    .background(color = AppTheme.colors.backgroundPink)
+                    .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
+                RoundAsyncImage(
+                    modifier = Modifier
+                        .padding(top = 50.dp)
+                        .height(150.dp)
+                        .width(150.dp)
+                        .clip(AppTheme.shapes.circle)
+                        .clickable { launcher.launch("image/*") },
+                    data = selectedImageUri ?: userProfile?.image,
+                    placeholder = painterResource(id = R.drawable.placeholder_user_avatar),
+                    error = painterResource(id = R.drawable.placeholder_user_avatar),
+                )
+                Text(
+                    modifier = Modifier
+                        .padding(top = 24.dp, start = 70.dp)
+                        .align(Alignment.Start),
+                    text = stringResource(R.string.name),
+                    color = AppTheme.colors.darkPink,
+                    style = AppTheme.typography.bold,
+                    fontSize = 18.sp,
+                )
                 Column(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .background(color = AppTheme.colors.backgroundPink)
-                        .verticalScroll(rememberScrollState()),
+                        .width(300.dp)
+                        .fillMaxSize(),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    RoundAsyncImage(
-                        modifier = Modifier
-                            .padding(top = 50.dp)
-                            .height(150.dp)
-                            .width(150.dp)
-                            .clip(AppTheme.shapes.circle)
-                            .clickable { launcher.launch("image/*") },
-                        data = selectedImageUri ?: userProfile?.image,
-                        placeholder = painterResource(id = R.drawable.placeholder_user_avatar),
-                        error = painterResource(id = R.drawable.placeholder_user_avatar),
-                    )
-                    Text(
-                        modifier = Modifier
-                            .padding(top = 24.dp, start = 70.dp)
-                            .align(Alignment.Start),
-                        text = stringResource(R.string.name),
-                        color = AppTheme.colors.darkPink,
-                        style = AppTheme.typography.bold,
-                        fontSize = 18.sp,
-                    )
-                    Column(
-                        modifier = Modifier
-                            .width(300.dp)
-                            .fillMaxSize(),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                    ) {
-                        BaseTextField(
-                            modifier = Modifier.padding(top = 4.dp),
-                            textState = name,
-                            label = stringResource(id = R.string.name),
-                            focusedContainerColor = AppTheme.colors.white,
-                            unfocusedContainerColor = AppTheme.colors.white,
-                            shape = AppTheme.shapes.circle,
-                            onValueChange = { input -> profileViewModel.setName(name = input) },
-                        )
-                    }
-                    Text(
-                        modifier = Modifier
-                            .padding(top = 24.dp, start = 70.dp)
-                            .align(Alignment.Start),
-                        text = stringResource(R.string.surname),
-                        color = AppTheme.colors.darkPink,
-                        style = AppTheme.typography.bold,
-                        fontSize = 18.sp,
-                    )
-                    Column(
-                        modifier = Modifier
-                            .width(300.dp)
-                            .fillMaxSize(),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                    ) {
-                        BaseTextField(
-                            modifier = Modifier.padding(top = 4.dp),
-                            textState = surName,
-                            label = stringResource(id = R.string.surname),
-                            focusedContainerColor = AppTheme.colors.white,
-                            unfocusedContainerColor = AppTheme.colors.white,
-                            shape = AppTheme.shapes.circle,
-                            imeAction = ImeAction.Done,
-                            onValueChange = { input -> profileViewModel.setSurName(input) },
-                        )
-                    }
-                    AuthButton(
-                        modifier = Modifier
-                            .padding(horizontal = 100.dp, vertical = 16.dp)
-                            .fillMaxWidth(),
-                        backgroundColor = AppTheme.colors.lightPink,
-                        shape = RoundedCornerShape(13.dp),
-                        buttonTitle = stringResource(id = R.string.done),
-                        enabled = doneButtonEnabled,
-                        fontSize = 20.sp,
-                        onClick = {
-                            profileViewModel.updateProfile()
-
-                        },
+                    BaseTextField(
+                        modifier = Modifier.padding(top = 4.dp),
+                        textState = name,
+                        label = stringResource(id = R.string.name),
+                        focusedContainerColor = AppTheme.colors.white,
+                        unfocusedContainerColor = AppTheme.colors.white,
+                        shape = AppTheme.shapes.circle,
+                        onValueChange = { input -> profileViewModel.setName(name = input) },
                     )
                 }
+                Text(
+                    modifier = Modifier
+                        .padding(top = 24.dp, start = 70.dp)
+                        .align(Alignment.Start),
+                    text = stringResource(R.string.surname),
+                    color = AppTheme.colors.darkPink,
+                    style = AppTheme.typography.bold,
+                    fontSize = 18.sp,
+                )
+                Column(
+                    modifier = Modifier
+                        .width(300.dp)
+                        .fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    BaseTextField(
+                        modifier = Modifier.padding(top = 4.dp),
+                        textState = surName,
+                        label = stringResource(id = R.string.surname),
+                        focusedContainerColor = AppTheme.colors.white,
+                        unfocusedContainerColor = AppTheme.colors.white,
+                        shape = AppTheme.shapes.circle,
+                        imeAction = ImeAction.Done,
+                        onValueChange = { input -> profileViewModel.setSurName(input) },
+                    )
+                }
+                AuthButton(
+                    modifier = Modifier
+                        .padding(horizontal = 100.dp, vertical = 16.dp)
+                        .fillMaxWidth(),
+                    backgroundColor = AppTheme.colors.lightPink,
+                    shape = RoundedCornerShape(13.dp),
+                    buttonTitle = stringResource(id = R.string.done),
+                    enabled = doneButtonEnabled,
+                    fontSize = 20.sp,
+                    onClick = {
+                        profileViewModel.updateProfile()
+
+                    },
+                )
             }
             if (showLoading)
                 CircularProgress()

@@ -8,5 +8,5 @@ fun UpdateProfileEntity.toUpdateProfile() =
     UpdateProfileInput(
         firstName = Optional.present(firstName),
         lastName = Optional.present(lastName),
-        image = Optional.present(image ?: ""),
+        image = if (image != null) Optional.present(image) else Optional.absent(),
     )
