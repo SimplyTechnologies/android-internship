@@ -13,9 +13,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.simply.birthdayapp.R
 import com.simply.birthdayapp.presentation.extensions.fromUtcToDayMonthYearDate
 import com.simply.birthdayapp.presentation.models.Birthday
 import com.simply.birthdayapp.presentation.models.RelationshipEnum
@@ -50,6 +52,8 @@ fun BirthdayCard(
                     .width(70.dp),
                 data = birthday.image,
                 contentDescription = birthday.name,
+                placeholder = painterResource(id = R.drawable.placeholder_person),
+                error = painterResource(id = R.drawable.placeholder_person),
             )
             Column(modifier = Modifier.padding(start = 30.dp)) {
                 Text(
