@@ -52,6 +52,8 @@ fun HomeScreen(
     val scrollPosition by homeViewModel.scrollPosition.collectAsState()
     val errorState by homeViewModel.errorState.collectAsState()
     val isRefreshing by homeViewModel.isRefreshing.collectAsState()
+    val createBirthdaySuccess by birthdayViewModel.createBirthdaySuccess.collectAsState()
+
     val birthdaysLazyListState = rememberLazyListState(initialFirstVisibleItemIndex = scrollPosition)
     val context = LocalContext.current
     val snackbarHostState = LocalSnackbarHostState.current
@@ -70,6 +72,15 @@ fun HomeScreen(
                 duration = SnackbarDuration.Short,
             )
             homeViewModel.setErrorStateFalse()
+        }
+    }
+    LaunchedEffect(createBirthdaySuccess) {
+        if (createBirthdaySuccess) {
+            snackbarHostState.showSnackbar(
+                message = context.getString(R.string.birthday_created_successfully),
+                duration = SnackbarDuration.Short,
+            )
+            birthdayViewModel.setCreateBirthdaySuccessFalse()
         }
     }
     Box(modifier = Modifier.fillMaxSize()) {

@@ -44,6 +44,9 @@ class BirthdayViewModel(
     private val _createBirthdayError = MutableStateFlow(false)
     val createBirthdayError = _createBirthdayError.asStateFlow()
 
+    private val _createBirthdaySuccess = MutableStateFlow(false)
+    val createBirthdaySuccess = _createBirthdaySuccess.asStateFlow()
+
     private val _updateBirthdayError = MutableStateFlow(false)
     val updateBirthdayError = _updateBirthdayError.asStateFlow()
 
@@ -52,6 +55,9 @@ class BirthdayViewModel(
 
     private val _editModeBirthday = MutableStateFlow<Birthday?>(null)
     val editModeBirthday = _editModeBirthday.asStateFlow()
+
+    private val _addToCalendarCheck = MutableStateFlow(false)
+    val addToCalendarCheck = _addToCalendarCheck.asStateFlow()
 
     private val _dateDayMonthYear: MutableStateFlow<String> = MutableStateFlow("__.__.____")
     val dateDayMonthYear: StateFlow<String> = _dateDayMonthYear.asStateFlow()
@@ -85,16 +91,24 @@ class BirthdayViewModel(
         _dateDayMonthYear.update { dateUtc.fromUtcToDayMonthYearDate() }
     }
 
+    fun setAddToCalendarCheck(addToCalendarCheck: Boolean) {
+        _addToCalendarCheck.update { addToCalendarCheck }
+    }
+
     fun setCreateBirthdayErrorFalse() {
-        _createBirthdayError.value = false
+        _createBirthdayError.update { false }
+    }
+
+    fun setCreateBirthdaySuccessFalse() {
+        _createBirthdaySuccess.update { false }
     }
 
     fun setUpdateBirthdayErrorFalse() {
-        _updateBirthdayError.value = false
+        _updateBirthdayError.update { false }
     }
 
     fun setDeleteBirthdayErrorFalse() {
-        _deleteBirthdayError.value = false
+        _deleteBirthdayError.update { false }
     }
 
     fun setBirthday(birthday: Birthday?) {
@@ -129,7 +143,10 @@ class BirthdayViewModel(
                     dateUtc = _dateUtc.value,
                 ),
             ).onEach {
-                it.onSuccess { navigateToHomeScreen() }
+                it.onSuccess {
+                    navigateToHomeScreen()
+                    _createBirthdaySuccess.update { true }
+                }
                 it.onFailure { _createBirthdayError.update { true } }
             }.onCompletion { onCompletion() }
                 .catch { _createBirthdayError.update { true } }

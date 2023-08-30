@@ -1,9 +1,16 @@
 package com.simply.birthdayapp.presentation.ui.screens.main.home.birthday
 
+import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.ContentValues
+import android.content.Context
+import android.content.pm.PackageManager
 import android.net.Uri
+import android.provider.CalendarContract
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -12,6 +19,8 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -27,6 +36,8 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -55,12 +66,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.simply.birthdayapp.R
 import com.simply.birthdayapp.presentation.extensions.fromMillisToUtcDate
 import com.simply.birthdayapp.presentation.extensions.fromUtcToMillisDate
 import com.simply.birthdayapp.presentation.extensions.uriToByteArray
 import com.simply.birthdayapp.presentation.models.RelationshipEnum
 import com.simply.birthdayapp.presentation.ui.components.AppBaseTopBar
+import com.simply.birthdayapp.presentation.ui.components.CalendarPermissionDialog
 import com.simply.birthdayapp.presentation.ui.components.DatePickerComponent
 import com.simply.birthdayapp.presentation.ui.components.RoundAsyncImage
 import com.simply.birthdayapp.presentation.ui.screens.main.LocalSnackbarHostState
@@ -68,6 +82,7 @@ import com.simply.birthdayapp.presentation.ui.screens.main.home.HomeViewModel
 import com.simply.birthdayapp.presentation.ui.theme.AppTheme
 import org.koin.androidx.compose.getViewModel
 import java.util.Calendar
+import java.util.TimeZone
 
 @SuppressLint("SimpleDateFormat")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -84,6 +99,7 @@ fun BirthdayScreen(
     val dateDayMonthYear by birthdayViewModel.dateDayMonthYear.collectAsState()
     val dateUtc by birthdayViewModel.dateUtc.collectAsState()
     val editModeBirthday by birthdayViewModel.editModeBirthday.collectAsState()
+    val addToCalendarCheck by birthdayViewModel.addToCalendarCheck.collectAsState()
 
     val createBirthdayError by birthdayViewModel.createBirthdayError.collectAsState()
     val updateBirthdayError by birthdayViewModel.updateBirthdayError.collectAsState()
@@ -93,8 +109,10 @@ fun BirthdayScreen(
     val context = LocalContext.current
     val snackbarHostState = LocalSnackbarHostState.current
     val calendar = Calendar.getInstance()
-    val datePickerState = rememberDatePickerState(initialSelectedDateMillis = Calendar.getInstance().timeInMillis)
-    var showDatePicker by rememberSaveable { mutableStateOf(false) }
+    val datePickerState = rememberDatePickerState(initialSelectedDateMillis = calendar.timeInMillis)
+    var showDatePickerDialog by rememberSaveable { mutableStateOf(false) }
+    var calendarPermissionGranted by rememberSaveable { mutableStateOf(false) }
+    var showCalendarPermissionExplanationDialog by rememberSaveable { mutableStateOf(false) }
     val doneButtonEnable by birthdayViewModel.combine.collectAsState()
     val relationshipList = RelationshipEnum.values()
 
@@ -103,6 +121,13 @@ fun BirthdayScreen(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
         if (uri != null) birthdayViewModel.setImage(uri.uriToByteArray(context))
+    }
+
+    val requestPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        calendarPermissionGranted = isGranted
+        if (isGranted.not()) birthdayViewModel.setAddToCalendarCheck(false)
     }
 
     LaunchedEffect(createBirthdayError) {
@@ -249,7 +274,7 @@ fun BirthdayScreen(
                 modifier = Modifier
                     .padding(top = 20.dp, start = 40.dp)
                     .align(Alignment.Start)
-                    .clickable { showDatePicker = true },
+                    .clickable { showDatePickerDialog = true },
                 text = stringResource(id = R.string.date) + "*",
                 style = AppTheme.typography.boldKarmaDarkPink,
                 fontSize = 18.sp,
@@ -259,7 +284,7 @@ fun BirthdayScreen(
                 modifier = Modifier
                     .width(200.dp)
                     .clip(AppTheme.shapes.circle)
-                    .clickable { showDatePicker = true },
+                    .clickable { showDatePickerDialog = true },
                 colors = CardDefaults.cardColors(containerColor = AppTheme.colors.white),
             ) {
                 Text(
@@ -270,9 +295,36 @@ fun BirthdayScreen(
                     textAlign = TextAlign.Center,
                 )
             }
+            Row(
+                modifier = Modifier
+                    .align(Alignment.Start)
+                    .padding(top = 16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Checkbox(
+                    checked = addToCalendarCheck,
+                    onCheckedChange = {
+                        birthdayViewModel.setAddToCalendarCheck(it)
+                    },
+                    colors = CheckboxDefaults.colors(
+                        uncheckedColor = AppTheme.colors.lightPink,
+                        checkedColor = AppTheme.colors.lightPink,
+                    ),
+                )
+                Text(
+                    modifier = Modifier
+                        .fillMaxHeight(),
+                    text = stringResource(id = R.string.addToCalendar),
+                    style = AppTheme.typography.boldKarmaDarkPink,
+                    fontSize = 16.sp
+                )
+            }
             Button(
                 enabled = doneButtonEnable,
                 onClick = {
+                    if (calendarPermissionGranted) {
+                        addEventToCalendar(context, datePickerState.selectedDateMillis ?: calendar.timeInMillis)
+                    }
                     editModeBirthday?.let { birthday ->
                         birthday.id.let {
                             birthdayViewModel.updateBirthday(it, navigateToHomeScreen) {
@@ -295,22 +347,78 @@ fun BirthdayScreen(
                 )
             }
 
-            if (showDatePicker) {
+            if (showDatePickerDialog) {
                 datePickerState.setSelection(dateUtc.fromUtcToMillisDate())
                 DatePickerComponent(
                     datePickerState = datePickerState,
-                    onDismissRequest = { showDatePicker = false },
+                    onDismissRequest = { showDatePickerDialog = false },
                     onConfirmButtonClick = {
-                        showDatePicker = false
+                        showDatePickerDialog = false
                         birthdayViewModel.setDate((datePickerState.selectedDateMillis ?: calendar.timeInMillis).fromMillisToUtcDate())
                     },
                     onDismissButtonClick = {
-                        showDatePicker = false
+                        showDatePickerDialog = false
                     },
+                )
+            }
+
+            if (showCalendarPermissionExplanationDialog) {
+                CalendarPermissionDialog(
+                    onDismissRequest = { showCalendarPermissionExplanationDialog = false },
+                    onConfirmButtonClick = {
+                        showCalendarPermissionExplanationDialog = false
+                        requestPermissionLauncher.launch(Manifest.permission.WRITE_CALENDAR)
+                    },
+                    onDismissButtonClick = {
+                        showCalendarPermissionExplanationDialog = false
+                    },
+                )
+            }
+
+            if (addToCalendarCheck) {
+                checkCalendarPermission(
+                    context = context,
+                    requestPermissionLauncher = requestPermissionLauncher,
+                    onShowRationale = { showCalendarPermissionExplanationDialog = true },
                 )
             }
         }
     }
+}
+
+private fun checkCalendarPermission(
+    context: Context,
+    requestPermissionLauncher: ActivityResultLauncher<String>,
+    onShowRationale: () -> Unit,
+) {
+    if (ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.WRITE_CALENDAR
+        ) != PackageManager.PERMISSION_GRANTED
+    ) {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(
+                context as Activity,
+                Manifest.permission.WRITE_CALENDAR
+            )
+        ) {
+            onShowRationale()
+        } else {
+            requestPermissionLauncher.launch(Manifest.permission.WRITE_CALENDAR)
+        }
+    }
+}
+
+private fun addEventToCalendar(context: Context, date: Long) {
+    val contentResolver = context.contentResolver
+    val values = ContentValues().apply {
+        put(CalendarContract.Events.DTSTART, date)
+        put(CalendarContract.Events.DTEND, date)
+        put(CalendarContract.Events.TITLE, "Your Event Title")
+        put(CalendarContract.Events.CALENDAR_ID, 1)
+        put(CalendarContract.Events.EVENT_TIMEZONE, TimeZone.getDefault().id)
+    }
+
+    val uri = contentResolver.insert(CalendarContract.Events.CONTENT_URI, values)
 }
 
 @Composable

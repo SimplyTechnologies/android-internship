@@ -75,4 +75,7 @@
     <string name="url_annotated_string_tag">url</string>
     <string name="shops_related_error">Shops Related Error</string>
     <string name="dismiss">Dismiss</string>
+    <string name="calendar_access_needed">Calendar Access Needed</string>
+    <string name="calendar_permission_explanation">To add events to your calendar, the app requires permission to write to your calendar.</string>
+    <string name="birthday_created_successfully">Birthday created successfully</string>
 </resources>
