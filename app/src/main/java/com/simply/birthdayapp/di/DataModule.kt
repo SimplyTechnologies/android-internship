@@ -1,5 +1,7 @@
 package com.simply.birthdayapp.di
 
+import com.simply.birthdayapp.data.NetworkMonitor
+import com.simply.birthdayapp.data.NetworkMonitorImpl
 import com.simply.birthdayapp.data.createApolloClient
 import com.simply.birthdayapp.data.localdatastore.DataStoreManager
 import com.simply.birthdayapp.data.repositories.AuthRepository
@@ -26,6 +28,7 @@ import org.koin.dsl.module
 val dataModule = module {
     single { DataStoreManager(context = androidContext()) }
     factory { createApolloClient(get()) }
+    singleOf(::NetworkMonitorImpl) { bind<NetworkMonitor>() }
     singleOf(::BirthdayRepositoryImpl) { bind<BirthdayRepository>() }
     singleOf(::ShopsRepositoryImpl) { bind<ShopsRepository>() }
     singleOf(::HomeRepositoryImpl) { bind<HomeRepository>() }

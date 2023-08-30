@@ -56,6 +56,9 @@
     <string name="edit_account_error">Edit Account Error</string>
     <string name="get_user_error">Get User Error</string>
     <string name="network_error">Sorry, an error occurred registering your account, please try again.</string>
+    <string name="no_network_connection">No network connection</string>
+    <string name="do_not_show">"Don't show"</string>
+    <string name="network_status">Network status</string>
     <string name="reset_password_network_error">Sorry, an error occurred resetting your password, please try again.</string>
     <string name="change_password_network_error">Sorry, an error occurred changing your password, please try again.</string>
     <string name="get_user_network_error">Sorry, an error occurred get your account, please try again.</string>
