@@ -5,7 +5,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Surface
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -33,8 +34,10 @@ fun GenerateMessageDialog(
         onDismissRequest = onDismissRequest,
         confirmButton = {
             TextButton(onClick = onConfirmButtonClick) {
-                Surface(
-                    color = AppTheme.colors.backgroundPink,
+                Card(
+                    colors = CardDefaults.cardColors(
+                        containerColor = AppTheme.colors.backgroundPink,
+                    ),
                     shape = AppTheme.shapes.tinyRoundedCorners,
                 ) {
                     Text(
@@ -47,11 +50,13 @@ fun GenerateMessageDialog(
             }
         },
         text = {
-            Surface(
+            Card(
                 modifier = Modifier
                     .height(164.dp)
                     .fillMaxWidth(),
-                color = AppTheme.colors.backgroundPink,
+                colors = CardDefaults.cardColors(
+                    containerColor = AppTheme.colors.backgroundPink,
+                ),
                 shape = AppTheme.shapes.tinyRoundedCorners,
             ) {
                 BasicTextField(

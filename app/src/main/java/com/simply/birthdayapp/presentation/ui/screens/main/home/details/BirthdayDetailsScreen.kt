@@ -1,6 +1,5 @@
 package com.simply.birthdayapp.presentation.ui.screens.main.home.details
 
-import android.content.Intent
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -32,9 +31,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.ContextCompat
 import com.simply.birthdayapp.R
 import com.simply.birthdayapp.presentation.extensions.fromUtcToDayMonthYearDate
+import com.simply.birthdayapp.presentation.extensions.sendMessage
 import com.simply.birthdayapp.presentation.models.RelationshipEnum
 import com.simply.birthdayapp.presentation.ui.components.AppBaseTopBar
 import com.simply.birthdayapp.presentation.ui.components.GenerateMessageDialog
@@ -179,13 +178,7 @@ fun BirthdayDetailsScreen(
                     onValueChange = { message -> birthdayDetailsViewModel.setBirthdayMessage(message) },
                     onDismissRequest = { showGenerateMessageDialog = false },
                     onConfirmButtonClick = {
-                        val sendIntent = Intent().apply {
-                            action = Intent.ACTION_SEND
-                            putExtra(Intent.EXTRA_TEXT, birthdayMessage)
-                            type = "text/plain"
-                        }
-                        val shareIntent = Intent.createChooser(sendIntent, null)
-                        ContextCompat.startActivity(context, shareIntent, null)
+                        context.sendMessage(birthdayMessage)
                         showGenerateMessageDialog = false
                     },
                 )
