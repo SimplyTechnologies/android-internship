@@ -157,7 +157,6 @@ class ProfileViewModel(
                 )
             ).onEach {
                 it.onSuccess { _ ->
-                    clearFormEdit()
                     _updateProfileSuccess.value = true
                 }.onFailure { error ->
                     _updateProfileErrorMessage.value = error.message ?: "Error"
@@ -210,6 +209,7 @@ class ProfileViewModel(
     fun setOldPassword(oldPassword: String) {
         _oldPassword.value = oldPassword
         _hasOldPasswordError.value = !oldPassword.isPasswordValid()
+        _hasRepeatPasswordError.value = _repeatPassword.value != _password.value
     }
 
     fun setRepeatPassword(repeatPassword: String) {
@@ -253,11 +253,14 @@ class ProfileViewModel(
         _oldPassword.value = ""
         _password.value = ""
         _repeatPassword.value = ""
+        _hasOldPasswordError.value = false
+        _hasPasswordError.value = false
+        _hasRepeatPasswordError.value = false
     }
 
-    fun clearFormEdit() {
-        _name.value = ""
-        _surName.value = ""
+    fun resetFormEdit() {
+        _name.update { profile.value?.firstName ?: "" }
+        _surName.update { profile.value?.lastName ?: "" }
         _imageUri.value = null
     }
 }

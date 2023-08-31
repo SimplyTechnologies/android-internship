@@ -2,6 +2,7 @@ package com.simply.birthdayapp.presentation.ui.screens.main.profile
 
 import android.net.Uri
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
@@ -27,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -59,6 +61,12 @@ fun EditAccountScreen(
     val showLoading by profileViewModel.isOnLoadingState.collectAsState()
     val userProfile by profileViewModel.profile.collectAsState()
     val context = LocalContext.current
+    val focusManager = LocalFocusManager.current
+    val onBackHandler = {
+        focusManager.clearFocus()
+        onBackClick()
+        profileViewModel.resetFormEdit()
+    }
 
 
     val launcher = rememberLauncherForActivityResult(
@@ -95,15 +103,12 @@ fun EditAccountScreen(
             },
         )
     }
-
+    BackHandler { onBackHandler() }
     Column(
         modifier = Modifier
             .fillMaxSize()
     ) {
-        AppBaseTopBar(onBackClick = {
-            onBackClick()
-            profileViewModel.clearFormEdit()
-        })
+        AppBaseTopBar(onBackClick = onBackHandler)
         Box {
             Column(
                 modifier = Modifier

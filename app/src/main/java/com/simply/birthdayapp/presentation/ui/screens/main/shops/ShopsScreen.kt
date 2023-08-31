@@ -1,12 +1,16 @@
 package com.simply.birthdayapp.presentation.ui.screens.main.shops
 
+import android.view.WindowManager
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -34,9 +38,11 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.simply.birthdayapp.R
 import com.simply.birthdayapp.presentation.models.Shop
+import com.simply.birthdayapp.presentation.ui.components.Keyboard
 import com.simply.birthdayapp.presentation.ui.components.LogoTopBar
 import com.simply.birthdayapp.presentation.ui.components.SearchBarComponent
 import com.simply.birthdayapp.presentation.ui.components.ShopCard
+import com.simply.birthdayapp.presentation.ui.components.keyboardAsState
 import com.simply.birthdayapp.presentation.ui.screens.main.LocalSnackbarHostState
 import com.simply.birthdayapp.presentation.ui.theme.AppTheme
 import kotlinx.coroutines.FlowPreview
@@ -51,6 +57,8 @@ fun ShopsScreen(
     shopsViewModel: ShopsViewModel,
     onShopClick: (Shop) -> Unit = {},
 ) {
+    val activity = LocalContext.current as ComponentActivity
+    LaunchedEffect(Unit) { activity.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN) }
     val loading by shopsViewModel.loading.collectAsStateWithLifecycle()
     val shops by shopsViewModel.shops.collectAsStateWithLifecycle()
     val scrollPosition by shopsViewModel.scrollPosition.collectAsStateWithLifecycle()
@@ -79,6 +87,7 @@ fun ShopsScreen(
             }
         },
     )
+    val keyboardState by keyboardAsState()
 
     LaunchedEffect(shopsLazyListState) {
         snapshotFlow { shopsLazyListState.firstVisibleItemIndex }
@@ -184,6 +193,9 @@ fun ShopsScreen(
                         )
                     }
                 }
+                if (keyboardState == Keyboard.Opened) {
+                    item { Spacer(modifier = Modifier.height(240.dp)) }
+                }
             }
             PullRefreshIndicator(
                 modifier = Modifier.align(Alignment.TopCenter),
@@ -193,6 +205,10 @@ fun ShopsScreen(
                 contentColor = AppTheme.colors.lightPink,
             )
         }
+    }
+
+    DisposableEffect(Unit) {
+        onDispose { activity.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE) }
     }
 }
 

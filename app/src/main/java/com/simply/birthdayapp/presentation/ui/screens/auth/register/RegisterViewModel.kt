@@ -114,6 +114,7 @@ class RegisterViewModel(private val repository: RegisterRepository) : ViewModel(
     fun setPassword(password: String) {
         _password.value = password
         _hasPasswordError.value = !password.isPasswordValid()
+        _hasRepeatPasswordError.value = _repeatPassword.value.isNotEmpty() && _repeatPassword.value != _password.value
     }
 
     fun setRepeatPassword(repeatPassword: String) {

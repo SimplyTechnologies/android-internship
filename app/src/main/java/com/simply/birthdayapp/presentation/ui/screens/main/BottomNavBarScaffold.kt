@@ -32,6 +32,7 @@ val LocalSnackbarHostState = staticCompositionLocalOf { SnackbarHostState() }
 
 @Composable
 fun BottomNavBarScaffold(
+    bottomNavBarVisible: Boolean = true,
     bottomBarNavController: NavController,
     content: @Composable (BoxScope.() -> Unit),
 ) {
@@ -58,35 +59,37 @@ fun BottomNavBarScaffold(
                 }
             },
             bottomBar = {
-                NavBar(
-                    items = listOf(
-                        NavBarItem(
-                            name = stringResource(R.string.navbar_item_home),
-                            route = BottomBarDestination.HomeMainScreen.route,
-                            icon = painterResource(id = R.drawable.ic_home),
+                if (bottomNavBarVisible) {
+                    NavBar(
+                        items = listOf(
+                            NavBarItem(
+                                name = stringResource(R.string.navbar_item_home),
+                                route = BottomBarDestination.HomeMainScreen.route,
+                                icon = painterResource(id = R.drawable.ic_home),
+                            ),
+                            NavBarItem(
+                                name = stringResource(R.string.navbar_item_shops),
+                                route = BottomBarDestination.ShopsMainScreen.route,
+                                icon = painterResource(id = R.drawable.ic_shops),
+                            ),
+                            NavBarItem(
+                                name = stringResource(R.string.navbar_item_profile),
+                                route = BottomBarDestination.ProfileMainScreen.route,
+                                icon = painterResource(id = R.drawable.ic_profile),
+                            ),
                         ),
-                        NavBarItem(
-                            name = stringResource(R.string.navbar_item_shops),
-                            route = BottomBarDestination.ShopsMainScreen.route,
-                            icon = painterResource(id = R.drawable.ic_shops),
-                        ),
-                        NavBarItem(
-                            name = stringResource(R.string.navbar_item_profile),
-                            route = BottomBarDestination.ProfileMainScreen.route,
-                            icon = painterResource(id = R.drawable.ic_profile),
-                        ),
-                    ),
-                    navController = bottomBarNavController,
-                    onItemClick = {
-                        bottomBarNavController.navigate(it.route) {
-                            popUpTo(bottomBarNavController.graph.findStartDestination().id) {
-                                saveState = true
+                        navController = bottomBarNavController,
+                        onItemClick = {
+                            bottomBarNavController.navigate(it.route) {
+                                popUpTo(bottomBarNavController.graph.findStartDestination().id) {
+                                    saveState = true
+                                }
+                                launchSingleTop = true
+                                restoreState = true
                             }
-                            launchSingleTop = true
-                            restoreState = true
-                        }
-                    },
-                )
+                        },
+                    )
+                }
             },
         ) {
             Box(
