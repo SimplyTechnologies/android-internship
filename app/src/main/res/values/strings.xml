@@ -33,9 +33,9 @@
     <string name="brother">Brother</string>
     <string name="sister">Sister</string>
     <string name="uncle">Uncle</string>
-    <string name="fail_to_create_birthday">Fail to create birthday</string>
-    <string name="fail_to_update_birthday">Fail to update birthday</string>
-    <string name="fail_to_delete_birthday">Fail to delete birthday</string>
+    <string name="failed_to_create_birthday">Failed to create birthday</string>
+    <string name="failed_to_update_birthday">Failed to update birthday</string>
+    <string name="failed_to_delete_birthday">Failed to delete birthday</string>
     <string name="name">Name</string>
     <string name="surname">Surname</string>
     <string name="email">Email</string>

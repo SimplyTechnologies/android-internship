@@ -4,5 +4,5 @@ data class UpdateBirthdayEntity(
     val name: String?,
     val imageBase64: String?,
     val relation: String?,
-    val date: Any?,
+    val date: String,
 )

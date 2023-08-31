@@ -6,10 +6,8 @@ import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -62,6 +60,7 @@ import com.simply.birthdayapp.presentation.extensions.uriToByteArray
 import com.simply.birthdayapp.presentation.models.RelationshipEnum
 import com.simply.birthdayapp.presentation.ui.components.AppBaseTopBar
 import com.simply.birthdayapp.presentation.ui.components.DatePickerComponent
+import com.simply.birthdayapp.presentation.ui.components.RelationshipGridCard
 import com.simply.birthdayapp.presentation.ui.components.RoundAsyncImage
 import com.simply.birthdayapp.presentation.ui.screens.main.LocalSnackbarHostState
 import com.simply.birthdayapp.presentation.ui.screens.main.home.HomeViewModel
@@ -98,17 +97,16 @@ fun BirthdayScreen(
     val doneButtonEnable by birthdayViewModel.combine.collectAsState()
     val relationshipList = RelationshipEnum.values()
 
-
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
-        if (uri != null) birthdayViewModel.setImage(uri.uriToByteArray(context))
+        if (uri != null) birthdayViewModel.setImage(context.contentResolver.uriToByteArray(uri))
     }
 
     LaunchedEffect(createBirthdayError) {
         if (createBirthdayError) {
             snackbarHostState.showSnackbar(
-                message = context.getString(R.string.fail_to_create_birthday),
+                message = context.getString(R.string.failed_to_create_birthday),
                 duration = SnackbarDuration.Short,
             )
             birthdayViewModel.setCreateBirthdayErrorFalse()
@@ -117,7 +115,7 @@ fun BirthdayScreen(
     LaunchedEffect(updateBirthdayError) {
         if (updateBirthdayError) {
             snackbarHostState.showSnackbar(
-                message = context.getString(R.string.fail_to_update_birthday),
+                message = context.getString(R.string.failed_to_update_birthday),
                 duration = SnackbarDuration.Short,
             )
             birthdayViewModel.setUpdateBirthdayErrorFalse()
@@ -126,7 +124,7 @@ fun BirthdayScreen(
     LaunchedEffect(deleteBirthdayError) {
         if (deleteBirthdayError) {
             snackbarHostState.showSnackbar(
-                message = context.getString(R.string.fail_to_delete_birthday),
+                message = context.getString(R.string.failed_to_delete_birthday),
                 duration = SnackbarDuration.Short,
             )
             birthdayViewModel.setDeleteBirthdayErrorFalse()
@@ -215,34 +213,14 @@ fun BirthdayScreen(
                 contentPadding = PaddingValues(top = 10.dp),
             ) {
                 items(relationshipList) { relationship ->
-                    Card(
-                        shape = AppTheme.shapes.circle,
-                        modifier = Modifier
-                            .padding(4.dp)
-                            .height(37.dp)
-                            .clip(AppTheme.shapes.circle)
-                            .clickable(onClick = {
-                                birthdayViewModel.setRelationship(if (selectedRelationship == relationship) null else relationship)
-                                focusManager.clearFocus()
-                            })
-                            .border(
-                                width = 2.dp,
-                                color = if (selectedRelationship == relationship) AppTheme.colors.darkPink else Color.Transparent,
-                                shape = AppTheme.shapes.circle,
-                            ),
-                        colors = CardDefaults.cardColors(containerColor = AppTheme.colors.white),
-                    ) {
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center,
-                        ) {
-                            Text(
-                                text = stringResource(id = relationship.resId),
-                                style = AppTheme.typography.boldKarmaBlack,
-                                fontSize = 14.sp,
-                            )
-                        }
-                    }
+                    RelationshipGridCard(
+                        relationship = relationship,
+                        selectedRelationship = selectedRelationship,
+                        onCardClick = {
+                            birthdayViewModel.setRelationship(if (selectedRelationship == relationship) null else relationship)
+                            focusManager.clearFocus()
+                        },
+                    )
                 }
             }
             Text(

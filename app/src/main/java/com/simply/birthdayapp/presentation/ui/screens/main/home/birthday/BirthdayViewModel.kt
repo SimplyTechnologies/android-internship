@@ -53,7 +53,7 @@ class BirthdayViewModel(
     private val _editModeBirthday = MutableStateFlow<Birthday?>(null)
     val editModeBirthday = _editModeBirthday.asStateFlow()
 
-    private val _dateDayMonthYear: MutableStateFlow<String> = MutableStateFlow("__.__.____")
+    private val _dateDayMonthYear: MutableStateFlow<String> = MutableStateFlow(DATE_DEFAULT_VALUE)
     val dateDayMonthYear: StateFlow<String> = _dateDayMonthYear.asStateFlow()
 
     private val _dateUtc: MutableStateFlow<String> = MutableStateFlow(Calendar.getInstance().timeInMillis.fromMillisToUtcDate())
@@ -65,7 +65,7 @@ class BirthdayViewModel(
         _relationship,
         _dateDayMonthYear,
     ) { name, relationship, date ->
-        name.isNotBlank() && relationship != null && date != "__.__.____"
+        name.isNotBlank() && relationship != null && date != DATE_DEFAULT_VALUE
     }.stateIn(viewModelScope, SharingStarted.Lazily, false)
 
     fun setName(name: String) {
@@ -109,7 +109,7 @@ class BirthdayViewModel(
             setImage(null)
             setRelationship(null)
             _dateUtc.update { Calendar.getInstance().timeInMillis.fromMillisToUtcDate() }
-            _dateDayMonthYear.update { "__.__.____" }
+            _dateDayMonthYear.update { DATE_DEFAULT_VALUE }
         }
     }
 
@@ -119,11 +119,12 @@ class BirthdayViewModel(
     ) {
         viewModelScope.launch(Dispatchers.IO) {
             val imageByteArray = imageByteArray.value
+            val context = getApplication<Application>().applicationContext
             birthdayRepository.createBirthday(
                 createBirthday = CreateBirthdayEntity(
                     name = _name.value,
                     imageBase64 = imageByteArray?.uriToBase64(),
-                    relation = getApplication<Application>().applicationContext.getString(
+                    relation = context.getString(
                         _relationship.value?.resId ?: RelationshipEnum.BEST_FRIEND.resId
                     ),
                     dateUtc = _dateUtc.value,
@@ -144,11 +145,12 @@ class BirthdayViewModel(
     ) {
         viewModelScope.launch(Dispatchers.IO) {
             val imageByteArray = imageByteArray.value
+            val context = getApplication<Application>().applicationContext
             birthdayRepository.updateBirthday(
                 id = id, updateBirthdayEntity = UpdateBirthdayEntity(
                     name = _name.value,
                     imageBase64 = imageByteArray?.uriToBase64(),
-                    relation = getApplication<Application>().applicationContext.getString(
+                    relation = context.getString(
                         _relationship.value?.resId ?: RelationshipEnum.BEST_FRIEND.resId
                     ),
                     date = _dateUtc.value,
@@ -177,5 +179,9 @@ class BirthdayViewModel(
                 .catch { _deleteBirthdayError.update { true } }
                 .flowOn(Dispatchers.Main).collect()
         }
+    }
+
+    companion object {
+        private const val DATE_DEFAULT_VALUE: String = "__.__.____"
     }
 }

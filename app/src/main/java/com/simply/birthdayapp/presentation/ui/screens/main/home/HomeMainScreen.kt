@@ -1,6 +1,5 @@
 package com.simply.birthdayapp.presentation.ui.screens.main.home
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -25,8 +24,6 @@ fun HomeMainScreen(
     birthdayDetailsViewModel: BirthdayDetailsViewModel = getViewModel(),
 ) {
     val homeNavController = rememberNavController()
-
-    BackHandler {}
 
     NavHost(navController = homeNavController, startDestination = HomeDestination.HomeScreen.route) {
         composable(HomeDestination.HomeScreen.route) {

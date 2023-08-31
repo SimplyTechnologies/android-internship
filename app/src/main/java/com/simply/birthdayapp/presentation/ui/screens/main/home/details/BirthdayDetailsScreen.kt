@@ -9,7 +9,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -74,8 +74,7 @@ fun BirthdayDetailsScreen(
             }
             RoundAsyncImage(
                 modifier = Modifier
-                    .height(100.dp)
-                    .width(100.dp)
+                    .size(100.dp)
                     .padding(top = 4.dp),
                 data = birthday?.image ?: "",
             )
@@ -148,8 +147,7 @@ fun BirthdayDetailsScreen(
                     )
                 }
                 Button(
-                    modifier = Modifier
-                        .height(41.dp),
+                    modifier = Modifier.height(41.dp),
                     shape = AppTheme.shapes.smallRoundedCorners,
                     onClick = navigateToShopsScreen,
                     colors = ButtonDefaults.buttonColors(
