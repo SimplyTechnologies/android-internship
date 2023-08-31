@@ -10,8 +10,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -69,14 +69,14 @@ fun EditAccountScreen(
 
     LaunchedEffect(updateProfileSuccess) {
         if (updateProfileSuccess) {
-            Toast.makeText(context, (R.string.edit_account_success), Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, R.string.edit_account_success, Toast.LENGTH_SHORT).show()
             daneClick()
             profileViewModel.updateProfileSuccessState()
         }
     }
     LaunchedEffect(updateProfileErrorMessage) {
         if (updateProfileErrorMessage.isNotEmpty()) {
-            Toast.makeText(context, (R.string.edit_account_failed), Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, R.string.edit_account_failed, Toast.LENGTH_SHORT).show()
             profileViewModel.updateProfileErrorMessage()
         }
     }
@@ -115,8 +115,7 @@ fun EditAccountScreen(
                 RoundAsyncImage(
                     modifier = Modifier
                         .padding(top = 50.dp)
-                        .height(150.dp)
-                        .width(150.dp)
+                        .size(150.dp)
                         .clip(AppTheme.shapes.circle)
                         .clickable { launcher.launch("image/*") },
                     data = selectedImageUri ?: userProfile?.image,

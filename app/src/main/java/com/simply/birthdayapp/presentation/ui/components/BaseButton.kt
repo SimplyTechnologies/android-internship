@@ -29,7 +29,6 @@ fun AuthButton(
     enabled: Boolean = true,
     fontSize: TextUnit = 15.sp,
     textStyle: TextStyle = AppTheme.typography.bold,
-    textModifier:Modifier = Modifier,
     disabledContainerColor: Color = AppTheme.colors.disableButtonColor,
     onClick: () -> Unit = {},
 ) {
@@ -44,7 +43,6 @@ fun AuthButton(
         ),
     ) {
         Text(
-            modifier = textModifier,
             text = buttonTitle,
             color = textColor,
             fontSize = fontSize,

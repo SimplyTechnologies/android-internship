@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.AlertDialog
@@ -26,8 +25,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.simply.birthdayapp.R
 import com.simply.birthdayapp.presentation.ui.components.AppBaseTopBar
-import com.simply.birthdayapp.presentation.ui.components.AuthButton
 import com.simply.birthdayapp.presentation.ui.components.CircularProgress
+import com.simply.birthdayapp.presentation.ui.components.ProfileButton
 import com.simply.birthdayapp.presentation.ui.components.RoundAsyncImage
 import com.simply.birthdayapp.presentation.ui.theme.AppTheme
 import org.koin.androidx.compose.getViewModel
@@ -114,43 +113,21 @@ fun ProfileScreen(
                     verticalArrangement = Arrangement.spacedBy(5.dp, Alignment.Top),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    AuthButton(
-                        modifier = Modifier
-                            .padding(horizontal = 16.dp, vertical = 6.dp)
-                            .fillMaxWidth(),
-                        textModifier = Modifier.fillMaxWidth(),
-                        shape = AppTheme.shapes.smallRoundedCorners,
+                    ProfileButton(
                         buttonTitle = stringResource(R.string.edit_account),
-                        fontSize = 20.sp,
-                        backgroundColor = AppTheme.colors.white,
-                    ) {
-                        navToEditAccountScreen()
-                    }
-                    AuthButton(
-                        modifier = Modifier
-                            .padding(horizontal = 16.dp, vertical = 6.dp)
-                            .fillMaxWidth(),
-                        textModifier = Modifier.fillMaxWidth(),
-                        shape = AppTheme.shapes.smallRoundedCorners,
-                        fontSize = 20.sp,
+                        onClick = navToEditAccountScreen
+                    )
+                    ProfileButton(
                         buttonTitle = stringResource(R.string.change_password),
-                        backgroundColor = AppTheme.colors.white
-                    ) {
-                        navToChangePasswordScreen()
-                    }
-                    AuthButton(
-                        modifier = Modifier
-                            .padding(horizontal = 16.dp, vertical = 6.dp)
-                            .fillMaxWidth(),
-                        textModifier = Modifier.fillMaxWidth(),
-                        shape = AppTheme.shapes.smallRoundedCorners,
-                        fontSize = 20.sp,
+                        onClick = navToChangePasswordScreen
+                    )
+                    ProfileButton(
                         buttonTitle = stringResource(R.string.sign_out),
-                        backgroundColor = AppTheme.colors.white,
-                    ) {
-                        profileViewModel.signOut()
-                        onSignOutClicked()
-                    }
+                        onClick = {
+                            profileViewModel.signOut()
+                            onSignOutClicked()
+                        }
+                    )
                 }
             }
             if (showLoading)

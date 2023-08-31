@@ -82,10 +82,10 @@ class ProfileViewModel(
     private val _isOnLoadingState = MutableStateFlow(false)
     val isOnLoadingState = _isOnLoadingState.asStateFlow()
 
-    private val _name = MutableStateFlow("")
+    private val _name = MutableStateFlow(_profile.value?.firstName ?: "")
     val name = _name.asStateFlow()
 
-    private val _surName = MutableStateFlow("")
+    private val _surName = MutableStateFlow(_profile.value?.lastName ?: "")
     val surName = _surName.asStateFlow()
 
     val enableEditAccountDoneButton = combine(

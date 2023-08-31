@@ -181,7 +181,7 @@ fun SignInScreen(
                             modifier = Modifier
                                 .height(32.dp)
                                 .fillMaxWidth(),
-                            Arrangement.End
+                            horizontalArrangement = Arrangement.End
                         ) {
                             TextButton(onClick = onForgotPasswordClick) {
                                 Text(

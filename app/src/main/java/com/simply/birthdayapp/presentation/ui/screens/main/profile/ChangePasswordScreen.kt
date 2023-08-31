@@ -52,7 +52,7 @@ fun ChangePasswordScreen(
 
     LaunchedEffect(changePasswordSuccess) {
         if (changePasswordSuccess) {
-            Toast.makeText(context, (R.string.change_password_success), Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, R.string.change_password_success, Toast.LENGTH_SHORT).show()
             onSignOutClicked()
             profileViewModel.changePasswordSuccessState()
         }

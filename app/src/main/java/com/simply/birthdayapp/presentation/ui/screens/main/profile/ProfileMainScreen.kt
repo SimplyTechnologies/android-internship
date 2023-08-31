@@ -37,8 +37,6 @@ fun ProfileMainScreen(
 
     fun navToEditAccountScreen() {
         nestedNavController.navigate(ProfileRootScreen.EditAccountScreen.route) {
-            profileViewModel.setName(name = profileViewModel.profile.value?.firstName.toString())
-            profileViewModel.setSurName(surName = profileViewModel.profile.value?.lastName.toString())
             popUpTo(ProfileRootScreen.EditAccountScreen.route) {
                 inclusive = true
             }
