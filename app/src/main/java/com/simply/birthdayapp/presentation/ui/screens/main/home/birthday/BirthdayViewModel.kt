@@ -65,6 +65,9 @@ class BirthdayViewModel(
     private val _addToCalendarCheck = MutableStateFlow(false)
     val addToCalendarCheck = _addToCalendarCheck.asStateFlow()
 
+    private val _failedToAddBirthdayToCalendar = MutableStateFlow(false)
+    val failedToAddBirthdayToCalendar = _failedToAddBirthdayToCalendar.asStateFlow()
+
     private val _dateDayMonthYear: MutableStateFlow<String> = MutableStateFlow("__.__.____")
     val dateDayMonthYear: StateFlow<String> = _dateDayMonthYear.asStateFlow()
 
@@ -124,6 +127,10 @@ class BirthdayViewModel(
 
     fun setDeleteBirthdayErrorFalse() {
         _deleteBirthdayError.update { false }
+    }
+
+    fun setFailedToAddBirthdayToCalendar(value: Boolean) {
+        _failedToAddBirthdayToCalendar.update { value }
     }
 
     fun setBirthday(birthday: Birthday?) {

@@ -342,7 +342,11 @@ fun BirthdayScreen(
                 enabled = doneButtonEnable,
                 onClick = {
                     if (addToCalendarCheck && context.calendarPermissionGranted()) {
-                        addEventToCalendar(context, datePickerState.selectedDateMillis ?: calendar.timeInMillis)
+                        val uri = context.addEventToCalendar(
+                            date = datePickerState.selectedDateMillis ?: calendar.timeInMillis,
+                            name = name,
+                        )
+                        if (uri == null) birthdayViewModel.setFailedToAddBirthdayToCalendar(true)
                     }
                     editModeBirthday?.let { birthday ->
                         birthday.id.let {
@@ -412,15 +416,21 @@ private fun checkCalendarPermission(
     }
 }
 
-private fun addEventToCalendar(context: Context, date: Long) {
+private fun Context.addEventToCalendar(date: Long, name: String): Uri? {
     val values = ContentValues().apply {
         put(CalendarContract.Events.DTSTART, date)
         put(CalendarContract.Events.DTEND, date)
-        put(CalendarContract.Events.TITLE, "Your Event Title")
+        put(
+            CalendarContract.Events.TITLE,
+            getString(
+                R.string.calendar_birthday_event_title,
+                name.replaceFirstChar(Char::uppercaseChar),
+            ),
+        )
         put(CalendarContract.Events.CALENDAR_ID, 1)
         put(CalendarContract.Events.EVENT_TIMEZONE, TimeZone.getDefault().id)
     }
-    context.contentResolver.insert(CalendarContract.Events.CONTENT_URI, values)
+    return contentResolver.insert(CalendarContract.Events.CONTENT_URI, values)
 }
 
 private fun Context.calendarPermissionGranted(): Boolean =
