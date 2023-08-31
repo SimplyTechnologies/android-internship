@@ -11,12 +11,12 @@
     <string name="sign_in">Sign in</string>
     <string name="remove_from_favourites">Remove from favourites</string>
     <string name="add_to_favourites">Add to favourites</string>
-    <string name="shop_added_to_favourites">Shop added to favourites!</string>
     <string name="loading_shops">Loading shops</string>
     <string name="failed_to_remove_shop_from_favourites">Failed to remove shop from favourites</string>
     <string name="failed_to_add_shop_to_favourites">Failed to add shop to favourites</string>
+    <string name="shop_added_to_favourites">Shop added to favourites</string>
+    <string name="shop_removed_from_favourites">Shop removed from favourites</string>
     <string name="failed_to_load_shops">Failed to load shops</string>
-    <string name="favoured_shop_with_name_of">Favoured %1$s</string>
     <string name="can_not_load_shops_while_updating_favourites">Can not load shops while updating favourites</string>
     <string name="failed_birthdays_loading">Failed birthdays loading</string>
     <string name="relationship">Relationship</string>
