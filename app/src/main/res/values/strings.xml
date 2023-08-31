@@ -88,6 +88,6 @@
     <string name="old_password">Old Password</string>
     <string name="edit_account_success">Edit account success.</string>
     <string name="edit_account_failed">Failed to edit account.</string>
-    <string name="get_your_failed">Failed to get yor account.</string>
+    <string name="get_account_failed">Failed to get your account.</string>
     <string name="password_code">Password Code</string>
 </resources>
