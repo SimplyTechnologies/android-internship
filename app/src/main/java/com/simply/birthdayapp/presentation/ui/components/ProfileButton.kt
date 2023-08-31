@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.simply.birthdayapp.R
@@ -37,4 +38,10 @@ fun ProfileButton(
             fontFamily = FontFamily(Font(R.font.karm_light)),
         )
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun ProfileButtonPreview() {
+    ProfileButton(buttonTitle = "Text")
 }
