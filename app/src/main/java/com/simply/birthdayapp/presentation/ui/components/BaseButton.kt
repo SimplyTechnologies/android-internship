@@ -1,5 +1,6 @@
 package com.simply.birthdayapp.presentation.ui.components
 
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -29,16 +30,16 @@ fun AuthButton(
     fontSize: TextUnit = 15.sp,
     textStyle: TextStyle = AppTheme.typography.bold,
     disabledContainerColor: Color = AppTheme.colors.disableButtonColor,
-    onClick: () -> Unit = {}
+    onClick: () -> Unit = {},
 ) {
     Button(
-        modifier = modifier,
+        modifier = modifier.height(51.dp),
         shape = shape,
         enabled = enabled,
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(
             containerColor = backgroundColor,
-            disabledContainerColor = disabledContainerColor
+            disabledContainerColor = disabledContainerColor,
         ),
     ) {
         Text(

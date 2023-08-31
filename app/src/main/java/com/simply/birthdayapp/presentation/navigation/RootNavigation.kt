@@ -24,12 +24,20 @@ fun RootNavigation() {
         }
     }
 
+    fun navigateToAuthMainScreen() {
+        rootNavController.navigate(RootDestination.AuthMainScreen.route) {
+            popUpTo(RootDestination.AuthMainScreen.route) {
+                inclusive = true
+            }
+        }
+    }
+
     NavHost(
         navController = rootNavController,
         startDestination = RootDestination.AuthMainScreen.route,
     ) {
         composable(RootDestination.MainScreen.route) {
-            MainScreen()
+            MainScreen(onSignOutClicked = { navigateToAuthMainScreen() })
         }
         composable(RootDestination.AuthMainScreen.route) {
             AuthMainScreen(

@@ -22,6 +22,8 @@ import com.simply.birthdayapp.presentation.ui.theme.AppTheme
 
 @Composable
 fun AppBaseTopBar(
+    horizontalArrangement: Arrangement.Horizontal = Arrangement.SpaceBetween,
+    hasBackButton: Boolean = true,
     onBackClick: () -> Unit = {},
 ) {
     Row(
@@ -29,19 +31,20 @@ fun AppBaseTopBar(
             .height(50.dp)
             .fillMaxWidth()
             .background(AppTheme.colors.backgroundPink),
-        horizontalArrangement = Arrangement.SpaceBetween
+        horizontalArrangement = horizontalArrangement
     ) {
-        IconButton(
-            modifier = Modifier.padding(start = 16.dp),
-            onClick = onBackClick
-        ) {
-            Icon(
-                imageVector = Icons.Filled.KeyboardArrowLeft,
-                modifier = Modifier.fillMaxSize(),
-                contentDescription = "contentDescription",
-                tint = AppTheme.colors.darkPink,
-            )
-        }
+        if (hasBackButton)
+            IconButton(
+                modifier = Modifier.padding(start = 16.dp),
+                onClick = onBackClick
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.KeyboardArrowLeft,
+                    modifier = Modifier.fillMaxSize(),
+                    contentDescription = "contentDescription",
+                    tint = AppTheme.colors.darkPink,
+                )
+            }
         Image(
             modifier = Modifier.padding(end = 24.dp),
             painter = painterResource(R.drawable.logo),
