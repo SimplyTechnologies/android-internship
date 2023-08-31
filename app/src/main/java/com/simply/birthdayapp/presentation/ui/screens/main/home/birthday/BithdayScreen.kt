@@ -104,6 +104,10 @@ fun BirthdayScreen(
     val updateBirthdaySuccess by birthdayViewModel.updateBirthdaySuccess.collectAsState()
     val deleteBirthdaySuccess by birthdayViewModel.deleteBirthdaySuccess.collectAsState()
 
+    val createBirthdayIsCompleted by birthdayViewModel.createBirthdayIsCompleted.collectAsState()
+    val updateBirthdayIsCompleted by birthdayViewModel.updateBirthdayIsCompleted.collectAsState()
+    val deleteBirthdayIsCompleted by birthdayViewModel.deleteBirthdayIsCompleted.collectAsState()
+
     val focusManager = LocalFocusManager.current
     val context = LocalContext.current
     val snackbarHostState = LocalSnackbarHostState.current
@@ -166,6 +170,18 @@ fun BirthdayScreen(
     LaunchedEffect(deleteBirthdaySuccess) {
         if (deleteBirthdaySuccess) navigateToHomeScreen()
     }
+    LaunchedEffect(createBirthdayIsCompleted) {
+        if (createBirthdayIsCompleted) homeViewModel.fetchBirthdays()
+        birthdayViewModel.setCreateBirthdayIsCompletedFalse()
+    }
+    LaunchedEffect(updateBirthdayIsCompleted) {
+        if (updateBirthdayIsCompleted) homeViewModel.fetchBirthdays()
+        birthdayViewModel.setUpdateBirthdayIsCompletedFalse()
+    }
+    LaunchedEffect(deleteBirthdayIsCompleted) {
+        if (deleteBirthdayIsCompleted) homeViewModel.fetchBirthdays()
+        birthdayViewModel.setDeleteBirthdayIsCompletedFalse()
+    }
     LaunchedEffect(addToCalendarCheck) {
         if (addToCalendarCheck) {
             context.checkCalendarPermission(
@@ -202,10 +218,7 @@ fun BirthdayScreen(
                         .padding(top = 16.dp, end = 8.dp),
                     onClick = {
                         editModeBirthday?.id?.let {
-                            birthdayViewModel.deleteBirthday(
-                                id = it,
-                                onCompletion = { homeViewModel.fetchBirthdays() },
-                            )
+                            birthdayViewModel.deleteBirthday(id = it)
                         }
                     },
                 ) {
@@ -333,16 +346,8 @@ fun BirthdayScreen(
                         if (uri == null) birthdayViewModel.setFailedToAddBirthdayToCalendar(true)
                     }
                     editModeBirthday?.let { birthday ->
-                        birthday.id.let {
-                            birthdayViewModel.updateBirthday(
-                                id = it,
-                                onCompletion = {
-                                    homeViewModel.fetchBirthdays()
-                                })
-                        }
-                    } ?: run {
-                        birthdayViewModel.createBirthday(onCompletion = { homeViewModel.fetchBirthdays() })
-                    }
+                        birthday.id.let { birthdayViewModel.updateBirthday(id = it) }
+                    } ?: run { birthdayViewModel.createBirthday() }
                 },
                 modifier = Modifier.padding(top = 16.dp),
                 shape = AppTheme.shapes.smallRoundedCorners,

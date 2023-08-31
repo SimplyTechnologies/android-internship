@@ -61,6 +61,15 @@ class BirthdayViewModel(
     private val _editModeBirthday = MutableStateFlow<Birthday?>(null)
     val editModeBirthday = _editModeBirthday.asStateFlow()
 
+    private val _createBirthdayIsCompleted = MutableStateFlow(false)
+    val createBirthdayIsCompleted = _createBirthdaySuccess.asStateFlow()
+
+    private val _updateBirthdayIsCompleted = MutableStateFlow(false)
+    val updateBirthdayIsCompleted = _updateBirthdayIsCompleted.asStateFlow()
+
+    private val _deleteBirthdayIsCompleted = MutableStateFlow(false)
+    val deleteBirthdayIsCompleted = _deleteBirthdayIsCompleted.asStateFlow()
+
     private val _addToCalendarCheck = MutableStateFlow(false)
     val addToCalendarCheck = _addToCalendarCheck.asStateFlow()
 
@@ -72,6 +81,8 @@ class BirthdayViewModel(
 
     private val _dateUtc: MutableStateFlow<String> = MutableStateFlow(Calendar.getInstance().timeInMillis.fromMillisToUtcDate())
     val dateUtc: StateFlow<String> = _dateUtc.asStateFlow()
+
+    private val context = getApplication<Application>()
 
 
     val combine = combine(
@@ -107,6 +118,14 @@ class BirthdayViewModel(
         _createBirthdayError.update { false }
     }
 
+    fun setUpdateBirthdayErrorFalse() {
+        _updateBirthdayError.update { false }
+    }
+
+    fun setDeleteBirthdayErrorFalse() {
+        _deleteBirthdayError.update { false }
+    }
+
     fun setCreateBirthdaySuccessFalse() {
         _createBirthdaySuccess.update { false }
     }
@@ -119,12 +138,16 @@ class BirthdayViewModel(
         _deleteBirthdaySuccess.update { false }
     }
 
-    fun setUpdateBirthdayErrorFalse() {
-        _updateBirthdayError.update { false }
+    fun setCreateBirthdayIsCompletedFalse() {
+        _createBirthdayIsCompleted.update { false }
     }
 
-    fun setDeleteBirthdayErrorFalse() {
-        _deleteBirthdayError.update { false }
+    fun setUpdateBirthdayIsCompletedFalse() {
+        _updateBirthdayIsCompleted.update { false }
+    }
+
+    fun setDeleteBirthdayIsCompletedFalse() {
+        _deleteBirthdayIsCompleted.update { false }
     }
 
     fun setFailedToAddBirthdayToCalendar(value: Boolean) {
@@ -147,10 +170,9 @@ class BirthdayViewModel(
         }
     }
 
-    fun createBirthday(onCompletion: () -> Unit) {
+    fun createBirthday() {
         viewModelScope.launch(Dispatchers.IO) {
             val imageByteArray = imageByteArray.value
-            val context = getApplication<Application>().applicationContext
             birthdayRepository.createBirthday(
                 createBirthday = CreateBirthdayEntity(
                     name = _name.value,
@@ -166,18 +188,14 @@ class BirthdayViewModel(
                     _addToCalendarCheck.update { false }
                 }
                 it.onFailure { _createBirthdayError.update { true } }
-            }.onCompletion { onCompletion() }
+            }.onCompletion { _createBirthdayIsCompleted.update { true } }
                 .catch { _createBirthdayError.update { true } }.collect()
         }
     }
 
-    fun updateBirthday(
-        id: Int,
-        onCompletion: () -> Unit,
-    ) {
+    fun updateBirthday(id: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             val imageByteArray = imageByteArray.value
-            val context = getApplication<Application>().applicationContext
             birthdayRepository.updateBirthday(
                 id = id, updateBirthdayEntity = UpdateBirthdayEntity(
                     name = _name.value,
@@ -193,22 +211,19 @@ class BirthdayViewModel(
                     _addToCalendarCheck.update { false }
                 }
                 it.onFailure { _updateBirthdayError.update { true } }
-            }.onCompletion { onCompletion() }
+            }.onCompletion { _updateBirthdayIsCompleted.update { true } }
                 .catch { _updateBirthdayError.update { true } }.collect()
         }
     }
 
-    fun deleteBirthday(
-        id: Int,
-        onCompletion: () -> Unit,
-    ) {
+    fun deleteBirthday(id: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             birthdayRepository.deleteBirthday(id)
                 .onEach {
                     it.onSuccess { _deleteBirthdaySuccess.update { true } }
                     it.onFailure { _deleteBirthdayError.update { true } }
                 }
-                .onCompletion { onCompletion() }
+                .onCompletion { _deleteBirthdayIsCompleted.update { true } }
                 .catch { _deleteBirthdayError.update { true } }.collect()
         }
     }
