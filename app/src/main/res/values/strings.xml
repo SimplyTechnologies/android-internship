@@ -83,4 +83,6 @@
     <string name="app_needs_calendar_permission_to_add_birthdays">App needs Calendar permission to add birthdays</string>
     <string name="calendar_birthday_event_title">"%1$s\'s Birthday"</string>
     <string name="failed_to_add_birthday_to_calendar">Failed to add birthday to calendar</string>
+    <string name="send">Send</string>
+    <string name="birthday_message">Happy birthday. Wish you all the best.</string>
 </resources>

@@ -14,6 +14,7 @@ data class AppColors(
     val black: Color = Color(0xFF000000),
     val gray: Color = Color(0xFF929292),
     val lightGray: Color = Color(0x39929292),
+    val darkGray: Color = Color(0xFF575757),
     val textSelection: TextSelectionColors = TextSelectionColors(
         handleColor = Color(0xff963E5A),
         backgroundColor = Color(0xff963E5A),
