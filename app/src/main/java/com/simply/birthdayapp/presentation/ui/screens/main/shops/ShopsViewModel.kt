@@ -43,8 +43,11 @@ class ShopsViewModel(
     private val _numOfShopsLoadingIsFavourite: MutableStateFlow<Int> = MutableStateFlow(0)
     val numOfShopsLoadingIsFavourite: StateFlow<Int> = _numOfShopsLoadingIsFavourite.asStateFlow()
 
-    private val _lastFavouredShopName: MutableStateFlow<String?> = MutableStateFlow(null)
-    val lastFavouredShopName: StateFlow<String?> = _lastFavouredShopName.asStateFlow()
+    private val _lastAddedToFavouritesShopId: MutableStateFlow<Int?> = MutableStateFlow(null)
+    val lastAddedToFavouritesShopId: StateFlow<Int?> = _lastAddedToFavouritesShopId.asStateFlow()
+
+    private val _lastRemovedFromFavouritesShopId: MutableStateFlow<Int?> = MutableStateFlow(null)
+    val lastRemovedFromFavouritesShopId: StateFlow<Int?> = _lastRemovedFromFavouritesShopId.asStateFlow()
 
     private val _lastServerErrorMessage: MutableStateFlow<String?> = MutableStateFlow(null)
     val lastServerErrorMessage: StateFlow<String?> = _lastServerErrorMessage.asStateFlow()
@@ -74,8 +77,12 @@ class ShopsViewModel(
         }
     }
 
-    fun clearLastFavouredShopName() {
-        _lastFavouredShopName.update { null }
+    fun clearLastAddedToFavouritesShopId() {
+        _lastAddedToFavouritesShopId.update { null }
+    }
+
+    fun clearLastRemovedFromFavouritesShopId() {
+        _lastRemovedFromFavouritesShopId.update { null }
     }
 
     fun clearLastServerErrorMessage() {
@@ -125,7 +132,7 @@ class ShopsViewModel(
             .onEach { result ->
                 result.onSuccess {
                     setCachedShopIsFavourite(cachedShopIndex, true)
-                    _lastFavouredShopName.update { shop.name }
+                    _lastAddedToFavouritesShopId.update { shop.id }
                 }
                 result.onFailure { cause -> _lastServerErrorMessage.update { cause.message } }
             }
@@ -142,7 +149,10 @@ class ShopsViewModel(
             .onStart { setCachedShopIsLoadingFavourite(cachedShopIndex, true) }
             .onCompletion { setCachedShopIsLoadingFavourite(cachedShopIndex, false) }
             .onEach { result ->
-                result.onSuccess { setCachedShopIsFavourite(cachedShopIndex, false) }
+                result.onSuccess {
+                    setCachedShopIsFavourite(cachedShopIndex, false)
+                    _lastRemovedFromFavouritesShopId.update { shop.id }
+                }
                 result.onFailure { cause -> _lastServerErrorMessage.update { cause.message } }
             }
             .catch { _lastGeneralError.update { ShopsGeneralError.FailedToRemoveShopFromFavourites } }
