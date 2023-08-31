@@ -4,6 +4,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -16,20 +17,20 @@ fun NavBar(
     navController: NavController,
     onItemClick: (NavBarItem) -> Unit = {},
 ) {
-    val currentBackStackEntry = navController.currentBackStackEntryAsState()
+    val currentBackStackEntry by navController.currentBackStackEntryAsState()
 
     NavigationBar(
         containerColor = AppTheme.colors.lightPink,
     ) {
-        items.forEach {
-            val selected = it.route == currentBackStackEntry.value?.destination?.route
+        items.forEach { navBarItem ->
+            val selected = currentBackStackEntry?.destination?.route == navBarItem.route
             NavigationBarItem(
                 selected = selected,
-                onClick = { onItemClick(it) },
+                onClick = { onItemClick(navBarItem) },
                 icon = {
                     Icon(
-                        painter = it.icon,
-                        contentDescription = it.name,
+                        painter = navBarItem.icon,
+                        contentDescription = navBarItem.name,
                         tint = if (selected) AppTheme.colors.darkPink else AppTheme.colors.white,
                     )
                 },
