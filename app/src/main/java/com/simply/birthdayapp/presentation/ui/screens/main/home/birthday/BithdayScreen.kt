@@ -118,7 +118,7 @@ fun BirthdayScreen(
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
-        uri?.let { birthdayViewModel.setImage(it.uriToByteArray(context)) }
+        uri?.let { birthdayViewModel.setImage(context.contentResolver.uriToByteArray(it)) }
     }
 
     val requestPermissionLauncher = rememberLauncherForActivityResult(
