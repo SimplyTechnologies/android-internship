@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Birthday App</string>
+    <string name="app_name">CelebrateMe</string>
     <string name="navbar_item_home">Home</string>
     <string name="navbar_item_shops">Shops</string>
     <string name="navbar_item_profile">Profile</string>

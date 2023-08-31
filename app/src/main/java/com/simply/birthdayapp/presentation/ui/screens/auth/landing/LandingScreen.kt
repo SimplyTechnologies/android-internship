@@ -40,14 +40,14 @@ fun LandingScreen(
             shape = AppTheme.shapes.risingStartRoundedEndCorners,
             buttonTitle = stringResource(id = R.string.sign_in),
             backgroundColor = AppTheme.colors.lightPink,
-            textColor = AppTheme.colors.darkPink,
+            textColor = AppTheme.colors.white,
             onClick = { onSignInClick() })
 
         LandingButton(
             shape = AppTheme.shapes.risingEndRoundedStartCorners,
             buttonTitle = stringResource(id = R.string.register),
             backgroundColor = AppTheme.colors.darkPink,
-            textColor = AppTheme.colors.lightPink,
+            textColor = AppTheme.colors.white,
             onClick = { onRegisterClick() })
     }
 }
