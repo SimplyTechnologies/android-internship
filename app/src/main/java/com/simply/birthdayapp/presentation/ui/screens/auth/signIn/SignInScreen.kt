@@ -198,7 +198,7 @@ fun SignInScreen(
                             modifier = Modifier
                                 .padding(horizontal = 32.dp, vertical = 16.dp)
                                 .fillMaxWidth(),
-                            shape = RoundedCornerShape(24.dp),
+                            shape = AppTheme.shapes.mediumRoundedCorners,
                             buttonTitle = stringResource(id = R.string.sign_in),
                             enabled = loginButtonEnabled,
                             onClick = { signInViewModel.loginAccount() },

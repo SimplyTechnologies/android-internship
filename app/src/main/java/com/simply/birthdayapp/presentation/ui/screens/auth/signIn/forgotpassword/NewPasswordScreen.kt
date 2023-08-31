@@ -54,14 +54,14 @@ fun NewPasswordScreen(
 
     LaunchedEffect(resetPasswordSuccess) {
         if (resetPasswordSuccess) {
-            Toast.makeText(context, R.string.reset_passwors_success, Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, R.string.reset_password_success, Toast.LENGTH_SHORT).show()
             onResetPasswordSuccess()
             forgotPasswordViewModel.resetPasswordSuccessState()
         }
     }
     LaunchedEffect(resetPasswordErrorMessage) {
         if (resetPasswordErrorMessage.isNotEmpty()) {
-            Toast.makeText(context, R.string.invalid_code, Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, resetPasswordErrorMessage, Toast.LENGTH_SHORT).show()
             onCodeInvalid()
             forgotPasswordViewModel.resetPasswordErrorMessage()
         }

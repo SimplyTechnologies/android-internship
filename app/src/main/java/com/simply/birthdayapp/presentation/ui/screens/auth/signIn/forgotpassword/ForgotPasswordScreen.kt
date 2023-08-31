@@ -1,6 +1,5 @@
 package com.simply.birthdayapp.presentation.ui.screens.auth.signIn.forgotpassword
 
-
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -185,7 +184,7 @@ fun ForgotPasswordScreen(
                             .padding(top = 100.dp)
                             .width(200.dp),
                         backgroundColor = AppTheme.colors.lightPink,
-                        shape = RoundedCornerShape(13.dp),
+                        shape = AppTheme.shapes.smallRoundedCorners,
                         buttonTitle = stringResource(id = R.string.set_new_password),
                         enabled = code.isNotEmpty() && code.length == CODE_MAX_LENGTH,
                         onClick = onNewPasswordButtonClick,

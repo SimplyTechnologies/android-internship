@@ -44,6 +44,7 @@ import com.simply.birthdayapp.presentation.ui.components.PasswordTextFiled
 import com.simply.birthdayapp.presentation.ui.theme.AppTheme
 import org.koin.androidx.compose.getViewModel
 
+const val INPUT_MAX_LENGTH = 30
 @Composable
 fun RegisterScreen(
     registerViewModel: RegisterViewModel = getViewModel(),
@@ -64,7 +65,6 @@ fun RegisterScreen(
     val registrationErrorMessage by registerViewModel.registerErrorMessage.collectAsState()
     val registerButtonEnabled by registerViewModel.enableRegisterButton.collectAsState()
     val showLoading by registerViewModel.isOnLoadingState.collectAsState()
-    val inputMaxLength = 30
     val context = LocalContext.current
 
     LaunchedEffect(registrationSuccess) {
@@ -136,7 +136,7 @@ fun RegisterScreen(
                             label = stringResource(id = R.string.name),
                             shape = AppTheme.shapes.smallRoundedCorners,
                             onValueChange = { input ->
-                                if (name.length <= inputMaxLength)
+                                if (name.length <= INPUT_MAX_LENGTH)
                                     registerViewModel.setName(name = input)
                             },
                         )

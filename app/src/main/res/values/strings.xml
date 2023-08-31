@@ -46,7 +46,7 @@
     <string name="repeat_password_error">Password don\'t match</string>
     <string name="password_icon_description">password icon</string>
     <string name="register_success">Register Success</string>
-    <string name="reset_passwors_success">Reset Passwors Success</string>
+    <string name="reset_password_success">Reset Passwors Success</string>
     <string name="invalid_code">Invalid Code</string>
     <string name="ok">OK</string>
     <string name="registration_error">Registration Error</string>
@@ -88,6 +88,6 @@
     <string name="old_password">Old Password</string>
     <string name="edit_account_success">Edit account success.</string>
     <string name="edit_account_failed">Failed to edit account.</string>
-    <string name="get_yser_failed">Failed to get yor account.</string>
+    <string name="get_your_failed">Failed to get yor account.</string>
     <string name="password_code">Password Code</string>
 </resources>
