@@ -75,4 +75,6 @@
     <string name="url_annotated_string_tag">url</string>
     <string name="shops_related_error">Shops Related Error</string>
     <string name="dismiss">Dismiss</string>
+    <string name="send">Send</string>
+    <string name="birthday_message">Happy birthday. Wish you all the best.</string>
 </resources>
