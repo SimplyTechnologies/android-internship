@@ -1,16 +1,9 @@
 package com.simply.birthdayapp.presentation.ui.screens.main.home.birthday
 
-import android.Manifest
 import android.annotation.SuppressLint
-import android.app.Activity
-import android.content.ContentValues
-import android.content.Context
-import android.content.pm.PackageManager
 import android.net.Uri
-import android.provider.CalendarContract
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -25,6 +18,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -66,11 +60,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import com.simply.birthdayapp.R
+import com.simply.birthdayapp.presentation.extensions.addEventToCalendar
+import com.simply.birthdayapp.presentation.extensions.calendarPermissionGranted
+import com.simply.birthdayapp.presentation.extensions.checkCalendarPermission
 import com.simply.birthdayapp.presentation.extensions.fromMillisToUtcDate
 import com.simply.birthdayapp.presentation.extensions.fromUtcToMillisDate
+import com.simply.birthdayapp.presentation.extensions.requestCalendarPermission
+import com.simply.birthdayapp.presentation.extensions.shouldShowCalendarPermissionRationale
 import com.simply.birthdayapp.presentation.extensions.uriToByteArray
 import com.simply.birthdayapp.presentation.models.RelationshipEnum
 import com.simply.birthdayapp.presentation.ui.components.AppBaseTopBar
@@ -80,9 +77,8 @@ import com.simply.birthdayapp.presentation.ui.components.RoundAsyncImage
 import com.simply.birthdayapp.presentation.ui.screens.main.LocalSnackbarHostState
 import com.simply.birthdayapp.presentation.ui.screens.main.home.HomeViewModel
 import com.simply.birthdayapp.presentation.ui.theme.AppTheme
-import java.util.Calendar
-import java.util.TimeZone
 import org.koin.androidx.compose.getViewModel
+import java.util.Calendar
 
 @SuppressLint("SimpleDateFormat")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -105,6 +101,10 @@ fun BirthdayScreen(
     val updateBirthdayError by birthdayViewModel.updateBirthdayError.collectAsState()
     val deleteBirthdayError by birthdayViewModel.deleteBirthdayError.collectAsState()
 
+    val createBirthdaySuccess by birthdayViewModel.createBirthdaySuccess.collectAsState()
+    val updateBirthdaySuccess by birthdayViewModel.updateBirthdaySuccess.collectAsState()
+    val deleteBirthdaySuccess by birthdayViewModel.deleteBirthdaySuccess.collectAsState()
+
     val focusManager = LocalFocusManager.current
     val context = LocalContext.current
     val snackbarHostState = LocalSnackbarHostState.current
@@ -119,7 +119,7 @@ fun BirthdayScreen(
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
-        if (uri != null) birthdayViewModel.setImage(uri.uriToByteArray(context))
+        uri?.let { birthdayViewModel.setImage(it.uriToByteArray(context)) }
     }
 
     val requestPermissionLauncher = rememberLauncherForActivityResult(
@@ -158,10 +158,18 @@ fun BirthdayScreen(
             birthdayViewModel.setDeleteBirthdayErrorFalse()
         }
     }
+    LaunchedEffect(createBirthdaySuccess) {
+        if (createBirthdaySuccess) navigateToHomeScreen()
+    }
+    LaunchedEffect(updateBirthdaySuccess) {
+        if (updateBirthdaySuccess) navigateToHomeScreen()
+    }
+    LaunchedEffect(deleteBirthdaySuccess) {
+        if (deleteBirthdaySuccess) navigateToHomeScreen()
+    }
     LaunchedEffect(addToCalendarCheck) {
         if (addToCalendarCheck) {
-            checkCalendarPermission(
-                context = context,
+            context.checkCalendarPermission(
                 requestPermissionLauncher = requestPermissionLauncher,
                 onShowRationale = { showCalendarPermissionExplanationDialog = true },
             )
@@ -197,7 +205,6 @@ fun BirthdayScreen(
                         editModeBirthday?.id?.let {
                             birthdayViewModel.deleteBirthday(
                                 id = it,
-                                navigateToHomeScreen = { navigateToHomeScreen() },
                                 onCompletion = { homeViewModel.fetchBirthdays() },
                             )
                         }
@@ -212,8 +219,7 @@ fun BirthdayScreen(
             RoundAsyncImage(
                 modifier = Modifier
                     .padding(top = 20.dp)
-                    .height(100.dp)
-                    .width(100.dp)
+                    .size(100.dp)
                     .clip(AppTheme.shapes.circle)
                     .clickable { launcher.launch("image/*") },
                 data = selectedImageUri,
@@ -331,8 +337,7 @@ fun BirthdayScreen(
                     ),
                 )
                 Text(
-                    modifier = Modifier
-                        .fillMaxHeight(),
+                    modifier = Modifier.fillMaxHeight(),
                     text = stringResource(id = R.string.addToCalendar),
                     style = AppTheme.typography.boldKarmaDarkPink,
                     fontSize = 16.sp
@@ -350,14 +355,14 @@ fun BirthdayScreen(
                     }
                     editModeBirthday?.let { birthday ->
                         birthday.id.let {
-                            birthdayViewModel.updateBirthday(it, navigateToHomeScreen) {
-                                homeViewModel.fetchBirthdays()
-                            }
+                            birthdayViewModel.updateBirthday(
+                                id = it,
+                                onCompletion = {
+                                    homeViewModel.fetchBirthdays()
+                                })
                         }
                     } ?: run {
-                        birthdayViewModel.createBirthday(navigateToHomeScreen) {
-                            homeViewModel.fetchBirthdays()
-                        }
+                        birthdayViewModel.createBirthday(onCompletion = { homeViewModel.fetchBirthdays() })
                     }
                 },
                 modifier = Modifier.padding(top = 16.dp),
@@ -404,43 +409,6 @@ fun BirthdayScreen(
         }
     }
 }
-
-private fun checkCalendarPermission(
-    context: Context,
-    requestPermissionLauncher: ActivityResultLauncher<String>,
-    onShowRationale: () -> Unit,
-) {
-    if (context.calendarPermissionGranted().not()) {
-        if (context.shouldShowCalendarPermissionRationale()) onShowRationale()
-        else requestPermissionLauncher.requestCalendarPermission()
-    }
-}
-
-private fun Context.addEventToCalendar(date: Long, name: String): Uri? {
-    val values = ContentValues().apply {
-        put(CalendarContract.Events.DTSTART, date)
-        put(CalendarContract.Events.DTEND, date)
-        put(
-            CalendarContract.Events.TITLE,
-            getString(
-                R.string.calendar_birthday_event_title,
-                name.replaceFirstChar(Char::uppercaseChar),
-            ),
-        )
-        put(CalendarContract.Events.CALENDAR_ID, 1)
-        put(CalendarContract.Events.EVENT_TIMEZONE, TimeZone.getDefault().id)
-    }
-    return contentResolver.insert(CalendarContract.Events.CONTENT_URI, values)
-}
-
-private fun Context.calendarPermissionGranted(): Boolean =
-    ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_CALENDAR) ==
-            PackageManager.PERMISSION_GRANTED
-
-private fun Context.shouldShowCalendarPermissionRationale(): Boolean =
-    ActivityCompat.shouldShowRequestPermissionRationale(this as Activity, Manifest.permission.WRITE_CALENDAR)
-
-private fun ActivityResultLauncher<String>.requestCalendarPermission() = launch(Manifest.permission.WRITE_CALENDAR)
 
 @Composable
 @Preview(showBackground = true)

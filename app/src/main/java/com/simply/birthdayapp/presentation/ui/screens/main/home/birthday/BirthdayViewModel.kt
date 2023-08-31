@@ -11,7 +11,6 @@ import com.simply.birthdayapp.presentation.extensions.fromUtcToDayMonthYearDate
 import com.simply.birthdayapp.presentation.extensions.uriToBase64
 import com.simply.birthdayapp.presentation.models.Birthday
 import com.simply.birthdayapp.presentation.models.RelationshipEnum
-import java.util.Calendar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -20,12 +19,12 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.util.Calendar
 
 class BirthdayViewModel(
     application: Application,
@@ -44,6 +43,12 @@ class BirthdayViewModel(
     private val _createBirthdayError = MutableStateFlow(false)
     val createBirthdayError = _createBirthdayError.asStateFlow()
 
+    private val _updateBirthdayError = MutableStateFlow(false)
+    val updateBirthdayError = _updateBirthdayError.asStateFlow()
+
+    private val _deleteBirthdayError = MutableStateFlow(false)
+    val deleteBirthdayError = _deleteBirthdayError.asStateFlow()
+
     private val _createBirthdaySuccess = MutableStateFlow(false)
     val createBirthdaySuccess = _createBirthdaySuccess.asStateFlow()
 
@@ -52,12 +57,6 @@ class BirthdayViewModel(
 
     private val _deleteBirthdaySuccess = MutableStateFlow(false)
     val deleteBirthdaySuccess = _deleteBirthdaySuccess.asStateFlow()
-
-    private val _updateBirthdayError = MutableStateFlow(false)
-    val updateBirthdayError = _updateBirthdayError.asStateFlow()
-
-    private val _deleteBirthdayError = MutableStateFlow(false)
-    val deleteBirthdayError = _deleteBirthdayError.asStateFlow()
 
     private val _editModeBirthday = MutableStateFlow<Birthday?>(null)
     val editModeBirthday = _editModeBirthday.asStateFlow()
@@ -149,10 +148,7 @@ class BirthdayViewModel(
         }
     }
 
-    fun createBirthday(
-        navigateToHomeScreen: () -> Unit,
-        onCompletion: () -> Unit,
-    ) {
+    fun createBirthday(onCompletion: () -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
             val imageByteArray = imageByteArray.value
             birthdayRepository.createBirthday(
@@ -166,20 +162,17 @@ class BirthdayViewModel(
                 ),
             ).onEach {
                 it.onSuccess {
-                    navigateToHomeScreen()
                     _createBirthdaySuccess.update { true }
                     _addToCalendarCheck.update { false }
                 }
                 it.onFailure { _createBirthdayError.update { true } }
             }.onCompletion { onCompletion() }
-                .catch { _createBirthdayError.update { true } }
-                .flowOn(Dispatchers.Main).collect()
+                .catch { _createBirthdayError.update { true } }.collect()
         }
     }
 
     fun updateBirthday(
         id: Int,
-        navigateToHomeScreen: () -> Unit,
         onCompletion: () -> Unit,
     ) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -195,34 +188,27 @@ class BirthdayViewModel(
                 )
             ).onEach {
                 it.onSuccess {
-                    navigateToHomeScreen()
                     _updateBirthdaySuccess.update { true }
                     _addToCalendarCheck.update { false }
                 }
                 it.onFailure { _updateBirthdayError.update { true } }
             }.onCompletion { onCompletion() }
-                .catch { _updateBirthdayError.update { true } }
-                .flowOn(Dispatchers.Main).collect()
+                .catch { _updateBirthdayError.update { true } }.collect()
         }
     }
 
     fun deleteBirthday(
         id: Int,
-        navigateToHomeScreen: () -> Unit,
         onCompletion: () -> Unit,
     ) {
         viewModelScope.launch(Dispatchers.IO) {
             birthdayRepository.deleteBirthday(id)
                 .onEach {
-                    it.onSuccess {
-                        navigateToHomeScreen()
-                        _deleteBirthdaySuccess.update { true }
-                    }
+                    it.onSuccess { _deleteBirthdaySuccess.update { true } }
                     it.onFailure { _deleteBirthdayError.update { true } }
                 }
                 .onCompletion { onCompletion() }
-                .catch { _deleteBirthdayError.update { true } }
-                .flowOn(Dispatchers.Main).collect()
+                .catch { _deleteBirthdayError.update { true } }.collect()
         }
     }
 }
