@@ -91,8 +91,7 @@ fun HomeScreen(
                     state = birthdaysLazyListState,
                     contentPadding = PaddingValues(start = 24.dp, end = 24.dp, bottom = 16.dp),
                 ) {
-                    when {
-                        birthdayList.isNotEmpty() -> items(birthdayList) { birthday ->
+                    items(birthdayList) { birthday ->
                             BirthdayCard(
                                 birthday = birthday,
                                 onCardClick = {
@@ -101,9 +100,6 @@ fun HomeScreen(
                                 },
                             )
                         }
-
-                        else -> item { Box(modifier = Modifier.fillMaxSize()) }
-                    }
                 }
                 PullRefreshIndicator(
                     modifier = Modifier.align(Alignment.TopCenter),
