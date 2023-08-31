@@ -53,6 +53,8 @@ fun ShopCard(
                 contentDescription = shop.name,
                 borderColor = AppTheme.colors.darkPink,
                 borderWidth = 1.dp,
+                placeholder = painterResource(id = R.drawable.placeholder_shop),
+                error = painterResource(id = R.drawable.placeholder_shop),
             )
             Text(
                 modifier = Modifier

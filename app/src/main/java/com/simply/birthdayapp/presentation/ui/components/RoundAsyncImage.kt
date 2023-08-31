@@ -25,8 +25,8 @@ fun RoundAsyncImage(
     borderWidth: Dp = 0.dp,
     contentDescription: String? = null,
     contentScale: ContentScale = ContentScale.Crop,
-    placeholder: Painter? = painterResource(id = R.drawable.placeholder),
-    error: Painter? = painterResource(id = R.drawable.placeholder),
+    placeholder: Painter? = painterResource(id = R.drawable.placeholder_person),
+    error: Painter? = painterResource(id = R.drawable.placeholder_person),
 ) {
     AsyncImage(
         model = ImageRequest.Builder(LocalContext.current)

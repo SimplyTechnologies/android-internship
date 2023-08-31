@@ -12,10 +12,13 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -27,6 +30,8 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -56,11 +61,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.simply.birthdayapp.R
+import com.simply.birthdayapp.presentation.extensions.addEventToCalendar
+import com.simply.birthdayapp.presentation.extensions.calendarPermissionGranted
+import com.simply.birthdayapp.presentation.extensions.checkCalendarPermission
 import com.simply.birthdayapp.presentation.extensions.fromMillisToUtcDate
 import com.simply.birthdayapp.presentation.extensions.fromUtcToMillisDate
+import com.simply.birthdayapp.presentation.extensions.requestCalendarPermission
+import com.simply.birthdayapp.presentation.extensions.shouldShowCalendarPermissionRationale
 import com.simply.birthdayapp.presentation.extensions.uriToByteArray
 import com.simply.birthdayapp.presentation.models.RelationshipEnum
 import com.simply.birthdayapp.presentation.ui.components.AppBaseTopBar
+import com.simply.birthdayapp.presentation.ui.components.CalendarPermissionDialog
 import com.simply.birthdayapp.presentation.ui.components.DatePickerComponent
 import com.simply.birthdayapp.presentation.ui.components.RoundAsyncImage
 import com.simply.birthdayapp.presentation.ui.screens.main.LocalSnackbarHostState
@@ -84,25 +95,40 @@ fun BirthdayScreen(
     val dateDayMonthYear by birthdayViewModel.dateDayMonthYear.collectAsState()
     val dateUtc by birthdayViewModel.dateUtc.collectAsState()
     val editModeBirthday by birthdayViewModel.editModeBirthday.collectAsState()
+    val addToCalendarCheck by birthdayViewModel.addToCalendarCheck.collectAsState()
 
     val createBirthdayError by birthdayViewModel.createBirthdayError.collectAsState()
     val updateBirthdayError by birthdayViewModel.updateBirthdayError.collectAsState()
     val deleteBirthdayError by birthdayViewModel.deleteBirthdayError.collectAsState()
 
+    val createBirthdaySuccess by birthdayViewModel.createBirthdaySuccess.collectAsState()
+    val updateBirthdaySuccess by birthdayViewModel.updateBirthdaySuccess.collectAsState()
+    val deleteBirthdaySuccess by birthdayViewModel.deleteBirthdaySuccess.collectAsState()
+
     val focusManager = LocalFocusManager.current
     val context = LocalContext.current
     val snackbarHostState = LocalSnackbarHostState.current
     val calendar = Calendar.getInstance()
-    val datePickerState = rememberDatePickerState(initialSelectedDateMillis = Calendar.getInstance().timeInMillis)
-    var showDatePicker by rememberSaveable { mutableStateOf(false) }
+    val datePickerState = rememberDatePickerState(initialSelectedDateMillis = calendar.timeInMillis)
+    var showDatePickerDialog by rememberSaveable { mutableStateOf(false) }
+    var showCalendarPermissionExplanationDialog by rememberSaveable { mutableStateOf(false) }
     val doneButtonEnable by birthdayViewModel.combine.collectAsState()
     val relationshipList = RelationshipEnum.values()
-
+    var showNeedCalendarPermissionMessage by rememberSaveable { mutableStateOf(false) }
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
-        if (uri != null) birthdayViewModel.setImage(uri.uriToByteArray(context))
+        uri?.let { birthdayViewModel.setImage(it.uriToByteArray(context)) }
+    }
+
+    val requestPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted.not()) {
+            if (context.shouldShowCalendarPermissionRationale().not()) showNeedCalendarPermissionMessage = true
+            birthdayViewModel.setAddToCalendarCheck(false)
+        }
     }
 
     LaunchedEffect(createBirthdayError) {
@@ -132,6 +158,32 @@ fun BirthdayScreen(
             birthdayViewModel.setDeleteBirthdayErrorFalse()
         }
     }
+    LaunchedEffect(createBirthdaySuccess) {
+        if (createBirthdaySuccess) navigateToHomeScreen()
+    }
+    LaunchedEffect(updateBirthdaySuccess) {
+        if (updateBirthdaySuccess) navigateToHomeScreen()
+    }
+    LaunchedEffect(deleteBirthdaySuccess) {
+        if (deleteBirthdaySuccess) navigateToHomeScreen()
+    }
+    LaunchedEffect(addToCalendarCheck) {
+        if (addToCalendarCheck) {
+            context.checkCalendarPermission(
+                requestPermissionLauncher = requestPermissionLauncher,
+                onShowRationale = { showCalendarPermissionExplanationDialog = true },
+            )
+        }
+    }
+    LaunchedEffect(showNeedCalendarPermissionMessage) {
+        if (showNeedCalendarPermissionMessage) {
+            snackbarHostState.showSnackbar(
+                message = context.getString(R.string.app_needs_calendar_permission_to_add_birthdays),
+                duration = SnackbarDuration.Short,
+            )
+            showNeedCalendarPermissionMessage = false
+        }
+    }
     Column {
         AppBaseTopBar(onBackClick = onBackClick)
         BackHandler { onBackClick() }
@@ -153,7 +205,6 @@ fun BirthdayScreen(
                         editModeBirthday?.id?.let {
                             birthdayViewModel.deleteBirthday(
                                 id = it,
-                                navigateToHomeScreen = { navigateToHomeScreen() },
                                 onCompletion = { homeViewModel.fetchBirthdays() },
                             )
                         }
@@ -168,8 +219,7 @@ fun BirthdayScreen(
             RoundAsyncImage(
                 modifier = Modifier
                     .padding(top = 20.dp)
-                    .height(100.dp)
-                    .width(100.dp)
+                    .size(100.dp)
                     .clip(AppTheme.shapes.circle)
                     .clickable { launcher.launch("image/*") },
                 data = selectedImageUri,
@@ -249,7 +299,7 @@ fun BirthdayScreen(
                 modifier = Modifier
                     .padding(top = 20.dp, start = 40.dp)
                     .align(Alignment.Start)
-                    .clickable { showDatePicker = true },
+                    .clickable { showDatePickerDialog = true },
                 text = stringResource(id = R.string.date) + "*",
                 style = AppTheme.typography.boldKarmaDarkPink,
                 fontSize = 18.sp,
@@ -259,7 +309,7 @@ fun BirthdayScreen(
                 modifier = Modifier
                     .width(200.dp)
                     .clip(AppTheme.shapes.circle)
-                    .clickable { showDatePicker = true },
+                    .clickable { showDatePickerDialog = true },
                 colors = CardDefaults.cardColors(containerColor = AppTheme.colors.white),
             ) {
                 Text(
@@ -270,19 +320,49 @@ fun BirthdayScreen(
                     textAlign = TextAlign.Center,
                 )
             }
+            Row(
+                modifier = Modifier
+                    .align(Alignment.Start)
+                    .padding(top = 16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Checkbox(
+                    checked = addToCalendarCheck,
+                    onCheckedChange = {
+                        birthdayViewModel.setAddToCalendarCheck(it)
+                    },
+                    colors = CheckboxDefaults.colors(
+                        uncheckedColor = AppTheme.colors.lightPink,
+                        checkedColor = AppTheme.colors.lightPink,
+                    ),
+                )
+                Text(
+                    modifier = Modifier.fillMaxHeight(),
+                    text = stringResource(id = R.string.addToCalendar),
+                    style = AppTheme.typography.boldKarmaDarkPink,
+                    fontSize = 16.sp
+                )
+            }
             Button(
                 enabled = doneButtonEnable,
                 onClick = {
+                    if (addToCalendarCheck && context.calendarPermissionGranted()) {
+                        val uri = context.addEventToCalendar(
+                            date = datePickerState.selectedDateMillis ?: calendar.timeInMillis,
+                            name = name,
+                        )
+                        if (uri == null) birthdayViewModel.setFailedToAddBirthdayToCalendar(true)
+                    }
                     editModeBirthday?.let { birthday ->
                         birthday.id.let {
-                            birthdayViewModel.updateBirthday(it, navigateToHomeScreen) {
-                                homeViewModel.fetchBirthdays()
-                            }
+                            birthdayViewModel.updateBirthday(
+                                id = it,
+                                onCompletion = {
+                                    homeViewModel.fetchBirthdays()
+                                })
                         }
                     } ?: run {
-                        birthdayViewModel.createBirthday(navigateToHomeScreen) {
-                            homeViewModel.fetchBirthdays()
-                        }
+                        birthdayViewModel.createBirthday(onCompletion = { homeViewModel.fetchBirthdays() })
                     }
                 },
                 modifier = Modifier.padding(top = 16.dp),
@@ -295,17 +375,34 @@ fun BirthdayScreen(
                 )
             }
 
-            if (showDatePicker) {
+            if (showDatePickerDialog) {
                 datePickerState.setSelection(dateUtc.fromUtcToMillisDate())
                 DatePickerComponent(
                     datePickerState = datePickerState,
-                    onDismissRequest = { showDatePicker = false },
+                    onDismissRequest = { showDatePickerDialog = false },
                     onConfirmButtonClick = {
-                        showDatePicker = false
-                        birthdayViewModel.setDate((datePickerState.selectedDateMillis ?: calendar.timeInMillis).fromMillisToUtcDate())
+                        showDatePickerDialog = false
+                        birthdayViewModel.setDate(
+                            (datePickerState.selectedDateMillis ?: calendar.timeInMillis).fromMillisToUtcDate()
+                        )
+                    },
+                    onDismissButtonClick = { showDatePickerDialog = false },
+                )
+            }
+
+            if (showCalendarPermissionExplanationDialog) {
+                CalendarPermissionDialog(
+                    onDismissRequest = {
+                        birthdayViewModel.setAddToCalendarCheck(false)
+                        showCalendarPermissionExplanationDialog = false
+                    },
+                    onConfirmButtonClick = {
+                        showCalendarPermissionExplanationDialog = false
+                        requestPermissionLauncher.requestCalendarPermission()
                     },
                     onDismissButtonClick = {
-                        showDatePicker = false
+                        birthdayViewModel.setAddToCalendarCheck(false)
+                        showCalendarPermissionExplanationDialog = false
                     },
                 )
             }
