@@ -19,7 +19,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
@@ -50,8 +49,23 @@ class BirthdayViewModel(
     private val _deleteBirthdayError = MutableStateFlow(false)
     val deleteBirthdayError = _deleteBirthdayError.asStateFlow()
 
+    private val _createBirthdaySuccess = MutableStateFlow(false)
+    val createBirthdaySuccess = _createBirthdaySuccess.asStateFlow()
+
+    private val _updateBirthdaySuccess = MutableStateFlow(false)
+    val updateBirthdaySuccess = _updateBirthdaySuccess.asStateFlow()
+
+    private val _deleteBirthdaySuccess = MutableStateFlow(false)
+    val deleteBirthdaySuccess = _deleteBirthdaySuccess.asStateFlow()
+
     private val _editModeBirthday = MutableStateFlow<Birthday?>(null)
     val editModeBirthday = _editModeBirthday.asStateFlow()
+
+    private val _addToCalendarCheck = MutableStateFlow(false)
+    val addToCalendarCheck = _addToCalendarCheck.asStateFlow()
+
+    private val _failedToAddBirthdayToCalendar = MutableStateFlow(false)
+    val failedToAddBirthdayToCalendar = _failedToAddBirthdayToCalendar.asStateFlow()
 
     private val _dateDayMonthYear: MutableStateFlow<String> = MutableStateFlow(DATE_DEFAULT_VALUE)
     val dateDayMonthYear: StateFlow<String> = _dateDayMonthYear.asStateFlow()
@@ -85,16 +99,36 @@ class BirthdayViewModel(
         _dateDayMonthYear.update { dateUtc.fromUtcToDayMonthYearDate() }
     }
 
+    fun setAddToCalendarCheck(addToCalendarCheck: Boolean) {
+        _addToCalendarCheck.update { addToCalendarCheck }
+    }
+
     fun setCreateBirthdayErrorFalse() {
-        _createBirthdayError.value = false
+        _createBirthdayError.update { false }
+    }
+
+    fun setCreateBirthdaySuccessFalse() {
+        _createBirthdaySuccess.update { false }
+    }
+
+    fun setUpdateBirthdaySuccessFalse() {
+        _updateBirthdaySuccess.update { false }
+    }
+
+    fun setDeleteBirthdaySuccessFalse() {
+        _deleteBirthdaySuccess.update { false }
     }
 
     fun setUpdateBirthdayErrorFalse() {
-        _updateBirthdayError.value = false
+        _updateBirthdayError.update { false }
     }
 
     fun setDeleteBirthdayErrorFalse() {
-        _deleteBirthdayError.value = false
+        _deleteBirthdayError.update { false }
+    }
+
+    fun setFailedToAddBirthdayToCalendar(value: Boolean) {
+        _failedToAddBirthdayToCalendar.update { value }
     }
 
     fun setBirthday(birthday: Birthday?) {
@@ -113,10 +147,7 @@ class BirthdayViewModel(
         }
     }
 
-    fun createBirthday(
-        navigateToHomeScreen: () -> Unit,
-        onCompletion: () -> Unit,
-    ) {
+    fun createBirthday(onCompletion: () -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
             val imageByteArray = imageByteArray.value
             val context = getApplication<Application>().applicationContext
@@ -130,17 +161,18 @@ class BirthdayViewModel(
                     dateUtc = _dateUtc.value,
                 ),
             ).onEach {
-                it.onSuccess { navigateToHomeScreen() }
+                it.onSuccess {
+                    _createBirthdaySuccess.update { true }
+                    _addToCalendarCheck.update { false }
+                }
                 it.onFailure { _createBirthdayError.update { true } }
             }.onCompletion { onCompletion() }
-                .catch { _createBirthdayError.update { true } }
-                .flowOn(Dispatchers.Main).collect()
+                .catch { _createBirthdayError.update { true } }.collect()
         }
     }
 
     fun updateBirthday(
         id: Int,
-        navigateToHomeScreen: () -> Unit,
         onCompletion: () -> Unit,
     ) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -156,28 +188,28 @@ class BirthdayViewModel(
                     date = _dateUtc.value,
                 )
             ).onEach {
-                it.onSuccess { navigateToHomeScreen() }
+                it.onSuccess {
+                    _updateBirthdaySuccess.update { true }
+                    _addToCalendarCheck.update { false }
+                }
                 it.onFailure { _updateBirthdayError.update { true } }
             }.onCompletion { onCompletion() }
-                .catch { _updateBirthdayError.update { true } }
-                .flowOn(Dispatchers.Main).collect()
+                .catch { _updateBirthdayError.update { true } }.collect()
         }
     }
 
     fun deleteBirthday(
         id: Int,
-        navigateToHomeScreen: () -> Unit,
         onCompletion: () -> Unit,
     ) {
         viewModelScope.launch(Dispatchers.IO) {
             birthdayRepository.deleteBirthday(id)
                 .onEach {
-                    it.onSuccess { navigateToHomeScreen() }
+                    it.onSuccess { _deleteBirthdaySuccess.update { true } }
                     it.onFailure { _deleteBirthdayError.update { true } }
                 }
                 .onCompletion { onCompletion() }
-                .catch { _deleteBirthdayError.update { true } }
-                .flowOn(Dispatchers.Main).collect()
+                .catch { _deleteBirthdayError.update { true } }.collect()
         }
     }
 

@@ -80,10 +80,10 @@ fun BirthdayDetailsScreen(
                 )
             }
             RoundAsyncImage(
-                modifier = Modifier
-                    .size(100.dp)
-                    .padding(top = 4.dp),
+                modifier = Modifier.size(100.dp),
                 data = birthday?.image ?: "",
+                placeholder = painterResource(id = R.drawable.placeholder_person),
+                error = painterResource(id = R.drawable.placeholder_person),
             )
             Text(
                 modifier = Modifier.padding(top = 12.dp),
