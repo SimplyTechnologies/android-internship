@@ -138,8 +138,7 @@ fun BirthdayDetailsScreen(
                 verticalAlignment = Alignment.Bottom,
             ) {
                 Button(
-                    modifier = Modifier
-                        .height(41.dp),
+                    modifier = Modifier.height(41.dp),
                     shape = AppTheme.shapes.smallRoundedCorners,
                     onClick = { showGenerateMessageDialog = true },
                     colors = ButtonDefaults.buttonColors(

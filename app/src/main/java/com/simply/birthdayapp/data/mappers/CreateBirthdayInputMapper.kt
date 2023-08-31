@@ -6,7 +6,7 @@ import com.simply.birthdayapp.type.CreateBirthdayInput
 
 fun CreateBirthdayEntity.toCreateBirthdayInput() = CreateBirthdayInput(
     name = name,
-    image = if (imageBase64 != null) Optional.present(imageBase64) else Optional.absent(),
+    image = Optional.presentIfNotNull(imageBase64),
     relation = relation,
     date = dateUtc,
 )
