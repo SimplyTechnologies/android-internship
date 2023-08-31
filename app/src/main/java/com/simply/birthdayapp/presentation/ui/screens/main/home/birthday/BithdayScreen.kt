@@ -341,7 +341,7 @@ fun BirthdayScreen(
             Button(
                 enabled = doneButtonEnable,
                 onClick = {
-                    if (context.calendarPermissionGranted()) {
+                    if (addToCalendarCheck && context.calendarPermissionGranted()) {
                         addEventToCalendar(context, datePickerState.selectedDateMillis ?: calendar.timeInMillis)
                     }
                     editModeBirthday?.let { birthday ->
