@@ -53,6 +53,9 @@ fun HomeScreen(
     val errorState by homeViewModel.errorState.collectAsState()
     val isRefreshing by homeViewModel.isRefreshing.collectAsState()
     val createBirthdaySuccess by birthdayViewModel.createBirthdaySuccess.collectAsState()
+    val updateBirthdaySuccess by birthdayViewModel.updateBirthdaySuccess.collectAsState()
+    val deleteBirthdaySuccess by birthdayViewModel.deleteBirthdaySuccess.collectAsState()
+    val failedToAddBirthdayToCalendar by birthdayViewModel.failedToAddBirthdayToCalendar.collectAsState()
 
     val birthdaysLazyListState = rememberLazyListState(initialFirstVisibleItemIndex = scrollPosition)
     val context = LocalContext.current
@@ -81,6 +84,33 @@ fun HomeScreen(
                 duration = SnackbarDuration.Short,
             )
             birthdayViewModel.setCreateBirthdaySuccessFalse()
+        }
+    }
+    LaunchedEffect(updateBirthdaySuccess) {
+        if (updateBirthdaySuccess) {
+            snackbarHostState.showSnackbar(
+                message = context.getString(R.string.birthday_updated_successfully),
+                duration = SnackbarDuration.Short,
+            )
+            birthdayViewModel.setUpdateBirthdaySuccessFalse()
+        }
+    }
+    LaunchedEffect(deleteBirthdaySuccess) {
+        if (deleteBirthdaySuccess) {
+            snackbarHostState.showSnackbar(
+                message = context.getString(R.string.birthday_deleted_successfully),
+                duration = SnackbarDuration.Short,
+            )
+            birthdayViewModel.setDeleteBirthdaySuccessFalse()
+        }
+    }
+    LaunchedEffect(failedToAddBirthdayToCalendar) {
+        if (failedToAddBirthdayToCalendar) {
+            snackbarHostState.showSnackbar(
+                message = context.getString(R.string.failed_to_add_birthday_to_calendar),
+                duration = SnackbarDuration.Short,
+            )
+            birthdayViewModel.setFailedToAddBirthdayToCalendar(false)
         }
     }
     Box(modifier = Modifier.fillMaxSize()) {

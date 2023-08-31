@@ -11,6 +11,7 @@ import com.simply.birthdayapp.presentation.extensions.fromUtcToDayMonthYearDate
 import com.simply.birthdayapp.presentation.extensions.uriToBase64
 import com.simply.birthdayapp.presentation.models.Birthday
 import com.simply.birthdayapp.presentation.models.RelationshipEnum
+import java.util.Calendar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -25,7 +26,6 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.util.Calendar
 
 class BirthdayViewModel(
     application: Application,
@@ -47,6 +47,12 @@ class BirthdayViewModel(
     private val _createBirthdaySuccess = MutableStateFlow(false)
     val createBirthdaySuccess = _createBirthdaySuccess.asStateFlow()
 
+    private val _updateBirthdaySuccess = MutableStateFlow(false)
+    val updateBirthdaySuccess = _updateBirthdaySuccess.asStateFlow()
+
+    private val _deleteBirthdaySuccess = MutableStateFlow(false)
+    val deleteBirthdaySuccess = _deleteBirthdaySuccess.asStateFlow()
+
     private val _updateBirthdayError = MutableStateFlow(false)
     val updateBirthdayError = _updateBirthdayError.asStateFlow()
 
@@ -59,10 +65,14 @@ class BirthdayViewModel(
     private val _addToCalendarCheck = MutableStateFlow(false)
     val addToCalendarCheck = _addToCalendarCheck.asStateFlow()
 
+    private val _failedToAddBirthdayToCalendar = MutableStateFlow(false)
+    val failedToAddBirthdayToCalendar = _failedToAddBirthdayToCalendar.asStateFlow()
+
     private val _dateDayMonthYear: MutableStateFlow<String> = MutableStateFlow("__.__.____")
     val dateDayMonthYear: StateFlow<String> = _dateDayMonthYear.asStateFlow()
 
-    private val _dateUtc: MutableStateFlow<String> = MutableStateFlow(Calendar.getInstance().timeInMillis.fromMillisToUtcDate())
+    private val _dateUtc: MutableStateFlow<String> =
+        MutableStateFlow(Calendar.getInstance().timeInMillis.fromMillisToUtcDate())
     val dateUtc: StateFlow<String> = _dateUtc.asStateFlow()
 
 
@@ -103,12 +113,24 @@ class BirthdayViewModel(
         _createBirthdaySuccess.update { false }
     }
 
+    fun setUpdateBirthdaySuccessFalse() {
+        _updateBirthdaySuccess.update { false }
+    }
+
+    fun setDeleteBirthdaySuccessFalse() {
+        _deleteBirthdaySuccess.update { false }
+    }
+
     fun setUpdateBirthdayErrorFalse() {
         _updateBirthdayError.update { false }
     }
 
     fun setDeleteBirthdayErrorFalse() {
         _deleteBirthdayError.update { false }
+    }
+
+    fun setFailedToAddBirthdayToCalendar(value: Boolean) {
+        _failedToAddBirthdayToCalendar.update { value }
     }
 
     fun setBirthday(birthday: Birthday?) {
@@ -146,6 +168,7 @@ class BirthdayViewModel(
                 it.onSuccess {
                     navigateToHomeScreen()
                     _createBirthdaySuccess.update { true }
+                    _addToCalendarCheck.update { false }
                 }
                 it.onFailure { _createBirthdayError.update { true } }
             }.onCompletion { onCompletion() }
@@ -171,7 +194,11 @@ class BirthdayViewModel(
                     date = _dateUtc.value,
                 )
             ).onEach {
-                it.onSuccess { navigateToHomeScreen() }
+                it.onSuccess {
+                    navigateToHomeScreen()
+                    _updateBirthdaySuccess.update { true }
+                    _addToCalendarCheck.update { false }
+                }
                 it.onFailure { _updateBirthdayError.update { true } }
             }.onCompletion { onCompletion() }
                 .catch { _updateBirthdayError.update { true } }
@@ -187,7 +214,10 @@ class BirthdayViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             birthdayRepository.deleteBirthday(id)
                 .onEach {
-                    it.onSuccess { navigateToHomeScreen() }
+                    it.onSuccess {
+                        navigateToHomeScreen()
+                        _deleteBirthdaySuccess.update { true }
+                    }
                     it.onFailure { _deleteBirthdayError.update { true } }
                 }
                 .onCompletion { onCompletion() }
