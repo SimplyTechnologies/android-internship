@@ -177,11 +177,13 @@ class ShopsViewModel(
     }
 
     private suspend fun filterShops() = withContext(Dispatchers.Default) {
+        _numOfShopsLoadingIsFavourite.update { _cachedShops.count { it.isLoadingFavourite } }
         _shops.update {
-            _cachedShops.filter { it.name.lowercase().startsWith(_searchBarQuery.value.lowercase()) }
-        }
-        _numOfShopsLoadingIsFavourite.update {
-            _cachedShops.count { it.isLoadingFavourite }
+            when {
+                _searchBarQuery.value.isEmpty() -> _cachedShops
+                _searchBarQuery.value.isBlank() -> emptyList()
+                else -> _cachedShops.filter { it.name.lowercase().contains(_searchBarQuery.value.lowercase()) }
+            }
         }
     }
 }
