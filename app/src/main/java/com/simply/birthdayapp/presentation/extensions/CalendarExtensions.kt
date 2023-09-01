@@ -1,31 +1,49 @@
 package com.simply.birthdayapp.presentation.extensions
 
+import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
 import android.net.Uri
 import android.provider.CalendarContract
 import com.simply.birthdayapp.R
-import java.util.Calendar
-import java.util.Date
+import com.simply.birthdayapp.presentation.models.CalendarContractItem
 import java.util.TimeZone
 
-fun Context.addEventToCalendar(date: Long, name: String): Uri? {
-    val calendar: Calendar = Calendar.getInstance()
-    calendar.time = Date(date)
+@SuppressLint("Range")
+fun Context.addEventToCalendar(email: String, date: Long, name: String): Uri? {
+    val contractList = mutableListOf<CalendarContractItem>()
 
-    calendar[Calendar.HOUR_OF_DAY] = 0
-    calendar[Calendar.MINUTE] = 0
-    calendar[Calendar.SECOND] = 0
-    val startTime = calendar.timeInMillis
+    contentResolver.query(
+        CalendarContract.Calendars.CONTENT_URI,
+        arrayOf(
+            CalendarContract.Calendars._ID,
+            CalendarContract.Calendars.ACCOUNT_NAME,
+            CalendarContract.Calendars.CALENDAR_DISPLAY_NAME,
+            CalendarContract.Calendars.OWNER_ACCOUNT,
+        ),
+        null,
+        null,
+    )?.use {
+        while (it.moveToNext()) {
+            contractList.add(
+                CalendarContractItem(
+                    calendarId = it.getString(it.getColumnIndex(CalendarContract.Calendars._ID)),
+                    accountName = it.getString(it.getColumnIndex(CalendarContract.Calendars.ACCOUNT_NAME)),
+                    displayName = it.getString(it.getColumnIndex(CalendarContract.Calendars.CALENDAR_DISPLAY_NAME)),
+                    ownerAccount = it.getString(it.getColumnIndex(CalendarContract.Calendars.OWNER_ACCOUNT))
+                )
+            )
+        }
+    }
 
-    calendar[Calendar.HOUR_OF_DAY] = 23
-    calendar[Calendar.MINUTE] = 59
-    calendar[Calendar.SECOND] = 59
-    val endTime = calendar.timeInMillis
+    val filteredContractList = contractList.filter { it.ownerAccount == email }
+    val id = if (filteredContractList.isNotEmpty()) filteredContractList[0].calendarId else contractList[0].calendarId
 
     val values = ContentValues().apply {
-        put(CalendarContract.Events.DTSTART, startTime)
-        put(CalendarContract.Events.DTEND, endTime)
+        put(CalendarContract.Events.DTSTART, date)
+        put(CalendarContract.Events.DTEND, date)
+        put(CalendarContract.Events.ALL_DAY, true)
+        put(CalendarContract.Events.RRULE, "FREQ=YEARLY")
         put(
             CalendarContract.Events.TITLE,
             getString(
@@ -33,7 +51,7 @@ fun Context.addEventToCalendar(date: Long, name: String): Uri? {
                 name.replaceFirstChar(Char::uppercaseChar),
             ),
         )
-        put(CalendarContract.Events.CALENDAR_ID, 1)
+        put(CalendarContract.Events.CALENDAR_ID, id)
         put(CalendarContract.Events.EVENT_TIMEZONE, TimeZone.getDefault().id)
     }
     return contentResolver.insert(CalendarContract.Events.CONTENT_URI, values)

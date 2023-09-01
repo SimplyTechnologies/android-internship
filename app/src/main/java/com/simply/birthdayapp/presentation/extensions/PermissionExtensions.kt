@@ -4,25 +4,24 @@ import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
-import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 
-fun Context.checkCalendarPermission(
-    requestPermissionLauncher: ActivityResultLauncher<String>,
-    onShowRationale: () -> Unit,
-) {
-    if (calendarPermissionGranted().not()) {
-        if (shouldShowCalendarPermissionRationale()) onShowRationale()
-        else requestPermissionLauncher.requestCalendarPermission()
-    }
-}
-
-fun Context.calendarPermissionGranted(): Boolean =
+fun Context.calendarPermissionsGranted(): Boolean =
     ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_CALENDAR) ==
+            PackageManager.PERMISSION_GRANTED &&
+            ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALENDAR) ==
             PackageManager.PERMISSION_GRANTED
 
-fun Context.shouldShowCalendarPermissionRationale(): Boolean =
-    ActivityCompat.shouldShowRequestPermissionRationale(this as Activity, Manifest.permission.WRITE_CALENDAR)
+fun Context.shouldShowCalendarPermissionsRationale(): Boolean =
+    ActivityCompat.shouldShowRequestPermissionRationale(this as Activity, Manifest.permission.WRITE_CALENDAR) ||
+            ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_CALENDAR)
 
-fun ActivityResultLauncher<String>.requestCalendarPermission() = launch(Manifest.permission.WRITE_CALENDAR)
+fun ManagedActivityResultLauncher<Array<String>, Map<String, Boolean>>.requestCalendarPermissions() =
+    launch(
+        arrayOf(
+            Manifest.permission.WRITE_CALENDAR,
+            Manifest.permission.READ_CALENDAR,
+        ),
+    )

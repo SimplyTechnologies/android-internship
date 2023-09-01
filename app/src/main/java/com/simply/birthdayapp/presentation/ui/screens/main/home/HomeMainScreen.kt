@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.simply.birthdayapp.presentation.ui.screens.auth.signIn.SignInViewModel
 import com.simply.birthdayapp.presentation.ui.screens.main.home.birthday.BirthdayScreen
 import com.simply.birthdayapp.presentation.ui.screens.main.home.birthday.BirthdayViewModel
 import com.simply.birthdayapp.presentation.ui.screens.main.home.details.BirthdayDetailsScreen
@@ -22,6 +23,7 @@ fun HomeMainScreen(
     homeViewModel: HomeViewModel = getViewModel(),
     birthdayViewModel: BirthdayViewModel = getViewModel(),
     birthdayDetailsViewModel: BirthdayDetailsViewModel = getViewModel(),
+    signInViewModel: SignInViewModel = getViewModel(),
 ) {
     val homeNavController = rememberNavController()
 
@@ -39,6 +41,7 @@ fun HomeMainScreen(
             BirthdayScreen(
                 birthdayViewModel = birthdayViewModel,
                 homeViewModel = homeViewModel,
+                signInViewModel = signInViewModel,
                 navigateToHomeScreen = {
                     homeNavController.navigate(HomeDestination.HomeScreen.route) {
                         popUpTo(HomeDestination.HomeScreen.route)

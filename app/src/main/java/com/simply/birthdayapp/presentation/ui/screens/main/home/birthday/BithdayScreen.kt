@@ -60,12 +60,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.simply.birthdayapp.R
 import com.simply.birthdayapp.presentation.extensions.addEventToCalendar
-import com.simply.birthdayapp.presentation.extensions.calendarPermissionGranted
-import com.simply.birthdayapp.presentation.extensions.checkCalendarPermission
+import com.simply.birthdayapp.presentation.extensions.calendarPermissionsGranted
 import com.simply.birthdayapp.presentation.extensions.fromMillisToUtcDate
 import com.simply.birthdayapp.presentation.extensions.fromUtcToMillisDate
-import com.simply.birthdayapp.presentation.extensions.requestCalendarPermission
-import com.simply.birthdayapp.presentation.extensions.shouldShowCalendarPermissionRationale
+import com.simply.birthdayapp.presentation.extensions.requestCalendarPermissions
+import com.simply.birthdayapp.presentation.extensions.shouldShowCalendarPermissionsRationale
 import com.simply.birthdayapp.presentation.extensions.uriToByteArray
 import com.simply.birthdayapp.presentation.models.RelationshipEnum
 import com.simply.birthdayapp.presentation.ui.components.AppBaseTopBar
@@ -73,6 +72,7 @@ import com.simply.birthdayapp.presentation.ui.components.CalendarPermissionDialo
 import com.simply.birthdayapp.presentation.ui.components.DatePickerComponent
 import com.simply.birthdayapp.presentation.ui.components.RelationshipGridCard
 import com.simply.birthdayapp.presentation.ui.components.RoundAsyncImage
+import com.simply.birthdayapp.presentation.ui.screens.auth.signIn.SignInViewModel
 import com.simply.birthdayapp.presentation.ui.screens.main.LocalSnackbarHostState
 import com.simply.birthdayapp.presentation.ui.screens.main.home.HomeViewModel
 import com.simply.birthdayapp.presentation.ui.theme.AppTheme
@@ -85,6 +85,7 @@ import java.util.Calendar
 fun BirthdayScreen(
     birthdayViewModel: BirthdayViewModel,
     homeViewModel: HomeViewModel,
+    signInViewModel: SignInViewModel,
     navigateToHomeScreen: () -> Unit = {},
     onBackClick: () -> Unit = {},
 ) {
@@ -125,11 +126,12 @@ fun BirthdayScreen(
         uri?.let { birthdayViewModel.setImage(context.contentResolver.uriToByteArray(it)) }
     }
 
-    val requestPermissionLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission()
-    ) { isGranted ->
-        if (isGranted.not()) {
-            if (context.shouldShowCalendarPermissionRationale().not()) showNeedCalendarPermissionMessage = true
+    val requestPermissionsLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        val permissionsGranted = permissions.values.reduce { acc, granted -> acc && granted }
+        if (permissionsGranted.not()) {
+            if (context.shouldShowCalendarPermissionsRationale().not()) showNeedCalendarPermissionMessage = true
             birthdayViewModel.setAddToCalendarCheck(false)
         }
     }
@@ -184,10 +186,10 @@ fun BirthdayScreen(
     }
     LaunchedEffect(addToCalendarCheck) {
         if (addToCalendarCheck) {
-            context.checkCalendarPermission(
-                requestPermissionLauncher = requestPermissionLauncher,
-                onShowRationale = { showCalendarPermissionExplanationDialog = true },
-            )
+            if (context.calendarPermissionsGranted().not()) {
+                if (context.shouldShowCalendarPermissionsRationale()) showCalendarPermissionExplanationDialog = true
+                else requestPermissionsLauncher.requestCalendarPermissions()
+            }
         }
     }
     LaunchedEffect(showNeedCalendarPermissionMessage) {
@@ -338,11 +340,16 @@ fun BirthdayScreen(
             Button(
                 enabled = doneButtonEnable,
                 onClick = {
-                    if (addToCalendarCheck && context.calendarPermissionGranted()) {
-                        val uri = context.addEventToCalendar(
-                            date = datePickerState.selectedDateMillis ?: calendar.timeInMillis,
-                            name = name,
-                        )
+                    if (addToCalendarCheck && context.calendarPermissionsGranted()) {
+                        val uri = try {
+                            context.addEventToCalendar(
+                                date = datePickerState.selectedDateMillis ?: calendar.timeInMillis,
+                                name = name,
+                                email = signInViewModel.email.value,
+                            )
+                        } catch (e: Exception) {
+                            null
+                        }
                         if (uri == null) birthdayViewModel.setFailedToAddBirthdayToCalendar(true)
                     }
                     editModeBirthday?.let { birthday ->
@@ -382,7 +389,7 @@ fun BirthdayScreen(
                     },
                     onConfirmButtonClick = {
                         showCalendarPermissionExplanationDialog = false
-                        requestPermissionLauncher.requestCalendarPermission()
+                        requestPermissionsLauncher.requestCalendarPermissions()
                     },
                     onDismissButtonClick = {
                         birthdayViewModel.setAddToCalendarCheck(false)
@@ -400,5 +407,6 @@ private fun BirthdayScreenPreview() {
     BirthdayScreen(
         birthdayViewModel = getViewModel(),
         homeViewModel = getViewModel(),
+        signInViewModel = getViewModel(),
     )
 }
