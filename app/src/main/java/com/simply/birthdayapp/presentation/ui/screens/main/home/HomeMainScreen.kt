@@ -1,10 +1,13 @@
 package com.simply.birthdayapp.presentation.ui.screens.main.home
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.simply.birthdayapp.presentation.ui.screens.auth.signIn.SignInViewModel
+import com.simply.birthdayapp.presentation.ui.screens.main.MainViewModel
 import com.simply.birthdayapp.presentation.ui.screens.main.home.birthday.BirthdayScreen
 import com.simply.birthdayapp.presentation.ui.screens.main.home.birthday.BirthdayViewModel
 import com.simply.birthdayapp.presentation.ui.screens.main.home.details.BirthdayDetailsScreen
@@ -17,14 +20,17 @@ sealed class HomeDestination(val route: String) {
     data object BirthdayDetailsScreen : HomeDestination("birthday-details-screen")
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun HomeMainScreen(
+    mainViewModel: MainViewModel,
     onNavigateToShops: () -> Unit,
     homeViewModel: HomeViewModel = getViewModel(),
     birthdayViewModel: BirthdayViewModel = getViewModel(),
     birthdayDetailsViewModel: BirthdayDetailsViewModel = getViewModel(),
     signInViewModel: SignInViewModel = getViewModel(),
 ) {
+    val keyboardController = LocalSoftwareKeyboardController.current
     val homeNavController = rememberNavController()
 
     NavHost(navController = homeNavController, startDestination = HomeDestination.HomeScreen.route) {
@@ -33,7 +39,10 @@ fun HomeMainScreen(
                 homeViewModel = homeViewModel,
                 birthdayViewModel = birthdayViewModel,
                 birthdayDetailsViewModel = birthdayDetailsViewModel,
-                navigateToBirthdayScreen = { homeNavController.navigate(HomeDestination.BirthdayScreen.route) },
+                navigateToBirthdayScreen = {
+                    mainViewModel.hideBottomNavBar()
+                    homeNavController.navigate(HomeDestination.BirthdayScreen.route)
+                },
                 navigateToBirthdayDetailsScreen = { homeNavController.navigate(HomeDestination.BirthdayDetailsScreen.route) },
             )
         }
@@ -43,11 +52,17 @@ fun HomeMainScreen(
                 homeViewModel = homeViewModel,
                 signInViewModel = signInViewModel,
                 navigateToHomeScreen = {
+                    keyboardController?.hide()
                     homeNavController.navigate(HomeDestination.HomeScreen.route) {
                         popUpTo(HomeDestination.HomeScreen.route)
                     }
+                    mainViewModel.showBottomNavBar()
                 },
-                onBackClick = { homeNavController.navigateUp() },
+                onBackClick = {
+                    keyboardController?.hide()
+                    mainViewModel.showBottomNavBar()
+                    homeNavController.navigateUp()
+                },
             )
         }
         composable(HomeDestination.BirthdayDetailsScreen.route) {
@@ -55,7 +70,10 @@ fun HomeMainScreen(
                 birthdayViewModel = birthdayViewModel,
                 birthdayDetailsViewModel = birthdayDetailsViewModel,
                 navigateToShopsScreen = onNavigateToShops,
-                navigateToBirthdayScreen = { homeNavController.navigate(HomeDestination.BirthdayScreen.route) },
+                navigateToBirthdayScreen = {
+                    mainViewModel.hideBottomNavBar()
+                    homeNavController.navigate(HomeDestination.BirthdayScreen.route)
+                },
                 onBackClick = { homeNavController.navigateUp() },
             )
         }

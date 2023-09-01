@@ -137,6 +137,10 @@ fun BirthdayScreen(
         }
     }
 
+    BackHandler {
+        onBackClick()
+    }
+
     LaunchedEffect(createBirthdayError) {
         if (createBirthdayError) {
             snackbarHostState.showSnackbar(
@@ -204,7 +208,6 @@ fun BirthdayScreen(
     }
     Column {
         AppBaseTopBar(onBackClick = onBackClick)
-        BackHandler { onBackClick() }
         Column(
             modifier = Modifier
                 .fillMaxSize()
