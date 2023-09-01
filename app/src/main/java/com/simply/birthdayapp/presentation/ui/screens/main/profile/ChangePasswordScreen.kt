@@ -1,6 +1,7 @@
 package com.simply.birthdayapp.presentation.ui.screens.main.profile
 
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,6 +21,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
@@ -49,6 +51,12 @@ fun ChangePasswordScreen(
     val changePasswordErrorMessage by profileViewModel.changePasswordErrorMessage.collectAsState()
     val changePasswordErrorState by profileViewModel.changePasswordErrorState.collectAsState()
     val context = LocalContext.current
+    val focusManager = LocalFocusManager.current
+    val onBackHandler = {
+        focusManager.clearFocus()
+        navToProfileScreen()
+        profileViewModel.clearForm()
+    }
 
     LaunchedEffect(changePasswordSuccess) {
         if (changePasswordSuccess) {
@@ -78,15 +86,11 @@ fun ChangePasswordScreen(
             },
         )
     }
+    BackHandler { onBackHandler() }
     Column(
-        modifier = Modifier
-            .fillMaxSize()
+        modifier = Modifier.fillMaxSize()
     ) {
-        AppBaseTopBar(
-            onBackClick = {
-                navToProfileScreen()
-                profileViewModel.clearForm()
-            })
+        AppBaseTopBar(onBackClick = onBackHandler)
         Column(
             modifier = Modifier
                 .fillMaxSize()

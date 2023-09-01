@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.simply.birthdayapp.presentation.ui.screens.main.MainViewModel
 import com.simply.birthdayapp.presentation.ui.screens.main.home.birthday.BirthdayScreen
 
 sealed class HomeDestination(val route: String) {
@@ -13,7 +14,7 @@ sealed class HomeDestination(val route: String) {
 }
 
 @Composable
-fun HomeMainScreen() {
+fun HomeMainScreen(mainViewModel: MainViewModel) {
     val homeNavController = rememberNavController()
 
     NavHost(navController = homeNavController, startDestination = HomeDestination.HomeScreen.route) {
