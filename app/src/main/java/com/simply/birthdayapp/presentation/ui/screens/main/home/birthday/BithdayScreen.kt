@@ -208,7 +208,6 @@ fun BirthdayScreen(
     }
     Column {
         AppBaseTopBar(onBackClick = onBackClick)
-        BackHandler { onBackClick() }
         Column(
             modifier = Modifier
                 .fillMaxSize()
