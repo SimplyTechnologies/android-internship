@@ -1,12 +1,13 @@
 package com.simply.birthdayapp.di
 
 import com.simply.birthdayapp.presentation.ui.screens.auth.AuthMainViewModel
+import com.simply.birthdayapp.presentation.ui.screens.main.home.HomeViewModel
+import com.simply.birthdayapp.presentation.ui.screens.main.home.birthday.BirthdayViewModel
+import com.simply.birthdayapp.presentation.ui.screens.main.home.details.BirthdayDetailsViewModel
 import com.simply.birthdayapp.presentation.ui.screens.auth.register.RegisterViewModel
 import com.simply.birthdayapp.presentation.ui.screens.auth.signIn.SignInViewModel
 import com.simply.birthdayapp.presentation.ui.screens.auth.signIn.forgotpassword.ForgotPasswordViewModel
 import com.simply.birthdayapp.presentation.ui.screens.main.MainViewModel
-import com.simply.birthdayapp.presentation.ui.screens.main.home.HomeViewModel
-import com.simply.birthdayapp.presentation.ui.screens.main.home.birthday.BirthdayViewModel
 import com.simply.birthdayapp.presentation.ui.screens.main.profile.ProfileViewModel
 import com.simply.birthdayapp.presentation.ui.screens.main.shops.ShopsViewModel
 import com.simply.birthdayapp.presentation.ui.screens.main.shops.details.ShopDetailsViewModel
@@ -18,6 +19,7 @@ val presentationModule = module {
     viewModelOf(::ShopsViewModel)
     viewModelOf(::HomeViewModel)
     viewModelOf(::RegisterViewModel)
+    viewModelOf(::BirthdayDetailsViewModel)
     viewModelOf(::SignInViewModel)
     viewModelOf(::ForgotPasswordViewModel)
     viewModelOf(::AuthMainViewModel)

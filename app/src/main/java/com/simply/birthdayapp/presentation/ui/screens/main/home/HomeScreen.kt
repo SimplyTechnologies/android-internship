@@ -1,6 +1,5 @@
 package com.simply.birthdayapp.presentation.ui.screens.main.home
 
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,10 +10,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.PullRefreshState
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -28,29 +33,87 @@ import androidx.compose.ui.unit.dp
 import com.simply.birthdayapp.R
 import com.simply.birthdayapp.presentation.ui.components.BirthdayCard
 import com.simply.birthdayapp.presentation.ui.components.LogoTopBar
+import com.simply.birthdayapp.presentation.ui.screens.main.LocalSnackbarHostState
+import com.simply.birthdayapp.presentation.ui.screens.main.home.birthday.BirthdayViewModel
+import com.simply.birthdayapp.presentation.ui.screens.main.home.details.BirthdayDetailsViewModel
 import com.simply.birthdayapp.presentation.ui.theme.AppTheme
 import org.koin.androidx.compose.getViewModel
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun HomeScreen(homeViewModel: HomeViewModel = getViewModel(), onFabClick: () -> Unit = {}) {
+fun HomeScreen(
+    homeViewModel: HomeViewModel,
+    birthdayViewModel: BirthdayViewModel,
+    birthdayDetailsViewModel: BirthdayDetailsViewModel,
+    navigateToBirthdayScreen: () -> Unit = {},
+    navigateToBirthdayDetailsScreen: () -> Unit = {},
+) {
     val birthdayList by homeViewModel.birthdayList.collectAsState()
     val scrollPosition by homeViewModel.scrollPosition.collectAsState()
     val errorState by homeViewModel.errorState.collectAsState()
+    val isRefreshing by homeViewModel.isRefreshing.collectAsState()
+    val createBirthdaySuccess by birthdayViewModel.createBirthdaySuccess.collectAsState()
+    val updateBirthdaySuccess by birthdayViewModel.updateBirthdaySuccess.collectAsState()
+    val deleteBirthdaySuccess by birthdayViewModel.deleteBirthdaySuccess.collectAsState()
+    val failedToAddBirthdayToCalendar by birthdayViewModel.failedToAddBirthdayToCalendar.collectAsState()
+
     val birthdaysLazyListState = rememberLazyListState(initialFirstVisibleItemIndex = scrollPosition)
     val context = LocalContext.current
+    val snackbarHostState = LocalSnackbarHostState.current
+    val pullRefreshState: PullRefreshState = rememberPullRefreshState(
+        refreshing = isRefreshing,
+        onRefresh = { homeViewModel.fetchBirthdays() },
+    )
 
     DisposableEffect(Unit) {
         onDispose { homeViewModel.setScrollPosition(birthdaysLazyListState.firstVisibleItemIndex) }
     }
-
     LaunchedEffect(errorState) {
         if (errorState) {
-            Toast.makeText(context, R.string.failed_birthdays_loading, Toast.LENGTH_SHORT).show()
+            snackbarHostState.showSnackbar(
+                message = context.getString(R.string.failed_birthdays_loading),
+                duration = SnackbarDuration.Short,
+            )
             homeViewModel.setErrorStateFalse()
         }
     }
-    Box {
-        Toast(context)
+    LaunchedEffect(createBirthdaySuccess) {
+        if (createBirthdaySuccess) {
+            snackbarHostState.showSnackbar(
+                message = context.getString(R.string.birthday_created_successfully),
+                duration = SnackbarDuration.Short,
+            )
+            birthdayViewModel.setCreateBirthdaySuccessFalse()
+        }
+    }
+    LaunchedEffect(updateBirthdaySuccess) {
+        if (updateBirthdaySuccess) {
+            snackbarHostState.showSnackbar(
+                message = context.getString(R.string.birthday_updated_successfully),
+                duration = SnackbarDuration.Short,
+            )
+            birthdayViewModel.setUpdateBirthdaySuccessFalse()
+        }
+    }
+    LaunchedEffect(deleteBirthdaySuccess) {
+        if (deleteBirthdaySuccess) {
+            snackbarHostState.showSnackbar(
+                message = context.getString(R.string.birthday_deleted_successfully),
+                duration = SnackbarDuration.Short,
+            )
+            birthdayViewModel.setDeleteBirthdaySuccessFalse()
+        }
+    }
+    LaunchedEffect(failedToAddBirthdayToCalendar) {
+        if (failedToAddBirthdayToCalendar) {
+            snackbarHostState.showSnackbar(
+                message = context.getString(R.string.failed_to_add_birthday_to_calendar),
+                duration = SnackbarDuration.Short,
+            )
+            birthdayViewModel.setFailedToAddBirthdayToCalendar(false)
+        }
+    }
+    Box(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -58,21 +121,44 @@ fun HomeScreen(homeViewModel: HomeViewModel = getViewModel(), onFabClick: () -> 
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             LogoTopBar()
-            LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                state = birthdaysLazyListState,
-                contentPadding = PaddingValues(start = 24.dp, end = 24.dp, bottom = 16.dp),
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .pullRefresh(pullRefreshState),
             ) {
-                items(birthdayList) {
-                    BirthdayCard(birthday = it)
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    state = birthdaysLazyListState,
+                    contentPadding = PaddingValues(start = 24.dp, end = 24.dp, bottom = 16.dp),
+                ) {
+                    items(birthdayList) { birthday ->
+                            BirthdayCard(
+                                birthday = birthday,
+                                onCardClick = {
+                                    birthdayDetailsViewModel.setBirthday(birthday = birthday)
+                                    navigateToBirthdayDetailsScreen()
+                                },
+                            )
+                        }
                 }
+                PullRefreshIndicator(
+                    modifier = Modifier.align(Alignment.TopCenter),
+                    refreshing = isRefreshing,
+                    state = pullRefreshState,
+                    backgroundColor = AppTheme.colors.backgroundPink,
+                    contentColor = AppTheme.colors.lightPink,
+                )
             }
         }
         FloatingActionButton(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(bottom = 16.dp, end = 16.dp),
-            onClick = { onFabClick() },
+            onClick = {
+                birthdayViewModel.setBirthday(null)
+                navigateToBirthdayScreen()
+            },
             shape = AppTheme.shapes.circle,
             containerColor = AppTheme.colors.lightPink,
         ) {
@@ -87,5 +173,5 @@ fun HomeScreen(homeViewModel: HomeViewModel = getViewModel(), onFabClick: () -> 
 @Composable
 @Preview
 private fun HomeScreenPreview() {
-    HomeScreen()
+    HomeScreen(getViewModel(), getViewModel(), getViewModel())
 }

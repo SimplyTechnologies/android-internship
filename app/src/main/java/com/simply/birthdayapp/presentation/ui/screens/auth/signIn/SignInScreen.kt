@@ -39,11 +39,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.simply.birthdayapp.R
+import com.simply.birthdayapp.presentation.extensions.isPasswordValid
+import com.simply.birthdayapp.presentation.extensions.isValidEmail
 import com.simply.birthdayapp.presentation.ui.components.AppBaseTopBar
 import com.simply.birthdayapp.presentation.ui.components.AuthButton
 import com.simply.birthdayapp.presentation.ui.components.BaseTextField
 import com.simply.birthdayapp.presentation.ui.components.CircularProgress
 import com.simply.birthdayapp.presentation.ui.components.PasswordTextFiled
+import com.simply.birthdayapp.presentation.ui.screens.auth.register.RegisterViewModel
 import com.simply.birthdayapp.presentation.ui.theme.AppTheme
 import org.koin.androidx.compose.getViewModel
 

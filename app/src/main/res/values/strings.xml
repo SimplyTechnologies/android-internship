@@ -33,7 +33,9 @@
     <string name="brother">Brother</string>
     <string name="sister">Sister</string>
     <string name="uncle">Uncle</string>
-    <string name="fail_to_create_birthday">Fail to create birthday</string>
+    <string name="failed_to_create_birthday">Failed to create birthday</string>
+    <string name="failed_to_update_birthday">Failed to update birthday</string>
+    <string name="failed_to_delete_birthday">Failed to delete birthday</string>
     <string name="name">Name</string>
     <string name="surname">Surname</string>
     <string name="email">Email</string>
@@ -63,6 +65,9 @@
     <string name="change_password_network_error">Sorry, an error occurred changing your password, please try again.</string>
     <string name="get_user_network_error">Sorry, an error occurred get your account, please try again.</string>
     <string name="edit_account_network_error">Sorry, an error occurred getting your account, please try again.</string>
+    <string name="generate_message">Generate message</string>
+    <string name="find_gift">Find gift</string>
+    <string name="reser_password_network_error">Sorry, an error occurred reseting your password, please try again.</string>
     <string name="sign_in_network_error">Sorry, an error occurred sign in your account, please try again.</string>
     <string name="get_the_code">Get The Code</string>
     <string name="set_new_password">Set New Password</string>
@@ -80,6 +85,16 @@
     <string name="url_annotated_string_tag">url</string>
     <string name="shops_related_error">Shops Related Error</string>
     <string name="dismiss">Dismiss</string>
+    <string name="calendar_access_needed">Calendar Access Needed</string>
+    <string name="calendar_permission_explanation">To add events to your calendar, the app requires permission to write to your calendar.</string>
+    <string name="birthday_created_successfully">Birthday created successfully</string>
+    <string name="birthday_updated_successfully">Birthday updated successfully</string>
+    <string name="birthday_deleted_successfully">Birthday deleted successfully</string>
+    <string name="app_needs_calendar_permission_to_add_birthdays">App needs Calendar permission to add birthdays</string>
+    <string name="calendar_birthday_event_title">"%1$s\'s Birthday"</string>
+    <string name="failed_to_add_birthday_to_calendar">Failed to add birthday to calendar</string>
+    <string name="send">Send</string>
+    <string name="birthday_message">Happy birthday. Wish you all the best.</string>
     <string name="edit_account">Edit Account</string>
     <string name="change_password">Change Password</string>
     <string name="sign_out">Sign Out</string>

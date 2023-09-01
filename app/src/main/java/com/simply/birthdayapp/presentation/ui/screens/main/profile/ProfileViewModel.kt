@@ -6,9 +6,10 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.simply.birthdayapp.data.entities.UpdateProfileEntity
 import com.simply.birthdayapp.data.repositories.ProfileRepository
-import com.simply.birthdayapp.presentation.extensions.uriToBase64
+import com.simply.birthdayapp.presentation.extensions.byteArrayToBase64
+import com.simply.birthdayapp.presentation.extensions.isPasswordValid
+import com.simply.birthdayapp.presentation.extensions.uriToByteArray
 import com.simply.birthdayapp.presentation.models.Profile
-import com.simply.birthdayapp.presentation.ui.extenstions.isPasswordValid
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -153,7 +154,7 @@ class ProfileViewModel(
                 UpdateProfileEntity(
                     firstName = _name.value,
                     lastName = _surName.value,
-                    image = imageUri?.uriToBase64(context = context),
+                    image = imageUri?.let { context.contentResolver.uriToByteArray(it)?.byteArrayToBase64() },
                 )
             ).onEach {
                 it.onSuccess { _ ->

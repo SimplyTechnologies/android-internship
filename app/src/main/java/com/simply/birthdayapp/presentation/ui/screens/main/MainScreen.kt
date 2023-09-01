@@ -1,6 +1,7 @@
 package com.simply.birthdayapp.presentation.ui.screens.main
 
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
@@ -36,7 +37,17 @@ fun MainScreen(
             startDestination = BottomBarDestination.HomeMainScreen.route,
         ) {
             composable(BottomBarDestination.HomeMainScreen.route) {
-                HomeMainScreen(mainViewModel = mainViewModel)
+                HomeMainScreen(
+                    onNavigateToShops = {
+                        bottomBarNavController.navigate(BottomBarDestination.ShopsMainScreen.route) {
+                            popUpTo(bottomBarNavController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    }
+                )
             }
 
             composable(BottomBarDestination.ShopsMainScreen.route) {

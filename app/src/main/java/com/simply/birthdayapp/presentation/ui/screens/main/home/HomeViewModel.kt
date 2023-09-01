@@ -10,7 +10,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -27,6 +29,9 @@ class HomeViewModel(
     private val _errorState = MutableStateFlow(false)
     val errorState = _errorState.asStateFlow()
 
+    private val _isRefreshing = MutableStateFlow(true)
+    val isRefreshing = _isRefreshing.asStateFlow()
+
     init {
         fetchBirthdays()
     }
@@ -39,19 +44,19 @@ class HomeViewModel(
         _errorState.update { false }
     }
 
-    private fun fetchBirthdays() {
+    fun fetchBirthdays() {
         viewModelScope.launch(Dispatchers.IO) {
-            homeRepository.getBirthdays().onEach {
-                it.onSuccess { birthdayList ->
-                    setErrorStateFalse()
-                    _birthdayList.update { birthdayList }
-                }
-                it.onFailure {
-                    _errorState.update { true }
-                }
-            }.catch {
-                _errorState.update { true }
-            }.collect()
+            homeRepository.getBirthdays()
+                .onStart { _isRefreshing.update { true } }
+                .onCompletion { _isRefreshing.update { false } }
+                .onEach {
+                    it.onSuccess { birthdayList ->
+                        setErrorStateFalse()
+                        _birthdayList.update { birthdayList }
+                    }
+                    it.onFailure { _errorState.update { true } }
+                }.catch { _errorState.update { true } }
+                .collect()
         }
     }
 }

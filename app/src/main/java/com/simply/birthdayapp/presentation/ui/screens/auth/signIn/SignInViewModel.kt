@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.simply.birthdayapp.data.entities.LoginInputEntity
 import com.simply.birthdayapp.data.repositories.LoginRepository
-import com.simply.birthdayapp.presentation.ui.extenstions.isPasswordValid
-import com.simply.birthdayapp.presentation.ui.extenstions.isValidEmail
+import com.simply.birthdayapp.presentation.extensions.isPasswordValid
+import com.simply.birthdayapp.presentation.extensions.isValidEmail
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
