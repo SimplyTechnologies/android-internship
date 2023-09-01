@@ -6,9 +6,9 @@ import androidx.lifecycle.viewModelScope
 import com.simply.birthdayapp.data.entities.CreateBirthdayEntity
 import com.simply.birthdayapp.data.entities.UpdateBirthdayEntity
 import com.simply.birthdayapp.data.repositories.BirthdayRepository
+import com.simply.birthdayapp.presentation.extensions.byteArrayToBase64
 import com.simply.birthdayapp.presentation.extensions.fromMillisToUtcDate
 import com.simply.birthdayapp.presentation.extensions.fromUtcToDayMonthYearDate
-import com.simply.birthdayapp.presentation.extensions.uriToBase64
 import com.simply.birthdayapp.presentation.models.Birthday
 import com.simply.birthdayapp.presentation.models.RelationshipEnum
 import kotlinx.coroutines.Dispatchers
@@ -176,7 +176,7 @@ class BirthdayViewModel(
             birthdayRepository.createBirthday(
                 createBirthday = CreateBirthdayEntity(
                     name = _name.value,
-                    imageBase64 = imageByteArray?.uriToBase64(),
+                    imageBase64 = imageByteArray?.byteArrayToBase64(),
                     relation = context.getString(
                         _relationship.value?.resId ?: RelationshipEnum.BEST_FRIEND.resId
                     ),
@@ -199,7 +199,7 @@ class BirthdayViewModel(
             birthdayRepository.updateBirthday(
                 id = id, updateBirthdayEntity = UpdateBirthdayEntity(
                     name = _name.value,
-                    imageBase64 = imageByteArray?.uriToBase64(),
+                    imageBase64 = imageByteArray?.byteArrayToBase64(),
                     relation = context.getString(
                         _relationship.value?.resId ?: RelationshipEnum.BEST_FRIEND.resId
                     ),

@@ -4,7 +4,7 @@ import android.content.ContentResolver
 import android.net.Uri
 import android.util.Base64
 
-fun ByteArray.uriToBase64(): String {
+fun ByteArray.byteArrayToBase64(): String {
     return Base64.encodeToString(this, Base64.DEFAULT)
 }
 
