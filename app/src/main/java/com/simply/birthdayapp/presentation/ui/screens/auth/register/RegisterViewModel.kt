@@ -13,43 +13,48 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class RegisterViewModel(private val repository: RegisterRepository) : ViewModel() {
 
-    private var _name = MutableStateFlow("")
+    private val _name = MutableStateFlow("")
     val name = _name.asStateFlow()
 
-    private var _surName = MutableStateFlow("")
+    private val _surName = MutableStateFlow("")
     val surName = _surName.asStateFlow()
 
-    private var _email = MutableStateFlow("")
+    private val _email = MutableStateFlow("")
     val email = _email.asStateFlow()
 
-    private var _password = MutableStateFlow("")
+    private val _password = MutableStateFlow("")
     val password = _password.asStateFlow()
 
-    private var _repeatPassword = MutableStateFlow("")
+    private val _repeatPassword = MutableStateFlow("")
     val repeatPassword = _repeatPassword.asStateFlow()
 
-    private var _hasEmailError = MutableStateFlow(false)
+    private val _hasEmailError = MutableStateFlow(false)
     val hasEmailError = _hasEmailError.asStateFlow()
 
-    private var _hasPasswordError = MutableStateFlow(false)
+    private val _hasPasswordError = MutableStateFlow(false)
     val hasPasswordError = _hasPasswordError.asStateFlow()
 
-    private var _hasRepeatPasswordError = MutableStateFlow(false)
+    private val _hasRepeatPasswordError = MutableStateFlow(false)
     val hasRepeatPasswordError = _hasRepeatPasswordError.asStateFlow()
 
-    private var _registrationSuccessState = MutableStateFlow(false)
+    private val _registrationSuccessState = MutableStateFlow(false)
     val registrationSuccessState = _registrationSuccessState.asStateFlow()
 
-    private var _registrationErrorState = MutableStateFlow(false)
+    private val _isOnLoadingState = MutableStateFlow(false)
+    val isOnLoadingState = _isOnLoadingState.asStateFlow()
+
+    private val _registrationErrorState = MutableStateFlow(false)
     val registrationErrorState = _registrationErrorState.asStateFlow()
 
-    private var _registerErrorMessage = MutableStateFlow("")
+    private val _registerErrorMessage = MutableStateFlow("")
     val registerErrorMessage = _registerErrorMessage.asStateFlow()
 
     val enableRegisterButton = combine(
@@ -74,7 +79,7 @@ class RegisterViewModel(private val repository: RegisterRepository) : ViewModel(
                     email = _email.value,
                     firstName = _name.value,
                     lastName = _surName.value,
-                    password = _password.value
+                    password = _password.value,
                 )
             ).onEach {
                 it.onSuccess { _ ->
@@ -85,12 +90,16 @@ class RegisterViewModel(private val repository: RegisterRepository) : ViewModel(
                 clearForm()
             }.catch {
                 _registrationErrorState.value = true
+            }.onStart {
+                _isOnLoadingState.value = true
+            }.onCompletion {
+                _isOnLoadingState.value = false
             }.collect()
         }
     }
 
-    fun setName(input: String) {
-        _name.value = input
+    fun setName(name: String) {
+        _name.value = name
     }
 
     fun setSurName(surName: String) {

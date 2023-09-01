@@ -56,7 +56,8 @@ fun ShopsScreen(
     val scrollPosition by shopsViewModel.scrollPosition.collectAsStateWithLifecycle()
     val searchBarQuery by shopsViewModel.searchBarQuery.collectAsStateWithLifecycle()
     val numOfShopsLoadingIsFavourite by shopsViewModel.numOfShopsLoadingIsFavourite.collectAsStateWithLifecycle()
-    val lastFavouredShopName by shopsViewModel.lastFavouredShopName.collectAsStateWithLifecycle()
+    val lastAddedToFavouritesShopId by shopsViewModel.lastAddedToFavouritesShopId.collectAsStateWithLifecycle()
+    val lastRemovedFromFavouritesShopId by shopsViewModel.lastRemovedFromFavouritesShopId.collectAsStateWithLifecycle()
     val lastServerErrorMessage by shopsViewModel.lastServerErrorMessage.collectAsStateWithLifecycle()
     val lastGeneralError by shopsViewModel.lastGeneralError.collectAsStateWithLifecycle()
 
@@ -85,14 +86,25 @@ fun ShopsScreen(
             .collectLatest { shopsViewModel.onScrollPositionChange(it) }
     }
 
-    LaunchedEffect(lastFavouredShopName) {
-        lastFavouredShopName?.let {
+    LaunchedEffect(lastAddedToFavouritesShopId) {
+        lastAddedToFavouritesShopId?.let {
             snackbarHostState.currentSnackbarData?.dismiss()
             snackbarHostState.showSnackbar(
-                message = context.getString(R.string.favoured_shop_with_name_of, it),
+                message = context.getString(R.string.shop_added_to_favourites),
                 duration = SnackbarDuration.Short,
             )
-            shopsViewModel.clearLastFavouredShopName()
+            shopsViewModel.clearLastAddedToFavouritesShopId()
+        }
+    }
+
+    LaunchedEffect(lastRemovedFromFavouritesShopId) {
+        lastRemovedFromFavouritesShopId?.let {
+            snackbarHostState.currentSnackbarData?.dismiss()
+            snackbarHostState.showSnackbar(
+                message = context.getString(R.string.shop_removed_from_favourites),
+                duration = SnackbarDuration.Short,
+            )
+            shopsViewModel.clearLastRemovedFromFavouritesShopId()
         }
     }
 
@@ -110,7 +122,8 @@ fun ShopsScreen(
     DisposableEffect(Unit) {
         onDispose {
             shopsViewModel.onScrollPositionChange(shopsLazyListState.firstVisibleItemIndex)
-            shopsViewModel.clearLastFavouredShopName()
+            shopsViewModel.clearLastAddedToFavouritesShopId()
+            shopsViewModel.clearLastRemovedFromFavouritesShopId()
             shopsViewModel.clearLastServerErrorMessage()
             shopsViewModel.clearLastGeneralError()
         }

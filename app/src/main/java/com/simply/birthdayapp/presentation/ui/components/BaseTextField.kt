@@ -36,6 +36,7 @@ fun BaseTextField(
     hasError: Boolean = false,
     errorText: String = "",
     fontSize: TextUnit = 13.sp,
+    inputMaxLength: Int = 30,
     textStyle: TextStyle = TextStyle(fontSize = 14.sp),
     focusedContainerColor: Color = AppTheme.colors.backgroundPink,
     unfocusedContainerColor: Color = AppTheme.colors.backgroundPink,
@@ -44,7 +45,10 @@ fun BaseTextField(
     TextField(
         modifier = modifier,
         value = textState,
-        onValueChange = onValueChange,
+        onValueChange = {
+            if (it.length <= inputMaxLength)
+                onValueChange(it)
+        },
         shape = shape,
         textStyle = textStyle,
         colors = TextFieldDefaults.colors(
@@ -68,7 +72,7 @@ fun BaseTextField(
         ),
         singleLine = true,
     )
-    if (hasError) {
+    if (hasError)
         Row(
             modifier = Modifier
                 .padding(2.dp)
@@ -84,7 +88,6 @@ fun BaseTextField(
                 fontSize = 16.sp,
             )
         }
-    }
 }
 
 @Preview(showBackground = false)
@@ -96,6 +99,6 @@ private fun BaseTextFieldPreview() {
         keyboardType = KeyboardType.Text,
         shape = AppTheme.shapes.mediumRoundedCorners,
         imeAction = ImeAction.Next,
-        hasError = false
+        hasError = false,
     )
 }

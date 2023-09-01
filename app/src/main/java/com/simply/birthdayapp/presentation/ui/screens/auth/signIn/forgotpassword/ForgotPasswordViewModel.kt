@@ -13,55 +13,58 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class ForgotPasswordViewModel(private val forgotPasswordRepository: ForgotPasswordRepository) :
     ViewModel() {
 
-    private var _email = MutableStateFlow("")
+    private val _email = MutableStateFlow("")
     val email = _email.asStateFlow()
 
-    private var _password = MutableStateFlow("")
+    private val _password = MutableStateFlow("")
     val password = _password.asStateFlow()
 
-    private var _repeatPassword = MutableStateFlow("")
+    private val _repeatPassword = MutableStateFlow("")
     val repeatPassword = _repeatPassword.asStateFlow()
 
-    private var _hasPasswordError = MutableStateFlow(false)
+    private val _hasPasswordError = MutableStateFlow(false)
     val hasPasswordError = _hasPasswordError.asStateFlow()
 
-    private var _code = MutableStateFlow("")
+    private val _code = MutableStateFlow("")
     val code = _code.asStateFlow()
 
-    private var _hasEmailError = MutableStateFlow(false)
+    private val _hasEmailError = MutableStateFlow(false)
     val hasEmailError = _hasEmailError.asStateFlow()
 
-    private var _getCodeErrorState = MutableStateFlow(false)
+    private val _getCodeErrorState = MutableStateFlow(false)
     val getCodeErrorState = _getCodeErrorState.asStateFlow()
 
-    private var _resetPasswordErrorState = MutableStateFlow(false)
+    private val _resetPasswordErrorState = MutableStateFlow(false)
     val resetPasswordErrorState = _resetPasswordErrorState.asStateFlow()
 
-    private var _resetPasswordSuccess = MutableStateFlow(false)
+    private val _resetPasswordSuccess = MutableStateFlow(false)
     val resetPasswordSuccess = _resetPasswordSuccess.asStateFlow()
 
-    private var _resetPasswordErrorMessage = MutableStateFlow("")
+    private val _resetPasswordErrorMessage = MutableStateFlow("")
     val resetPasswordErrorMessage = _resetPasswordErrorMessage.asStateFlow()
 
-    private var _hasRepeatPasswordError = MutableStateFlow(false)
+    private val _hasRepeatPasswordError = MutableStateFlow(false)
     val hasRepeatPasswordError = _hasRepeatPasswordError.asStateFlow()
 
+    private val _isOnLoadingState = MutableStateFlow(false)
+    val isOnLoadingState = _isOnLoadingState.asStateFlow()
 
-    private var _getCodeErrorMessage = MutableStateFlow("")
+    private val _getCodeErrorMessage = MutableStateFlow("")
     val getCodeErrorMessage = _getCodeErrorMessage.asStateFlow()
 
-    private var _hash = MutableStateFlow("")
-
-    private var _hasGetCodeSuccess = MutableStateFlow(false)
+    private val _hasGetCodeSuccess = MutableStateFlow(false)
     val hasGetCodeSuccess = _hasGetCodeSuccess.asStateFlow()
 
+    private val _hash = MutableStateFlow("")
     val enableDoneButton = combine(
         _hasPasswordError,
         _hasRepeatPasswordError
@@ -91,6 +94,10 @@ class ForgotPasswordViewModel(private val forgotPasswordRepository: ForgotPasswo
                 }
             }.catch {
                 _getCodeErrorState.value = true
+            }.onStart {
+                _isOnLoadingState.value = true
+            }.onCompletion {
+                _isOnLoadingState.value = false
             }.collect()
         }
     }
@@ -112,6 +119,10 @@ class ForgotPasswordViewModel(private val forgotPasswordRepository: ForgotPasswo
                 clearForm()
             }.catch {
                 _resetPasswordErrorState.value = true
+            }.onStart {
+                _isOnLoadingState.value = true
+            }.onCompletion {
+                _isOnLoadingState.value = false
             }.collect()
         }
     }
@@ -133,11 +144,11 @@ class ForgotPasswordViewModel(private val forgotPasswordRepository: ForgotPasswo
         _getCodeErrorState.value = false
     }
 
-    fun resetSuccessState() {
+    fun resetPasswordSuccessState() {
         _resetPasswordSuccess.value = false
     }
 
-    fun resetRegisterErrorMessage() {
+    fun resetPasswordErrorMessage() {
         _resetPasswordErrorMessage.value = ""
     }
 
@@ -160,5 +171,10 @@ class ForgotPasswordViewModel(private val forgotPasswordRepository: ForgotPasswo
     fun setRepeatPassword(repeatPassword: String) {
         _repeatPassword.value = repeatPassword
         _hasRepeatPasswordError.value = _repeatPassword.value != _password.value
+    }
+
+    fun clearPasswords() {
+        _password.value = ""
+        _repeatPassword.value = ""
     }
 }

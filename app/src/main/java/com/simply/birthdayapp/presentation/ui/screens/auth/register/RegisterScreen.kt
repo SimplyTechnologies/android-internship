@@ -3,10 +3,10 @@ package com.simply.birthdayapp.presentation.ui.screens.auth.register
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -39,10 +39,12 @@ import com.simply.birthdayapp.R
 import com.simply.birthdayapp.presentation.ui.components.AppBaseTopBar
 import com.simply.birthdayapp.presentation.ui.components.AuthButton
 import com.simply.birthdayapp.presentation.ui.components.BaseTextField
+import com.simply.birthdayapp.presentation.ui.components.CircularProgress
 import com.simply.birthdayapp.presentation.ui.components.PasswordTextFiled
 import com.simply.birthdayapp.presentation.ui.theme.AppTheme
 import org.koin.androidx.compose.getViewModel
 
+const val INPUT_MAX_LENGTH = 30
 @Composable
 fun RegisterScreen(
     registerViewModel: RegisterViewModel = getViewModel(),
@@ -62,6 +64,7 @@ fun RegisterScreen(
     val registrationErrorState by registerViewModel.registrationErrorState.collectAsState()
     val registrationErrorMessage by registerViewModel.registerErrorMessage.collectAsState()
     val registerButtonEnabled by registerViewModel.enableRegisterButton.collectAsState()
+    val showLoading by registerViewModel.isOnLoadingState.collectAsState()
     val context = LocalContext.current
 
     LaunchedEffect(registrationSuccess) {
@@ -96,90 +99,103 @@ fun RegisterScreen(
     Scaffold(
         topBar = { AppBaseTopBar(onBackClick = onRegisterBackClick) }
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(it)
-                .background(color = AppTheme.colors.backgroundPink)
-                .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Card(
+        Box {
+            Column(
                 modifier = Modifier
-                    .width(317.dp)
-                    .wrapContentHeight()
+                    .fillMaxSize()
+                    .padding(it)
+                    .background(color = AppTheme.colors.backgroundPink)
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
+                Card(
                     modifier = Modifier
+                        .width(317.dp)
                         .wrapContentHeight()
-                        .background(AppTheme.colors.white)
-                        .padding(horizontal = 24.dp)
                 ) {
-                    Text(
-                        modifier = Modifier.padding(top = 16.dp),
-                        text = stringResource(id = R.string.register),
-                        fontSize = 20.sp,
-                        color = AppTheme.colors.darkPink,
-                        fontWeight = FontWeight(700),
-                        textAlign = TextAlign.Center,
-                        fontFamily = FontFamily(Font(R.font.karm_light)),
-                    )
-                    BaseTextField(
-                        modifier = Modifier.padding(top = 24.dp),
-                        textState = name,
-                        label = stringResource(id = R.string.name),
-                        shape = AppTheme.shapes.smallRoundedCorners,
-                        onValueChange = { input -> registerViewModel.setName(input) },
-                    )
-                    BaseTextField(
-                        modifier = Modifier.padding(top = 24.dp),
-                        textState = surName,
-                        label = stringResource(id = R.string.surname),
-                        shape = AppTheme.shapes.smallRoundedCorners,
-                        onValueChange = { surName -> registerViewModel.setSurName(surName) },
-                    )
-                    BaseTextField(
-                        modifier = Modifier.padding(top = 24.dp),
-                        textState = email,
-                        label = stringResource(id = R.string.email),
-                        shape = AppTheme.shapes.smallRoundedCorners,
-                        keyboardType = KeyboardType.Email,
-                        errorText = stringResource(id = R.string.register_email_error),
-                        hasError = hasEmailError,
-                        onValueChange = { email -> registerViewModel.setEmail(email) },
-                    )
-                    PasswordTextFiled(
-                        modifier = Modifier.padding(top = 24.dp),
-                        textState = password,
-                        label = stringResource(id = R.string.password),
-                        hasPasswordError = hasPasswordError,
-                        errorText = stringResource(id = R.string.password_error),
-                        onValueChange = { password -> registerViewModel.setPassword(password) },
-                    )
-                    PasswordTextFiled(
-                        modifier = Modifier.padding(top = 24.dp),
-                        textState = repeatPassword,
-                        label = stringResource(id = R.string.repeat_password),
-                        imeAction = ImeAction.Done,
-                        hasPasswordError = hasRepeatPasswordError,
-                        errorText = stringResource(id = R.string.repeat_password_error),
-                        onValueChange = { repeatPassword ->
-                            registerViewModel.setRepeatPassword(repeatPassword = repeatPassword)
-                        },
-                    )
-                    AuthButton(
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier
-                            .padding(horizontal = 32.dp, vertical = 16.dp)
-                            .height(51.dp)
-                            .fillMaxWidth(),
-                        shape = RoundedCornerShape(24.dp),
-                        buttonTitle = stringResource(id = R.string.register),
-                        enabled = registerButtonEnabled,
-                        onClick = { registerViewModel.registerAccount() },
-                    )
+                            .wrapContentHeight()
+                            .background(AppTheme.colors.white)
+                            .padding(horizontal = 24.dp)
+                    ) {
+                        Text(
+                            modifier = Modifier.padding(top = 16.dp),
+                            text = stringResource(id = R.string.register),
+                            fontSize = 20.sp,
+                            color = AppTheme.colors.darkPink,
+                            fontWeight = FontWeight(700),
+                            textAlign = TextAlign.Center,
+                            fontFamily = FontFamily(Font(R.font.karm_light)),
+                        )
+                        BaseTextField(
+                            modifier = Modifier.padding(top = 24.dp),
+                            textState = name,
+                            label = stringResource(id = R.string.name),
+                            shape = AppTheme.shapes.smallRoundedCorners,
+                            onValueChange = { input ->
+                                if (name.length <= INPUT_MAX_LENGTH)
+                                    registerViewModel.setName(name = input)
+                            },
+                        )
+                        BaseTextField(
+                            modifier = Modifier.padding(top = 24.dp),
+                            textState = surName,
+                            label = stringResource(id = R.string.surname),
+                            shape = AppTheme.shapes.smallRoundedCorners,
+                            onValueChange = { surName ->
+                                registerViewModel.setSurName(surName = surName)
+                            },
+                        )
+                        BaseTextField(
+                            modifier = Modifier.padding(top = 24.dp),
+                            textState = email,
+                            label = stringResource(id = R.string.email),
+                            shape = AppTheme.shapes.smallRoundedCorners,
+                            keyboardType = KeyboardType.Email,
+                            errorText = stringResource(id = R.string.register_email_error),
+                            hasError = hasEmailError,
+                            onValueChange = { email ->
+                                registerViewModel.setEmail(email = email)
+                            },
+                        )
+                        PasswordTextFiled(
+                            modifier = Modifier.padding(top = 24.dp),
+                            textState = password,
+                            label = stringResource(id = R.string.password),
+                            hasPasswordError = hasPasswordError,
+                            errorText = stringResource(id = R.string.password_error),
+                            onValueChange = { password ->
+                                registerViewModel.setPassword(password = password)
+                            },
+                        )
+                        PasswordTextFiled(
+                            modifier = Modifier.padding(top = 24.dp),
+                            textState = repeatPassword,
+                            label = stringResource(id = R.string.repeat_password),
+                            imeAction = ImeAction.Done,
+                            hasPasswordError = hasRepeatPasswordError,
+                            errorText = stringResource(id = R.string.repeat_password_error),
+                            onValueChange = { repeatPassword ->
+                                registerViewModel.setRepeatPassword(repeatPassword = repeatPassword)
+                            },
+                        )
+                        AuthButton(
+                            modifier = Modifier
+                                .padding(horizontal = 32.dp, vertical = 16.dp)
+                                .fillMaxWidth(),
+                            shape = RoundedCornerShape(24.dp),
+                            buttonTitle = stringResource(id = R.string.register),
+                            enabled = registerButtonEnabled,
+                            onClick = { registerViewModel.registerAccount() },
+                        )
+                    }
                 }
+            }
+            if (showLoading) {
+                CircularProgress()
             }
         }
     }

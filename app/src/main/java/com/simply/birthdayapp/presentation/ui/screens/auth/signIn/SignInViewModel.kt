@@ -13,36 +13,40 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class SignInViewModel(private val loginRepository: LoginRepository) : ViewModel() {
 
-    private var _email = MutableStateFlow("")
+    private val _email = MutableStateFlow("")
     val email = _email.asStateFlow()
 
-    private var _password = MutableStateFlow("")
+    private val _password = MutableStateFlow("")
     val password = _password.asStateFlow()
 
-    private var _loginErrorState = MutableStateFlow(false)
+    private val _loginErrorState = MutableStateFlow(false)
     val loginErrorState = _loginErrorState.asStateFlow()
 
-    private var _loginSuccessState = MutableStateFlow(false)
+    private val _loginSuccessState = MutableStateFlow(false)
     val loginSuccessState = _loginSuccessState.asStateFlow()
 
-    private var _loginErrorMessage = MutableStateFlow("")
+    private val _loginErrorMessage = MutableStateFlow("")
     val loginErrorMessage = _loginErrorMessage.asStateFlow()
 
-    private var _hasPasswordError = MutableStateFlow(false)
+    private val _hasPasswordError = MutableStateFlow(false)
     val hasPasswordError = _hasPasswordError.asStateFlow()
 
-    private var _hasEmailError = MutableStateFlow(false)
+    private val _hasEmailError = MutableStateFlow(false)
     val hasEmailError = _hasEmailError.asStateFlow()
 
-    private var _checkedState = MutableStateFlow(false)
+    private val _checkedState = MutableStateFlow(false)
     val checkedState = _checkedState.asStateFlow()
 
+    private val _isOnLoadingState = MutableStateFlow(false)
+    val isOnLoadingState = _isOnLoadingState.asStateFlow()
 
     init {
         viewModelScope.launch {
@@ -55,17 +59,21 @@ class SignInViewModel(private val loginRepository: LoginRepository) : ViewModel(
             loginRepository.signInAccount(
                 LoginInputEntity(
                     email = _email.value,
-                    password = _password.value
+                    password = _password.value,
                 )
             ).onEach {
                 it.onSuccess {
                     _loginSuccessState.value = true
+                    clearForm()
                 }.onFailure { error ->
                     _loginErrorMessage.value = error.message ?: "Error"
                 }
-                clearForm()
             }.catch {
                 _loginErrorState.value = true
+            }.onStart {
+                _isOnLoadingState.value = true
+            }.onCompletion {
+                _isOnLoadingState.value = false
             }.collect()
         }
     }

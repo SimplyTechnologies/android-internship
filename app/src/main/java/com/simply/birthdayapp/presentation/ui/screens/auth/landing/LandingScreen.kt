@@ -16,9 +16,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.simply.birthdayapp.R
 import com.simply.birthdayapp.presentation.ui.components.LandingButton
-import com.simply.birthdayapp.presentation.ui.screens.auth.AuthMainViewModel
 import com.simply.birthdayapp.presentation.ui.theme.AppTheme
-import org.koin.androidx.compose.getViewModel
 
 @Composable
 fun LandingScreen(
@@ -42,14 +40,14 @@ fun LandingScreen(
             shape = AppTheme.shapes.risingStartRoundedEndCorners,
             buttonTitle = stringResource(id = R.string.sign_in),
             backgroundColor = AppTheme.colors.lightPink,
-            textColor = AppTheme.colors.darkPink,
+            textColor = AppTheme.colors.white,
             onClick = { onSignInClick() })
 
         LandingButton(
             shape = AppTheme.shapes.risingEndRoundedStartCorners,
             buttonTitle = stringResource(id = R.string.register),
             backgroundColor = AppTheme.colors.darkPink,
-            textColor = AppTheme.colors.lightPink,
+            textColor = AppTheme.colors.white,
             onClick = { onRegisterClick() })
     }
 }

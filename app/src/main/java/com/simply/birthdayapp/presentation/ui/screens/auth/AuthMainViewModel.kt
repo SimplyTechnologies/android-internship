@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class AuthMainViewModel(private val repository: AuthRepository) : ViewModel() {
-    private var _rememberPassword = MutableStateFlow(false)
+    private val _rememberPassword = MutableStateFlow(false)
     val rememberPassword = _rememberPassword.asStateFlow()
 
     init {
