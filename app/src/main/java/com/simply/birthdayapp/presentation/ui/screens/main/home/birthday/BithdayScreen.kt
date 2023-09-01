@@ -72,12 +72,11 @@ import com.simply.birthdayapp.presentation.ui.components.CalendarPermissionDialo
 import com.simply.birthdayapp.presentation.ui.components.DatePickerComponent
 import com.simply.birthdayapp.presentation.ui.components.RelationshipGridCard
 import com.simply.birthdayapp.presentation.ui.components.RoundAsyncImage
-import com.simply.birthdayapp.presentation.ui.screens.auth.signIn.SignInViewModel
 import com.simply.birthdayapp.presentation.ui.screens.main.LocalSnackbarHostState
 import com.simply.birthdayapp.presentation.ui.screens.main.home.HomeViewModel
 import com.simply.birthdayapp.presentation.ui.theme.AppTheme
-import org.koin.androidx.compose.getViewModel
 import java.util.Calendar
+import org.koin.androidx.compose.getViewModel
 
 @SuppressLint("SimpleDateFormat")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -85,7 +84,6 @@ import java.util.Calendar
 fun BirthdayScreen(
     birthdayViewModel: BirthdayViewModel,
     homeViewModel: HomeViewModel,
-    signInViewModel: SignInViewModel,
     navigateToHomeScreen: () -> Unit = {},
     onBackClick: () -> Unit = {},
 ) {
@@ -109,7 +107,7 @@ fun BirthdayScreen(
     val updateBirthdayIsCompleted by birthdayViewModel.updateBirthdayIsCompleted.collectAsState()
     val deleteBirthdayIsCompleted by birthdayViewModel.deleteBirthdayIsCompleted.collectAsState()
 
-    val email by signInViewModel.email.collectAsState()
+    val email by birthdayViewModel.email.collectAsState()
     val focusManager = LocalFocusManager.current
     val context = LocalContext.current
     val snackbarHostState = LocalSnackbarHostState.current
@@ -410,7 +408,6 @@ fun BirthdayScreen(
 private fun BirthdayScreenPreview() {
     BirthdayScreen(
         birthdayViewModel = getViewModel(),
-        homeViewModel = getViewModel(),
-        signInViewModel = getViewModel(),
+        homeViewModel = getViewModel()
     )
 }

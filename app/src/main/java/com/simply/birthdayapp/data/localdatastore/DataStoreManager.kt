@@ -19,6 +19,7 @@ class DataStoreManager(private val context: Context) {
         val EMAIL = stringPreferencesKey("EMAIL")
         val ACCESS_TOKEN = stringPreferencesKey("ACCESS_TOKEN")
         val REMEMBER_PASSWORD = booleanPreferencesKey("REMEMBER_PASSWORD")
+        val EMAIL_EVENT = stringPreferencesKey("EMAIL_EVENT")
     }
 
     suspend fun setAccessToken(token: String) {
@@ -62,5 +63,18 @@ class DataStoreManager(private val context: Context) {
 
     suspend fun clearDataStore() = context.dataStore.edit {
         it.clear()
+    }
+
+    suspend fun setEventEmail(email: String) {
+        context.dataStore.edit { preferences ->
+            preferences[EMAIL_EVENT] = email
+        }
+    }
+
+    fun getEventEmail(): Flow<String> {
+        return context.dataStore.data
+            .map { preferences ->
+                preferences[EMAIL_EVENT] ?: ""
+            }
     }
 }
