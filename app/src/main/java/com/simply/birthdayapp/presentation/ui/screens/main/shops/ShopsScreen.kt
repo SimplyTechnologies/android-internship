@@ -59,6 +59,7 @@ fun ShopsScreen(
 ) {
     val activity = LocalContext.current as ComponentActivity
     LaunchedEffect(Unit) { activity.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN) }
+
     val loading by shopsViewModel.loading.collectAsStateWithLifecycle()
     val shops by shopsViewModel.shops.collectAsStateWithLifecycle()
     val scrollPosition by shopsViewModel.scrollPosition.collectAsStateWithLifecycle()
@@ -88,6 +89,8 @@ fun ShopsScreen(
         },
     )
     val keyboardState by keyboardAsState()
+
+    LaunchedEffect(keyboardState) { if (keyboardState == Keyboard.Closed) focusManager.clearFocus() }
 
     LaunchedEffect(shopsLazyListState) {
         snapshotFlow { shopsLazyListState.firstVisibleItemIndex }
