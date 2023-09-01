@@ -8,13 +8,13 @@ import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 
-fun Context.calendarPermissionsGranted(): Boolean =
+fun Context.calendarPermissionsGranted() =
     ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_CALENDAR) ==
             PackageManager.PERMISSION_GRANTED &&
             ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALENDAR) ==
             PackageManager.PERMISSION_GRANTED
 
-fun Context.shouldShowCalendarPermissionsRationale(): Boolean =
+fun Context.shouldShowCalendarPermissionsRationale() =
     ActivityCompat.shouldShowRequestPermissionRationale(this as Activity, Manifest.permission.WRITE_CALENDAR) ||
             ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_CALENDAR)
 
