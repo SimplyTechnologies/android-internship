@@ -37,7 +37,7 @@ fun Context.addEventToCalendar(email: String, date: Long, name: String): Uri? {
     }
 
     val userEmailContract = contractList.find { it.ownerAccount == email }
-    val id = userEmailContract?.ownerAccount ?: if (contractList.isNotEmpty()) contractList[0].calendarId else "1"
+    val id = userEmailContract?.ownerAccount ?: if (contractList.isNotEmpty()) contractList[0].calendarId else return null
 
     val values = ContentValues().apply {
         put(CalendarContract.Events.DTSTART, date)
