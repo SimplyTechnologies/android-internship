@@ -109,6 +109,7 @@ fun BirthdayScreen(
     val updateBirthdayIsCompleted by birthdayViewModel.updateBirthdayIsCompleted.collectAsState()
     val deleteBirthdayIsCompleted by birthdayViewModel.deleteBirthdayIsCompleted.collectAsState()
 
+    val email by signInViewModel.email.collectAsState()
     val focusManager = LocalFocusManager.current
     val context = LocalContext.current
     val snackbarHostState = LocalSnackbarHostState.current
@@ -345,7 +346,7 @@ fun BirthdayScreen(
                             context.addEventToCalendar(
                                 date = datePickerState.selectedDateMillis ?: calendar.timeInMillis,
                                 name = name,
-                                email = signInViewModel.email.value,
+                                email = email,
                             )
                         } catch (e: Exception) {
                             null
