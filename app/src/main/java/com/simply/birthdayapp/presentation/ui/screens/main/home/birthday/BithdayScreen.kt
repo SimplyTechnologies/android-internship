@@ -137,6 +137,10 @@ fun BirthdayScreen(
         }
     }
 
+    BackHandler {
+        onBackClick()
+    }
+
     LaunchedEffect(createBirthdayError) {
         if (createBirthdayError) {
             snackbarHostState.showSnackbar(

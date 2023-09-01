@@ -38,6 +38,7 @@ fun MainScreen(
         ) {
             composable(BottomBarDestination.HomeMainScreen.route) {
                 HomeMainScreen(
+                    mainViewModel = mainViewModel,
                     onNavigateToShops = {
                         bottomBarNavController.navigate(BottomBarDestination.ShopsMainScreen.route) {
                             popUpTo(bottomBarNavController.graph.findStartDestination().id) {
@@ -46,7 +47,7 @@ fun MainScreen(
                             launchSingleTop = true
                             restoreState = true
                         }
-                    }
+                    },
                 )
             }
 
