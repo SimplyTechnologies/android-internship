@@ -14,6 +14,7 @@ interface LoginRepository {
     suspend fun signInAccount(loginInputEntity: LoginInputEntity): Flow<Result<Unit>>
     suspend fun getEmail(): String
     suspend fun setRememberPassword(hasRememberPassword: Boolean)
+    suspend fun setEmailEvent(email: String)
 }
 
 class LoginRepositoryImpl(
@@ -43,5 +44,9 @@ class LoginRepositoryImpl(
 
     override suspend fun setRememberPassword(hasRememberPassword: Boolean) {
         dataStoreManager.setRememberPassword(hasRememberPassword)
+    }
+
+    override suspend fun setEmailEvent(email: String) {
+        dataStoreManager.setEventEmail(email)
     }
 }

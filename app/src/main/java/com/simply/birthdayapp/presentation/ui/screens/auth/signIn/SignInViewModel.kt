@@ -64,6 +64,7 @@ class SignInViewModel(private val loginRepository: LoginRepository) : ViewModel(
             ).onEach {
                 it.onSuccess {
                     _loginSuccessState.value = true
+                    loginRepository.setEmailEvent(_email.value)
                     clearForm()
                 }.onFailure { error ->
                     _loginErrorMessage.value = error.message ?: "Error"

@@ -6,7 +6,6 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.simply.birthdayapp.presentation.ui.screens.auth.signIn.SignInViewModel
 import com.simply.birthdayapp.presentation.ui.screens.main.MainViewModel
 import com.simply.birthdayapp.presentation.ui.screens.main.home.birthday.BirthdayScreen
 import com.simply.birthdayapp.presentation.ui.screens.main.home.birthday.BirthdayViewModel
@@ -28,7 +27,6 @@ fun HomeMainScreen(
     homeViewModel: HomeViewModel = getViewModel(),
     birthdayViewModel: BirthdayViewModel = getViewModel(),
     birthdayDetailsViewModel: BirthdayDetailsViewModel = getViewModel(),
-    signInViewModel: SignInViewModel = getViewModel(),
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     val homeNavController = rememberNavController()
@@ -50,7 +48,6 @@ fun HomeMainScreen(
             BirthdayScreen(
                 birthdayViewModel = birthdayViewModel,
                 homeViewModel = homeViewModel,
-                signInViewModel = signInViewModel,
                 navigateToHomeScreen = {
                     keyboardController?.hide()
                     homeNavController.navigate(HomeDestination.HomeScreen.route) {
