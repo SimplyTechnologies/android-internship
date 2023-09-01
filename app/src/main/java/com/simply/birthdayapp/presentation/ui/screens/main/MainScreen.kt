@@ -40,10 +40,7 @@ fun MainScreen(
             }
 
             composable(BottomBarDestination.ShopsMainScreen.route) {
-                ShopsMainScreen(
-                    mainViewModel = mainViewModel,
-                    shopsViewModel = shopsViewModel,
-                )
+                ShopsMainScreen(shopsViewModel = shopsViewModel)
             }
 
             composable(BottomBarDestination.ProfileMainScreen.route) {
