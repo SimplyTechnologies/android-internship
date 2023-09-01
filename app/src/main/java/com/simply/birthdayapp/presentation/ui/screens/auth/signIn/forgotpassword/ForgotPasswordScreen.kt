@@ -1,6 +1,7 @@
 package com.simply.birthdayapp.presentation.ui.screens.auth.signIn.forgotpassword
 
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,6 +25,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -58,6 +60,11 @@ fun ForgotPasswordScreen(
     val enabledGetCodeButton by forgotPasswordViewModel.enabledGetCodeButton.collectAsState()
     val showLoading by forgotPasswordViewModel.isOnLoadingState.collectAsState()
     val context = LocalContext.current
+    val focusManager = LocalFocusManager.current
+    val onBackHandler = {
+        focusManager.clearFocus()
+        onBackClick()
+    }
 
     LaunchedEffect(getCodeErrorMessage) {
         if (getCodeErrorMessage.isNotEmpty()) {
@@ -65,6 +72,7 @@ fun ForgotPasswordScreen(
             forgotPasswordViewModel.resetGetCodeErrorMessage()
         }
     }
+    BackHandler { onBackHandler() }
     if (getCodeErrorState) {
         AlertDialog(
             containerColor = AppTheme.colors.white,
@@ -82,7 +90,7 @@ fun ForgotPasswordScreen(
             },
         )
     }
-    Scaffold(topBar = { AppBaseTopBar(onBackClick = onBackClick) }) {
+    Scaffold(topBar = { AppBaseTopBar(onBackClick = onBackHandler) }) {
         Box {
             Column(
                 modifier = Modifier

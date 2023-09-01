@@ -1,6 +1,7 @@
 package com.simply.birthdayapp.presentation.ui.screens.auth.register
 
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -25,6 +26,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -66,6 +68,11 @@ fun RegisterScreen(
     val registerButtonEnabled by registerViewModel.enableRegisterButton.collectAsState()
     val showLoading by registerViewModel.isOnLoadingState.collectAsState()
     val context = LocalContext.current
+    val focusManager = LocalFocusManager.current
+    val onBackHandler = {
+        focusManager.clearFocus()
+        onRegisterBackClick()
+    }
 
     LaunchedEffect(registrationSuccess) {
         if (registrationSuccess) {
@@ -81,6 +88,7 @@ fun RegisterScreen(
             registerViewModel.resetRegisterErrorMessage()
         }
     }
+    BackHandler { onBackHandler() }
     if (registrationErrorState) {
         AlertDialog(
             containerColor = AppTheme.colors.white,
@@ -97,7 +105,7 @@ fun RegisterScreen(
         )
     }
     Scaffold(
-        topBar = { AppBaseTopBar(onBackClick = onRegisterBackClick) }
+        topBar = { AppBaseTopBar(onBackClick = onBackHandler) }
     ) {
         Box {
             Column(

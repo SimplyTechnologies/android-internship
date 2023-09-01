@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.simply.birthdayapp.presentation.ui.screens.main.MainViewModel
 import com.simply.birthdayapp.presentation.ui.screens.main.shops.details.ShopDetailsScreen
 import com.simply.birthdayapp.presentation.ui.screens.main.shops.details.ShopDetailsViewModel
 import org.koin.androidx.compose.getViewModel
@@ -15,6 +16,7 @@ sealed class ShopsDestination(val route: String) {
 
 @Composable
 fun ShopsMainScreen(
+    mainViewModel: MainViewModel,
     shopsViewModel: ShopsViewModel,
     shopDetailsViewModel: ShopDetailsViewModel = getViewModel(),
 ) {

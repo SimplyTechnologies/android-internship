@@ -2,6 +2,8 @@ package com.simply.birthdayapp.presentation.ui.screens.main
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -19,12 +21,17 @@ sealed class BottomBarDestination(val route: String) {
 
 @Composable
 fun MainScreen(
+    mainViewModel: MainViewModel = getViewModel(),
     shopsViewModel: ShopsViewModel = getViewModel(),
     onSignOutClicked: () -> Unit = {},
 ) {
     val bottomBarNavController = rememberNavController()
+    val bottomNavBarVisible by mainViewModel.bottomNavBarVisible.collectAsStateWithLifecycle()
 
-    BottomNavBarScaffold(bottomBarNavController = bottomBarNavController) {
+    BottomNavBarScaffold(
+        bottomNavBarVisible = bottomNavBarVisible,
+        bottomBarNavController = bottomBarNavController,
+    ) {
         NavHost(
             navController = bottomBarNavController,
             startDestination = BottomBarDestination.HomeMainScreen.route,
@@ -44,11 +51,17 @@ fun MainScreen(
             }
 
             composable(BottomBarDestination.ShopsMainScreen.route) {
-                ShopsMainScreen(shopsViewModel = shopsViewModel)
+                ShopsMainScreen(
+                    mainViewModel = mainViewModel,
+                    shopsViewModel = shopsViewModel,
+                )
             }
 
             composable(BottomBarDestination.ProfileMainScreen.route) {
-                ProfileMainScreen(onSignOutClicked = onSignOutClicked)
+                ProfileMainScreen(
+                    mainViewModel = mainViewModel,
+                    onSignOutClicked = onSignOutClicked,
+                )
             }
         }
     }
