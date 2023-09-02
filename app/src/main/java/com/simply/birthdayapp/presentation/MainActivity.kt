@@ -1,7 +1,6 @@
 package com.simply.birthdayapp.presentation
 
 import android.os.Bundle
-import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.LaunchedEffect
@@ -9,6 +8,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.core.view.WindowCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.simply.birthdayapp.data.NetworkMonitor
 import com.simply.birthdayapp.presentation.navigation.RootNavigation
@@ -22,7 +22,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
             BirthdayAppTheme {
                 val connectedToNetwork by networkMonitor.connected.collectAsStateWithLifecycle(
