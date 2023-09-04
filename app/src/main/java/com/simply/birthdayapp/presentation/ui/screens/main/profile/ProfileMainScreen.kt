@@ -19,8 +19,9 @@ sealed class ProfileRootScreen(val route: String) {
 @Composable
 fun ProfileMainScreen(
     mainViewModel: MainViewModel,
-    onSignOutClicked: () -> Unit = {},
     profileViewModel: ProfileViewModel = getViewModel(),
+    onSignOutClicked: () -> Unit = {},
+    onChangePasswordSuccess: () -> Unit = {},
 ) {
     val nestedNavController = rememberNavController()
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -68,7 +69,7 @@ fun ProfileMainScreen(
         composable(ProfileRootScreen.ChangePasswordScreen.route) {
             ChangePasswordScreen(
                 profileViewModel = profileViewModel,
-                onSignOutClicked = onSignOutClicked,
+                onChangePasswordSuccess = onChangePasswordSuccess,
                 navToProfileScreen = { navToProfileScreen() },
             )
         }

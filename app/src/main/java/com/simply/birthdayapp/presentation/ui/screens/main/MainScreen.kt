@@ -24,6 +24,7 @@ fun MainScreen(
     mainViewModel: MainViewModel = getViewModel(),
     shopsViewModel: ShopsViewModel = getViewModel(),
     onSignOutClicked: () -> Unit = {},
+    onChangePasswordSuccess: () -> Unit = {},
 ) {
     val bottomBarNavController = rememberNavController()
     val bottomNavBarVisible by mainViewModel.bottomNavBarVisible.collectAsStateWithLifecycle()
@@ -59,6 +60,7 @@ fun MainScreen(
                 ProfileMainScreen(
                     mainViewModel = mainViewModel,
                     onSignOutClicked = onSignOutClicked,
+                    onChangePasswordSuccess = onChangePasswordSuccess
                 )
             }
         }

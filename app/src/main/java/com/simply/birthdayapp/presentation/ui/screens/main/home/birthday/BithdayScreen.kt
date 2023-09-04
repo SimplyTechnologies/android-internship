@@ -77,6 +77,7 @@ import com.simply.birthdayapp.presentation.ui.screens.main.home.HomeViewModel
 import com.simply.birthdayapp.presentation.ui.theme.AppTheme
 import java.util.Calendar
 import org.koin.androidx.compose.getViewModel
+import java.util.Date
 
 @SuppressLint("SimpleDateFormat")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -342,10 +343,17 @@ fun BirthdayScreen(
             Button(
                 enabled = doneButtonEnable,
                 onClick = {
+                    //TODO : IMPROVE
                     if (addToCalendarCheck && context.calendarPermissionsGranted()) {
+                        val d = Date(dateUtc.fromUtcToMillisDate())
+                        val c = Calendar.getInstance()
+                        c.time = d
+                        val selectedDate = Calendar.getInstance()
+                        val selectedYear = selectedDate[Calendar.YEAR]
+                        c.set(Calendar.YEAR, selectedYear)
                         val uri = try {
                             context.addEventToCalendar(
-                                date = datePickerState.selectedDateMillis ?: calendar.timeInMillis,
+                                date = c.timeInMillis,
                                 name = name,
                                 email = email,
                             )
