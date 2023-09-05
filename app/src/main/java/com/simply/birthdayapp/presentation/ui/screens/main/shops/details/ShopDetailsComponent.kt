@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.sp
 import com.simply.birthdayapp.BuildConfig
 import com.simply.birthdayapp.R
 import com.simply.birthdayapp.presentation.models.Shop
+import com.simply.birthdayapp.presentation.ui.components.RatingBar
 import com.simply.birthdayapp.presentation.ui.components.RoundAsyncImage
 import com.simply.birthdayapp.presentation.ui.theme.AppTheme
 
@@ -89,6 +90,21 @@ fun ShopDetailsComponent(shop: Shop) {
             style = AppTheme.typography.boldKarmaBlack,
             textAlign = TextAlign.Center,
         )
+        shop.rating?.let {
+            RatingBar(
+                rating = shop.rating,
+                numOfStars = 5,
+                starColor = AppTheme.colors.orange,
+                starSize = 20.dp,
+            )
+        } ?: run {
+            Text(
+                text = stringResource(R.string.no_rating_yet),
+                fontSize = 15.sp,
+                style = AppTheme.typography.mediumKarmaGray,
+                textAlign = TextAlign.Center,
+            )
+        }
         ClickableText(
             text = phoneNumberAnnotatedString,
             onClick = {
@@ -126,6 +142,7 @@ private fun ShopDetailsPreview() {
         name = "Kitten",
         image = byteArrayOf(),
         isFavourite = false,
+        rating = 2.5,
         formattedPhoneNumber = "111 - 222 - 333",
         address = "Cat cafe",
         addressQuery = "Cat+cafe",
