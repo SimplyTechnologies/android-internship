@@ -1,6 +1,7 @@
 package com.simply.birthdayapp.presentation.ui.components
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
@@ -67,27 +68,19 @@ fun RatingBar(
 
 @Preview
 @Composable
-private fun FilledRatingBarPreview() {
-    RatingBar(
-        rating = 5.0,
-        numOfStars = 5,
-    )
-}
-
-@Preview
-@Composable
-private fun HalvedRatingBarPreview() {
-    RatingBar(
-        rating = 2.5,
-        numOfStars = 5,
-    )
-}
-
-@Preview
-@Composable
-private fun EmptyRatingBarPreview() {
-    RatingBar(
-        rating = 0.0,
-        numOfStars = 5,
-    )
+private fun RatingBarPreview() {
+    Column {
+        RatingBar(
+            rating = 5.0,
+            numOfStars = 5,
+        )
+        RatingBar(
+            rating = 2.5,
+            numOfStars = 5,
+        )
+        RatingBar(
+            rating = 0.0,
+            numOfStars = 5,
+        )
+    }
 }
