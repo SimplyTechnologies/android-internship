@@ -105,4 +105,8 @@
     <string name="edit_account_failed">Failed to edit account.</string>
     <string name="get_account_failed">Failed to get your account.</string>
     <string name="password_code">Password Code</string>
+    <string name="filled_star">Filled Star</string>
+    <string name="empty_star">Empty star</string>
+    <string name="star_half">Star half</string>
+    <string name="no_rating_yet">No rating yet</string>
 </resources>
