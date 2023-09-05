@@ -6,7 +6,6 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.simply.birthdayapp.presentation.ui.screens.main.MainViewModel
 import com.simply.birthdayapp.presentation.ui.screens.main.home.birthday.BirthdayScreen
 import com.simply.birthdayapp.presentation.ui.screens.main.home.birthday.BirthdayViewModel
 import com.simply.birthdayapp.presentation.ui.screens.main.home.details.BirthdayDetailsScreen
@@ -22,7 +21,6 @@ sealed class HomeDestination(val route: String) {
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun HomeMainScreen(
-    mainViewModel: MainViewModel,
     onNavigateToShops: () -> Unit,
     homeViewModel: HomeViewModel = getViewModel(),
     birthdayViewModel: BirthdayViewModel = getViewModel(),
@@ -37,10 +35,7 @@ fun HomeMainScreen(
                 homeViewModel = homeViewModel,
                 birthdayViewModel = birthdayViewModel,
                 birthdayDetailsViewModel = birthdayDetailsViewModel,
-                navigateToBirthdayScreen = {
-                    mainViewModel.hideBottomNavBar()
-                    homeNavController.navigate(HomeDestination.BirthdayScreen.route)
-                },
+                navigateToBirthdayScreen = { homeNavController.navigate(HomeDestination.BirthdayScreen.route) },
                 navigateToBirthdayDetailsScreen = { homeNavController.navigate(HomeDestination.BirthdayDetailsScreen.route) },
             )
         }
@@ -53,11 +48,9 @@ fun HomeMainScreen(
                     homeNavController.navigate(HomeDestination.HomeScreen.route) {
                         popUpTo(HomeDestination.HomeScreen.route)
                     }
-                    mainViewModel.showBottomNavBar()
                 },
                 onBackClick = {
                     keyboardController?.hide()
-                    mainViewModel.showBottomNavBar()
                     homeNavController.navigateUp()
                 },
             )
@@ -67,10 +60,7 @@ fun HomeMainScreen(
                 birthdayViewModel = birthdayViewModel,
                 birthdayDetailsViewModel = birthdayDetailsViewModel,
                 navigateToShopsScreen = onNavigateToShops,
-                navigateToBirthdayScreen = {
-                    mainViewModel.hideBottomNavBar()
-                    homeNavController.navigate(HomeDestination.BirthdayScreen.route)
-                },
+                navigateToBirthdayScreen = { homeNavController.navigate(HomeDestination.BirthdayScreen.route) },
                 onBackClick = { homeNavController.navigateUp() },
             )
         }

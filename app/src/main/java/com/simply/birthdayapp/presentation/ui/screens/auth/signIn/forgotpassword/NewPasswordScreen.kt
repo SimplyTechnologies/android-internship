@@ -5,8 +5,12 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -35,6 +39,7 @@ import com.simply.birthdayapp.presentation.ui.components.PasswordTextFiled
 import com.simply.birthdayapp.presentation.ui.theme.AppTheme
 import org.koin.androidx.compose.getViewModel
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun NewPasswordScreen(
     forgotPasswordViewModel: ForgotPasswordViewModel,
@@ -90,13 +95,19 @@ fun NewPasswordScreen(
             },
         )
     }
-    Scaffold(topBar = {
-        AppBaseTopBar(onBackClick = onBackHandler)
-    }) {
-        Box {
+    Scaffold(
+        modifier = Modifier.statusBarsPadding(),
+        topBar = { AppBaseTopBar(onBackClick = onBackHandler) },
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(it)
+                .consumeWindowInsets(it)
+                .imePadding(),
+        ) {
             Column(
                 modifier = Modifier
-                    .padding(it)
                     .fillMaxSize()
                     .background(color = AppTheme.colors.backgroundPink)
                     .verticalScroll(rememberScrollState()),
