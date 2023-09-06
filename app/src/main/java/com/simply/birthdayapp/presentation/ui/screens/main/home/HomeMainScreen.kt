@@ -1,8 +1,7 @@
 package com.simply.birthdayapp.presentation.ui.screens.main.home
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.ExperimentalComposeUiApi
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -18,7 +17,6 @@ sealed class HomeDestination(val route: String) {
     data object BirthdayDetailsScreen : HomeDestination("birthday-details-screen")
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun HomeMainScreen(
     onNavigateToShops: () -> Unit,
@@ -26,7 +24,7 @@ fun HomeMainScreen(
     birthdayViewModel: BirthdayViewModel = getViewModel(),
     birthdayDetailsViewModel: BirthdayDetailsViewModel = getViewModel(),
 ) {
-    val keyboardController = LocalSoftwareKeyboardController.current
+    val focusManager = LocalFocusManager.current
     val homeNavController = rememberNavController()
 
     NavHost(navController = homeNavController, startDestination = HomeDestination.HomeScreen.route) {
@@ -44,13 +42,13 @@ fun HomeMainScreen(
                 birthdayViewModel = birthdayViewModel,
                 homeViewModel = homeViewModel,
                 navigateToHomeScreen = {
-                    keyboardController?.hide()
+                    focusManager.clearFocus()
                     homeNavController.navigate(HomeDestination.HomeScreen.route) {
                         popUpTo(HomeDestination.HomeScreen.route)
                     }
                 },
                 onBackClick = {
-                    keyboardController?.hide()
+                    focusManager.clearFocus()
                     homeNavController.navigateUp()
                 },
             )
