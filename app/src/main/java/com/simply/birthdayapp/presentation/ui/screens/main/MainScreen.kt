@@ -2,8 +2,6 @@ package com.simply.birthdayapp.presentation.ui.screens.main
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.compose.runtime.getValue
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -21,25 +19,19 @@ sealed class BottomBarDestination(val route: String) {
 
 @Composable
 fun MainScreen(
-    mainViewModel: MainViewModel = getViewModel(),
     shopsViewModel: ShopsViewModel = getViewModel(),
     onSignOutClicked: () -> Unit = {},
     onChangePasswordSuccess: () -> Unit = {},
 ) {
     val bottomBarNavController = rememberNavController()
-    val bottomNavBarVisible by mainViewModel.bottomNavBarVisible.collectAsStateWithLifecycle()
 
-    BottomNavBarScaffold(
-        bottomNavBarVisible = bottomNavBarVisible,
-        bottomBarNavController = bottomBarNavController,
-    ) {
+    BottomNavBarScaffold(bottomBarNavController = bottomBarNavController) {
         NavHost(
             navController = bottomBarNavController,
             startDestination = BottomBarDestination.HomeMainScreen.route,
         ) {
             composable(BottomBarDestination.HomeMainScreen.route) {
                 HomeMainScreen(
-                    mainViewModel = mainViewModel,
                     onNavigateToShops = {
                         bottomBarNavController.navigate(BottomBarDestination.ShopsMainScreen.route) {
                             popUpTo(bottomBarNavController.graph.findStartDestination().id) {
@@ -57,8 +49,8 @@ fun MainScreen(
             }
 
             composable(BottomBarDestination.ProfileMainScreen.route) {
+                ProfileMainScreen(onSignOutClicked = onSignOutClicked)
                 ProfileMainScreen(
-                    mainViewModel = mainViewModel,
                     onSignOutClicked = onSignOutClicked,
                     onChangePasswordSuccess = onChangePasswordSuccess
                 )

@@ -4,6 +4,7 @@ query ShopsQuery($filter: ShopFilter!) {
         name
         image
         isFavorite
+        rate
         phone
         address
         url

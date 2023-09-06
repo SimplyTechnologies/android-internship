@@ -6,7 +6,6 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.simply.birthdayapp.presentation.ui.screens.main.MainViewModel
 import org.koin.androidx.compose.getViewModel
 
 sealed class ProfileRootScreen(val route: String) {
@@ -18,7 +17,6 @@ sealed class ProfileRootScreen(val route: String) {
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun ProfileMainScreen(
-    mainViewModel: MainViewModel,
     profileViewModel: ProfileViewModel = getViewModel(),
     onSignOutClicked: () -> Unit = {},
     onChangePasswordSuccess: () -> Unit = {},
@@ -27,7 +25,6 @@ fun ProfileMainScreen(
     val keyboardController = LocalSoftwareKeyboardController.current
 
     fun navToChangePasswordScreen() {
-        mainViewModel.hideBottomNavBar()
         nestedNavController.navigate(ProfileRootScreen.ChangePasswordScreen.route) {
             popUpTo(ProfileRootScreen.ChangePasswordScreen.route) {
                 inclusive = true
@@ -37,7 +34,6 @@ fun ProfileMainScreen(
 
     fun navToProfileScreen() {
         keyboardController?.hide()
-        mainViewModel.showBottomNavBar()
         nestedNavController.navigate(ProfileRootScreen.ProfileScreen.route) {
             popUpTo(ProfileRootScreen.ProfileScreen.route) {
                 inclusive = true
@@ -46,7 +42,6 @@ fun ProfileMainScreen(
     }
 
     fun navToEditAccountScreen() {
-        mainViewModel.hideBottomNavBar()
         nestedNavController.navigate(ProfileRootScreen.EditAccountScreen.route) {
             popUpTo(ProfileRootScreen.EditAccountScreen.route) {
                 inclusive = true

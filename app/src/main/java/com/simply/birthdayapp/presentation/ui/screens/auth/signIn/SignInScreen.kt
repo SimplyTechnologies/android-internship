@@ -5,11 +5,15 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
@@ -39,17 +43,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.simply.birthdayapp.R
-import com.simply.birthdayapp.presentation.extensions.isPasswordValid
-import com.simply.birthdayapp.presentation.extensions.isValidEmail
 import com.simply.birthdayapp.presentation.ui.components.AppBaseTopBar
 import com.simply.birthdayapp.presentation.ui.components.AuthButton
 import com.simply.birthdayapp.presentation.ui.components.BaseTextField
 import com.simply.birthdayapp.presentation.ui.components.CircularProgress
 import com.simply.birthdayapp.presentation.ui.components.PasswordTextFiled
-import com.simply.birthdayapp.presentation.ui.screens.auth.register.RegisterViewModel
 import com.simply.birthdayapp.presentation.ui.theme.AppTheme
 import org.koin.androidx.compose.getViewModel
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun SignInScreen(
     signInViewModel: SignInViewModel = getViewModel(),
@@ -100,13 +102,19 @@ fun SignInScreen(
         )
     }
     Scaffold(
+        modifier = Modifier.statusBarsPadding(),
         topBar = { AppBaseTopBar(onBackClick = onSignInBackClick) }
     ) {
-        Box {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(it)
+                .consumeWindowInsets(it)
+                .imePadding(),
+        ) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(it)
                     .background(color = AppTheme.colors.backgroundPink)
                     .verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.Center,

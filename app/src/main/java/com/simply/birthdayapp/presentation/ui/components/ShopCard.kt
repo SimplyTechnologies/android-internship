@@ -103,6 +103,7 @@ private fun ShopCardPreview() {
         name = "Kitten",
         image = byteArrayOf(),
         isFavourite = false,
+        rating = 2.5,
         formattedPhoneNumber = null,
         address = "",
         addressQuery = "",
