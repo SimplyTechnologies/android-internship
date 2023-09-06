@@ -2,6 +2,7 @@ package com.simply.birthdayapp.presentation.ui.screens.main.home.birthday
 
 import android.annotation.SuppressLint
 import android.net.Uri
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -33,7 +34,7 @@ import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -72,12 +73,10 @@ import com.simply.birthdayapp.presentation.ui.components.CalendarPermissionDialo
 import com.simply.birthdayapp.presentation.ui.components.DatePickerComponent
 import com.simply.birthdayapp.presentation.ui.components.RelationshipGridCard
 import com.simply.birthdayapp.presentation.ui.components.RoundAsyncImage
-import com.simply.birthdayapp.presentation.ui.screens.main.LocalSnackbarHostState
 import com.simply.birthdayapp.presentation.ui.screens.main.home.HomeViewModel
 import com.simply.birthdayapp.presentation.ui.theme.AppTheme
-import java.util.Calendar
 import org.koin.androidx.compose.getViewModel
-import java.util.Date
+import java.util.Calendar
 
 @SuppressLint("SimpleDateFormat")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -95,6 +94,7 @@ fun BirthdayScreen(
     val dateUtc by birthdayViewModel.dateUtc.collectAsState()
     val editModeBirthday by birthdayViewModel.editModeBirthday.collectAsState()
     val addToCalendarCheck by birthdayViewModel.addToCalendarCheck.collectAsState()
+    val failedToAddBirthdayToCalendar by birthdayViewModel.failedToAddBirthdayToCalendar.collectAsState()
 
     val createBirthdayError by birthdayViewModel.createBirthdayError.collectAsState()
     val updateBirthdayError by birthdayViewModel.updateBirthdayError.collectAsState()
@@ -111,9 +111,16 @@ fun BirthdayScreen(
     val email by birthdayViewModel.email.collectAsState()
     val focusManager = LocalFocusManager.current
     val context = LocalContext.current
-    val snackbarHostState = LocalSnackbarHostState.current
     val calendar = Calendar.getInstance()
-    val datePickerState = rememberDatePickerState(initialSelectedDateMillis = calendar.timeInMillis)
+    val datePickerState = rememberDatePickerState(initialSelectedDateMillis = calendar.timeInMillis, selectableDates = object : SelectableDates {
+        override fun isSelectableDate(utcTimeMillis: Long): Boolean {
+            return utcTimeMillis <= calendar.timeInMillis
+        }
+
+        override fun isSelectableYear(year: Int): Boolean {
+            return year <= calendar[Calendar.YEAR]
+        }
+    })
     var showDatePickerDialog by rememberSaveable { mutableStateOf(false) }
     var showCalendarPermissionExplanationDialog by rememberSaveable { mutableStateOf(false) }
     val doneButtonEnable by birthdayViewModel.combine.collectAsState()
@@ -136,45 +143,46 @@ fun BirthdayScreen(
         }
     }
 
-    BackHandler {
-        onBackClick()
-    }
+    BackHandler { onBackClick() }
 
     LaunchedEffect(createBirthdayError) {
         if (createBirthdayError) {
-            snackbarHostState.showSnackbar(
-                message = context.getString(R.string.failed_to_create_birthday),
-                duration = SnackbarDuration.Short,
-            )
+            Toast.makeText(context, R.string.failed_to_create_birthday, Toast.LENGTH_SHORT).show()
             birthdayViewModel.setCreateBirthdayErrorFalse()
         }
     }
     LaunchedEffect(updateBirthdayError) {
         if (updateBirthdayError) {
-            snackbarHostState.showSnackbar(
-                message = context.getString(R.string.failed_to_update_birthday),
-                duration = SnackbarDuration.Short,
-            )
+            Toast.makeText(context, R.string.failed_to_update_birthday, Toast.LENGTH_SHORT).show()
             birthdayViewModel.setUpdateBirthdayErrorFalse()
         }
     }
     LaunchedEffect(deleteBirthdayError) {
         if (deleteBirthdayError) {
-            snackbarHostState.showSnackbar(
-                message = context.getString(R.string.failed_to_delete_birthday),
-                duration = SnackbarDuration.Short,
-            )
+            Toast.makeText(context, R.string.failed_to_delete_birthday, Toast.LENGTH_SHORT).show()
             birthdayViewModel.setDeleteBirthdayErrorFalse()
         }
     }
     LaunchedEffect(createBirthdaySuccess) {
-        if (createBirthdaySuccess) navigateToHomeScreen()
+        if (createBirthdaySuccess) {
+            navigateToHomeScreen()
+            Toast.makeText(context, R.string.birthday_created_successfully, Toast.LENGTH_SHORT).show()
+            birthdayViewModel.setCreateBirthdaySuccessFalse()
+        }
     }
     LaunchedEffect(updateBirthdaySuccess) {
-        if (updateBirthdaySuccess) navigateToHomeScreen()
+        if (updateBirthdaySuccess) {
+            navigateToHomeScreen()
+            Toast.makeText(context, R.string.birthday_updated_successfully, Toast.LENGTH_SHORT).show()
+            birthdayViewModel.setUpdateBirthdaySuccessFalse()
+        }
     }
     LaunchedEffect(deleteBirthdaySuccess) {
-        if (deleteBirthdaySuccess) navigateToHomeScreen()
+        if (deleteBirthdaySuccess) {
+            navigateToHomeScreen()
+            Toast.makeText(context, R.string.birthday_deleted_successfully, Toast.LENGTH_SHORT).show()
+            birthdayViewModel.setDeleteBirthdaySuccessFalse()
+        }
     }
     LaunchedEffect(createBirthdayIsCompleted) {
         if (createBirthdayIsCompleted) homeViewModel.fetchBirthdays()
@@ -188,6 +196,12 @@ fun BirthdayScreen(
         if (deleteBirthdayIsCompleted) homeViewModel.fetchBirthdays()
         birthdayViewModel.setDeleteBirthdayIsCompletedFalse()
     }
+    LaunchedEffect(failedToAddBirthdayToCalendar) {
+        if (failedToAddBirthdayToCalendar) {
+            Toast.makeText(context, R.string.failed_to_add_birthday_to_calendar, Toast.LENGTH_SHORT).show()
+            birthdayViewModel.setFailedToAddBirthdayToCalendar(false)
+        }
+    }
     LaunchedEffect(addToCalendarCheck) {
         if (addToCalendarCheck) {
             if (context.calendarPermissionsGranted().not()) {
@@ -198,10 +212,7 @@ fun BirthdayScreen(
     }
     LaunchedEffect(showNeedCalendarPermissionMessage) {
         if (showNeedCalendarPermissionMessage) {
-            snackbarHostState.showSnackbar(
-                message = context.getString(R.string.app_needs_calendar_permission_to_add_birthdays),
-                duration = SnackbarDuration.Short,
-            )
+            Toast.makeText(context, R.string.app_needs_calendar_permission_to_add_birthdays, Toast.LENGTH_SHORT).show()
             showNeedCalendarPermissionMessage = false
         }
     }
@@ -343,17 +354,10 @@ fun BirthdayScreen(
             Button(
                 enabled = doneButtonEnable,
                 onClick = {
-                    //TODO : IMPROVE
                     if (addToCalendarCheck && context.calendarPermissionsGranted()) {
-                        val d = Date(dateUtc.fromUtcToMillisDate())
-                        val c = Calendar.getInstance()
-                        c.time = d
-                        val selectedDate = Calendar.getInstance()
-                        val selectedYear = selectedDate[Calendar.YEAR]
-                        c.set(Calendar.YEAR, selectedYear)
                         val uri = try {
                             context.addEventToCalendar(
-                                date = c.timeInMillis,
+                                date = dateUtc.fromUtcToMillisDate(),
                                 name = name,
                                 email = email,
                             )
@@ -377,7 +381,8 @@ fun BirthdayScreen(
             }
 
             if (showDatePickerDialog) {
-                datePickerState.setSelection(dateUtc.fromUtcToMillisDate())
+                datePickerState.selectedDateMillis = dateUtc.fromUtcToMillisDate()
+                datePickerState.displayedMonthMillis = dateUtc.fromUtcToMillisDate()
                 DatePickerComponent(
                     datePickerState = datePickerState,
                     onDismissRequest = { showDatePickerDialog = false },

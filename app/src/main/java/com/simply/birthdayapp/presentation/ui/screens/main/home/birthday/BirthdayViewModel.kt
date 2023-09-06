@@ -11,7 +11,6 @@ import com.simply.birthdayapp.presentation.extensions.fromMillisToUtcDate
 import com.simply.birthdayapp.presentation.extensions.fromUtcToDayMonthYearDate
 import com.simply.birthdayapp.presentation.models.Birthday
 import com.simply.birthdayapp.presentation.models.RelationshipEnum
-import java.util.Calendar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -25,6 +24,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.util.Calendar
 
 class BirthdayViewModel(
     application: Application,
@@ -62,7 +62,7 @@ class BirthdayViewModel(
     val editModeBirthday = _editModeBirthday.asStateFlow()
 
     private val _createBirthdayIsCompleted = MutableStateFlow(false)
-    val createBirthdayIsCompleted = _createBirthdaySuccess.asStateFlow()
+    val createBirthdayIsCompleted = _createBirthdayIsCompleted.asStateFlow()
 
     private val _updateBirthdayIsCompleted = MutableStateFlow(false)
     val updateBirthdayIsCompleted = _updateBirthdayIsCompleted.asStateFlow()

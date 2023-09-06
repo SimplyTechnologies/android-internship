@@ -7,7 +7,6 @@ import android.net.Uri
 import android.provider.CalendarContract
 import com.simply.birthdayapp.R
 import com.simply.birthdayapp.presentation.models.CalendarContractItem
-import java.util.Date
 import java.util.TimeZone
 
 @SuppressLint("Range")
@@ -38,12 +37,10 @@ fun Context.addEventToCalendar(email: String, date: Long, name: String): Uri? {
     }
 
     val userEmailContract = contractList.find { it.ownerAccount == email }
-    val id = userEmailContract?.calendarId
-        ?: if (contractList.isNotEmpty()) contractList[0].calendarId else return null
-    val dateTime = Date(date).time
+    val id = userEmailContract?.calendarId ?: if (contractList.isNotEmpty()) contractList[0].calendarId else return null
     val values = ContentValues().apply {
-        put(CalendarContract.Events.DTSTART, dateTime)
-        put(CalendarContract.Events.DTEND, dateTime)
+        put(CalendarContract.Events.DTSTART, date)
+        put(CalendarContract.Events.DTEND, date)
         put(CalendarContract.Events.ALL_DAY, true)
         put(CalendarContract.Events.RRULE, "FREQ=YEARLY")
         put(
