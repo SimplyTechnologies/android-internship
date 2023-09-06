@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -212,7 +213,8 @@ fun BirthdayScreen(
                 .background(color = AppTheme.colors.backgroundPink)
                 .padding(horizontal = 16.dp)
                 .verticalScroll(state = rememberScrollState())
-                .pointerInput(Unit) { detectTapGestures(onTap = { focusManager.clearFocus() }) },
+                .pointerInput(Unit) { detectTapGestures(onTap = { focusManager.clearFocus() }) }
+                .imePadding(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             if (editModeBirthday != null) {
