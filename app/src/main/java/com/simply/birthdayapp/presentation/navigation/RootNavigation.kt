@@ -27,7 +27,7 @@ fun RootNavigation() {
 
     fun navigateToAuthMainScreen() {
         rootNavController.navigate(RootDestination.AuthMainScreen.route) {
-            popUpTo(RootDestination.AuthMainScreen.route) {
+            popUpTo(RootDestination.MainScreen.route) {
                 inclusive = true
             }
         }

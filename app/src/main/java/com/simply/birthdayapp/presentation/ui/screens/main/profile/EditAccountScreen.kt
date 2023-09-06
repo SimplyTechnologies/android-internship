@@ -191,7 +191,6 @@ fun EditAccountScreen(
                     fontSize = 20.sp,
                     onClick = {
                         profileViewModel.updateProfile()
-
                     },
                 )
             }
