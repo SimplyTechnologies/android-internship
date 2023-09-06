@@ -5,6 +5,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.simply.birthdayapp.presentation.ui.screens.auth.AuthMainScreen
+import com.simply.birthdayapp.presentation.ui.screens.auth.AuthScreen
 import com.simply.birthdayapp.presentation.ui.screens.main.MainScreen
 
 sealed class RootDestination(val route: String) {
@@ -37,7 +38,10 @@ fun RootNavigation() {
         startDestination = RootDestination.AuthMainScreen.route,
     ) {
         composable(RootDestination.MainScreen.route) {
-            MainScreen(onSignOutClicked = { navigateToAuthMainScreen() })
+            MainScreen(
+                onSignOutClicked = { navigateToAuthMainScreen() },
+                onChangePasswordSuccess = { navigateToAuthMainScreen() }
+            )
         }
         composable(RootDestination.AuthMainScreen.route) {
             AuthMainScreen(

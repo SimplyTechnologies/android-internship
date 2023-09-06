@@ -38,7 +38,7 @@ import org.koin.androidx.compose.getViewModel
 @Composable
 fun ChangePasswordScreen(
     profileViewModel: ProfileViewModel,
-    onSignOutClicked: () -> Unit = {},
+    onChangePasswordSuccess: () -> Unit = {},
     navToProfileScreen: () -> Unit = {},
 ) {
     val oldPassword by profileViewModel.oldPassword.collectAsState()
@@ -62,7 +62,7 @@ fun ChangePasswordScreen(
     LaunchedEffect(changePasswordSuccess) {
         if (changePasswordSuccess) {
             Toast.makeText(context, R.string.change_password_success, Toast.LENGTH_SHORT).show()
-            onSignOutClicked()
+            onChangePasswordSuccess()
             profileViewModel.changePasswordSuccessState()
         }
     }

@@ -28,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -163,6 +164,7 @@ fun NewPasswordScreen(
                         focusedContainerColor = AppTheme.colors.white,
                         unfocusedContainerColor = AppTheme.colors.white,
                         hasPasswordError = hasRepeatPasswordError,
+                        imeAction = ImeAction.Done,
                         errorText = stringResource(id = R.string.repeat_password_error),
                         onValueChange = { repeatPassword ->
                             forgotPasswordViewModel.setRepeatPassword(

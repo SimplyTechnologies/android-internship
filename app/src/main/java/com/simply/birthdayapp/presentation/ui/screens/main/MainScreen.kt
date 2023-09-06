@@ -21,6 +21,7 @@ sealed class BottomBarDestination(val route: String) {
 fun MainScreen(
     shopsViewModel: ShopsViewModel = getViewModel(),
     onSignOutClicked: () -> Unit = {},
+    onChangePasswordSuccess: () -> Unit = {},
 ) {
     val bottomBarNavController = rememberNavController()
 
@@ -49,6 +50,10 @@ fun MainScreen(
 
             composable(BottomBarDestination.ProfileMainScreen.route) {
                 ProfileMainScreen(onSignOutClicked = onSignOutClicked)
+                ProfileMainScreen(
+                    onSignOutClicked = onSignOutClicked,
+                    onChangePasswordSuccess = onChangePasswordSuccess
+                )
             }
         }
     }

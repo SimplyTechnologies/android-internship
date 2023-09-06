@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DatePickerDialog
-import androidx.compose.material3.DatePickerFormatter
 import androidx.compose.material3.DatePickerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
@@ -47,7 +46,6 @@ fun DatePickerComponent(
         },
     ) {
         DatePicker(
-            dateFormatter = DatePickerFormatter(),
             modifier = Modifier.padding(top = 16.dp),
             state = datePickerState,
             showModeToggle = false,
