@@ -1,13 +1,17 @@
 package com.simply.birthdayapp.presentation.ui.screens.main.shops.details
 
+import android.content.ActivityNotFoundException
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.ClickableText
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -26,12 +30,26 @@ import com.simply.birthdayapp.R
 import com.simply.birthdayapp.presentation.models.Shop
 import com.simply.birthdayapp.presentation.ui.components.RatingBar
 import com.simply.birthdayapp.presentation.ui.components.RoundAsyncImage
+import com.simply.birthdayapp.presentation.ui.screens.main.LocalSnackbarHostState
 import com.simply.birthdayapp.presentation.ui.theme.AppTheme
+import kotlinx.coroutines.launch
 
 @Composable
 fun ShopDetailsComponent(shop: Shop) {
     val context = LocalContext.current
     val uriHandler = LocalUriHandler.current
+    val snackbarHostState = LocalSnackbarHostState.current
+    val coroutineScope = rememberCoroutineScope()
+
+    fun showSnackbar(@StringRes messageId: Int) {
+        coroutineScope.launch {
+            snackbarHostState.currentSnackbarData?.dismiss()
+            snackbarHostState.showSnackbar(
+                message = context.getString(messageId),
+                duration = SnackbarDuration.Short,
+            )
+        }
+    }
 
     val phoneNumberAnnotatedString = buildAnnotatedString {
         shop.formattedPhoneNumber?.let {
@@ -110,7 +128,13 @@ fun ShopDetailsComponent(shop: Shop) {
             onClick = {
                 phoneNumberAnnotatedString
                     .getStringAnnotations(context.getString(R.string.url_annotated_string_tag), it, it)
-                    .firstOrNull()?.let { stringAnnotation -> uriHandler.openUri(stringAnnotation.item) }
+                    .firstOrNull()?.let { stringAnnotation ->
+                        try {
+                            uriHandler.openUri(stringAnnotation.item)
+                        } catch (e: ActivityNotFoundException) {
+                            showSnackbar(R.string.failed_to_open_phone_in_contacts)
+                        }
+                    }
             },
         )
         ClickableText(
@@ -118,7 +142,13 @@ fun ShopDetailsComponent(shop: Shop) {
             onClick = {
                 addressAnnotatedString
                     .getStringAnnotations(context.getString(R.string.url_annotated_string_tag), it, it)
-                    .firstOrNull()?.let { stringAnnotation -> uriHandler.openUri(stringAnnotation.item) }
+                    .firstOrNull()?.let { stringAnnotation ->
+                        try {
+                            uriHandler.openUri(stringAnnotation.item)
+                        } catch (e: ActivityNotFoundException) {
+                            showSnackbar(R.string.failed_to_open_address_in_google_maps)
+                        }
+                    }
             },
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
@@ -128,7 +158,13 @@ fun ShopDetailsComponent(shop: Shop) {
             onClick = {
                 websiteAnnotatedString
                     .getStringAnnotations(context.getString(R.string.url_annotated_string_tag), it, it)
-                    .firstOrNull()?.let { stringAnnotation -> uriHandler.openUri(stringAnnotation.item) }
+                    .firstOrNull()?.let { stringAnnotation ->
+                        try {
+                            uriHandler.openUri(stringAnnotation.item)
+                        } catch (e: ActivityNotFoundException) {
+                            showSnackbar(R.string.failed_to_open_website_in_google_chrome)
+                        }
+                    }
             },
         )
     }
