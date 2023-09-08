@@ -12,7 +12,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -34,16 +33,16 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun ShopDetailsComponent(shop: Shop) {
-    val context = LocalContext.current
     val uriHandler = LocalUriHandler.current
     val snackbarHostState = LocalSnackbarHostState.current
     val coroutineScope = rememberCoroutineScope()
 
+    val urlAnnotatedStringTag = stringResource(id = R.string.url_annotated_string_tag)
     val phoneNumberAnnotatedString = buildAnnotatedString {
         shop.formattedPhoneNumber?.let {
             withStyle(AppTheme.typography.urlPrefix) { append(stringResource(R.string.shop_phone_number)) }
             pushStringAnnotation(
-                tag = stringResource(R.string.url_annotated_string_tag),
+                tag = urlAnnotatedStringTag,
                 annotation = stringResource(id = R.string.tel_url, shop.formattedPhoneNumber),
             )
             withStyle(AppTheme.typography.url) { append(shop.formattedPhoneNumber) }
@@ -55,7 +54,7 @@ fun ShopDetailsComponent(shop: Shop) {
     val addressAnnotatedString = buildAnnotatedString {
         withStyle(AppTheme.typography.urlPrefix) { append(stringResource(R.string.shop_address)) }
         pushStringAnnotation(
-            tag = stringResource(R.string.url_annotated_string_tag),
+            tag = urlAnnotatedStringTag,
             annotation = BuildConfig.GOOGLE_MAPS_SEARCH_URL + shop.addressQuery,
         )
         withStyle(AppTheme.typography.url) { append(shop.address) }
@@ -64,7 +63,7 @@ fun ShopDetailsComponent(shop: Shop) {
     val websiteAnnotatedString = buildAnnotatedString {
         shop.website?.let {
             pushStringAnnotation(
-                tag = stringResource(R.string.url_annotated_string_tag),
+                tag = urlAnnotatedStringTag,
                 annotation = shop.website,
             )
             withStyle(AppTheme.typography.url) { append(stringResource(R.string.shop_website)) }
@@ -73,6 +72,7 @@ fun ShopDetailsComponent(shop: Shop) {
             withStyle(AppTheme.typography.urlPrefix) { append(stringResource(R.string.shop_website_not_specified)) }
         }
     }
+    val websiteOpenFailureMessage = stringResource(id = R.string.failed_to_open_website_in_google_chrome)
 
     Column(
         modifier = Modifier
@@ -115,7 +115,7 @@ fun ShopDetailsComponent(shop: Shop) {
             text = phoneNumberAnnotatedString,
             onClick = {
                 phoneNumberAnnotatedString
-                    .getStringAnnotations(context.getString(R.string.url_annotated_string_tag), it, it)
+                    .getStringAnnotations(urlAnnotatedStringTag, it, it)
                     .firstOrNull()?.let { stringAnnotation -> uriHandler.openUri(stringAnnotation.item) }
             },
         )
@@ -123,7 +123,7 @@ fun ShopDetailsComponent(shop: Shop) {
             text = addressAnnotatedString,
             onClick = {
                 addressAnnotatedString
-                    .getStringAnnotations(context.getString(R.string.url_annotated_string_tag), it, it)
+                    .getStringAnnotations(urlAnnotatedStringTag, it, it)
                     .firstOrNull()?.let { stringAnnotation -> uriHandler.openUri(stringAnnotation.item) }
             },
             maxLines = 1,
@@ -133,12 +133,12 @@ fun ShopDetailsComponent(shop: Shop) {
             text = websiteAnnotatedString,
             onClick = {
                 websiteAnnotatedString
-                    .getStringAnnotations(context.getString(R.string.url_annotated_string_tag), it, it)
+                    .getStringAnnotations(urlAnnotatedStringTag, it, it)
                     .firstOrNull()?.let { stringAnnotation ->
                         if (stringAnnotation.item.isBlank()) {
                             coroutineScope.launch {
                                 snackbarHostState.showSnackbar(
-                                    message = context.getString(R.string.failed_to_open_website_in_google_chrome),
+                                    message = websiteOpenFailureMessage,
                                     duration = SnackbarDuration.Short,
                                 )
                             }
