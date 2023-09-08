@@ -109,7 +109,5 @@
     <string name="empty_star">Empty star</string>
     <string name="star_half">Star half</string>
     <string name="no_rating_yet">No rating yet</string>
-    <string name="failed_to_open_phone_in_contacts">Failed to open phone in Contacts</string>
-    <string name="failed_to_open_address_in_google_maps">Failed to open address in Google Maps</string>
     <string name="failed_to_open_website_in_google_chrome">Failed to open website in Google Chrome</string>
 </resources>

@@ -1,7 +1,5 @@
 package com.simply.birthdayapp.presentation.ui.screens.main.shops.details
 
-import android.content.ActivityNotFoundException
-import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -40,16 +38,6 @@ fun ShopDetailsComponent(shop: Shop) {
     val uriHandler = LocalUriHandler.current
     val snackbarHostState = LocalSnackbarHostState.current
     val coroutineScope = rememberCoroutineScope()
-
-    fun showSnackbar(@StringRes messageId: Int) {
-        coroutineScope.launch {
-            snackbarHostState.currentSnackbarData?.dismiss()
-            snackbarHostState.showSnackbar(
-                message = context.getString(messageId),
-                duration = SnackbarDuration.Short,
-            )
-        }
-    }
 
     val phoneNumberAnnotatedString = buildAnnotatedString {
         shop.formattedPhoneNumber?.let {
@@ -128,13 +116,7 @@ fun ShopDetailsComponent(shop: Shop) {
             onClick = {
                 phoneNumberAnnotatedString
                     .getStringAnnotations(context.getString(R.string.url_annotated_string_tag), it, it)
-                    .firstOrNull()?.let { stringAnnotation ->
-                        try {
-                            uriHandler.openUri(stringAnnotation.item)
-                        } catch (e: ActivityNotFoundException) {
-                            showSnackbar(R.string.failed_to_open_phone_in_contacts)
-                        }
-                    }
+                    .firstOrNull()?.let { stringAnnotation -> uriHandler.openUri(stringAnnotation.item) }
             },
         )
         ClickableText(
@@ -142,13 +124,7 @@ fun ShopDetailsComponent(shop: Shop) {
             onClick = {
                 addressAnnotatedString
                     .getStringAnnotations(context.getString(R.string.url_annotated_string_tag), it, it)
-                    .firstOrNull()?.let { stringAnnotation ->
-                        try {
-                            uriHandler.openUri(stringAnnotation.item)
-                        } catch (e: ActivityNotFoundException) {
-                            showSnackbar(R.string.failed_to_open_address_in_google_maps)
-                        }
-                    }
+                    .firstOrNull()?.let { stringAnnotation -> uriHandler.openUri(stringAnnotation.item) }
             },
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
@@ -159,10 +135,15 @@ fun ShopDetailsComponent(shop: Shop) {
                 websiteAnnotatedString
                     .getStringAnnotations(context.getString(R.string.url_annotated_string_tag), it, it)
                     .firstOrNull()?.let { stringAnnotation ->
-                        try {
+                        if (stringAnnotation.item.isBlank()) {
+                            coroutineScope.launch {
+                                snackbarHostState.showSnackbar(
+                                    message = context.getString(R.string.failed_to_open_website_in_google_chrome),
+                                    duration = SnackbarDuration.Short,
+                                )
+                            }
+                        } else {
                             uriHandler.openUri(stringAnnotation.item)
-                        } catch (e: ActivityNotFoundException) {
-                            showSnackbar(R.string.failed_to_open_website_in_google_chrome)
                         }
                     }
             },
